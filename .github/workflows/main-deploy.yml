@@ -33,10 +33,10 @@ jobs:
 
 
       # todo 임시 github secrets -> 배포하기 위한 application.yml 환경변수 설정
-      - name: Set application-mysql.yml
+      - name: Set application-prod.yml
         uses: microsoft/variable-substitution@v1
         with:
-          files: ./src/main/resources/application.yml
+          files: ./src/main/resources/application-prod.yml
         env:
           spring.datasource.url: ${{ secrets.DB_URL }}
           spring.datasource.username: ${{ secrets.DB_USERNAME }}
