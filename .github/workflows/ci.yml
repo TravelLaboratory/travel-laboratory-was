@@ -1,0 +1,31 @@
+name: CI (feat. Java CI with Gradle)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 [temurin(Oracle)]
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
+      # todo 추후 생략해도 될 경우 생략 - CI는 test 위주이기에 빌드는 필요없는 과정일 가능성이 높다.
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Run Tests with Gradle [--parallel]
+        run: ./gradlew --info --parallel test
