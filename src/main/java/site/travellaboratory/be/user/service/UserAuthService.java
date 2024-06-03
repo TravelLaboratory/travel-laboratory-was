@@ -27,7 +27,6 @@ public class UserAuthService {
     @Value("${jwt.expired-time-ms}")
     private Long expiredTimeMs;
 
-
     @Transactional
     public User join(
         @NotNull String userName,
@@ -63,8 +62,7 @@ public class UserAuthService {
         }
 
         // 토큰 생성
-        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
-        return token;
+        return JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
     }
 
     public static User mapToDomain(UserEntity entity) {

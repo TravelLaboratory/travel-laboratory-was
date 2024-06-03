@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = { RuntimeException.class })
     public ResponseEntity<ApiResponse<Void>> RuntimeExceptionHandler(
         RuntimeException exception) {
-        log.error("Internal Server Error occurs {}", exception.getStackTrace());
+        log.error("Internal Server Error occurs - {}", exception.getStackTrace()[0]);
 
         final ApiResponse<Void> body = ApiResponse.fromErrorCodes(ErrorCodes.INTERNAL_SERVER_ERROR);
         final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
