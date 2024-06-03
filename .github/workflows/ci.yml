@@ -24,8 +24,8 @@ jobs:
         run: chmod +x ./gradlew
 
       # todo 추후 생략해도 될 경우 생략 - CI는 test 위주이기에 빌드는 필요없는 과정일 가능성이 높다.
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
+      #- name: Build with Gradle
+      #  run: ./gradlew clean build -x test
 
       - name: Run Tests with Gradle [--parallel]
         run: ./gradlew --info --parallel test
