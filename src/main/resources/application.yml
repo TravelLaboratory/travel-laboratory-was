@@ -13,6 +13,10 @@ spring:
   jpa:
     properties:
       dialect: org.hibernate.dialect.MySQLDialect
+jwt:
+  secret-key: ${jwt-secret-key}
+  expired-time-ms: ${jwt-expired-time-ms}
+
 ---
 spring:
   config:

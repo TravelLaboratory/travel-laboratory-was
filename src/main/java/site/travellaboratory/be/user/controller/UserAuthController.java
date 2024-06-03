@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.response.ApiResponse;
 import site.travellaboratory.be.user.controller.dto.UserJoinRequest;
 import site.travellaboratory.be.user.controller.dto.UserJoinResponse;
+import site.travellaboratory.be.user.controller.dto.UserLoginRequest;
+import site.travellaboratory.be.user.controller.dto.UserLoginResponse;
 import site.travellaboratory.be.user.service.UserAuthService;
 import site.travellaboratory.be.user.service.domain.User;
 
@@ -26,4 +28,11 @@ public class UserAuthController {
         return ApiResponse.success(UserJoinResponse.fromDomain(user));
     }
 
+    @PostMapping("/login")
+    public ApiResponse<UserLoginResponse> login(
+        @RequestBody UserLoginRequest request
+    ) {
+        String token = userAuthService.login(request.userName(), request.password());
+        return ApiResponse.success(UserLoginResponse.fromDomain(token));
+    }
 }
