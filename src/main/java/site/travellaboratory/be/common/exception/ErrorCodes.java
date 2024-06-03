@@ -11,6 +11,9 @@ public enum ErrorCodes {
     USER_NOT_FOUND("회원가입하지 않은 사용자입니다.", 1000L),
     USER_INCORRECT_PASSWORD("비밀번호를 확인해주세요.", 1010L),
 
+
+    // Runtime Exception
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L)
     ;
     public final @NotNull String message;
     public final @NotNull Long code;

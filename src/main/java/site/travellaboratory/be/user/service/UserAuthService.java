@@ -3,7 +3,9 @@ package site.travellaboratory.be.user.service;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.user.repository.UserAuthRepository;
@@ -15,7 +17,10 @@ import site.travellaboratory.be.user.service.domain.User;
 public class UserAuthService {
 
     private final UserAuthRepository userAuthRepository;
+    private final BCryptPasswordEncoder encoder;
 
+
+    @Transactional
     public User join(
         @NotNull String userName,
         @NotNull String password,
@@ -31,10 +36,7 @@ public class UserAuthService {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME, HttpStatus.CONFLICT);
         });
 
-        // 회원가입 진행 = db에 user 등록
-        UserEntity userEntity = userAuthRepository.save(UserEntity.of(userName, password, nickName));
-
-        // 반환은 User로
+        UserEntity userEntity = userAuthRepository.save(UserEntity.of(userName, encoder.encode(password), nickName));
         return mapToDomain(userEntity);
     }
 
