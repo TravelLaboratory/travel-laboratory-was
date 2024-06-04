@@ -3,3 +3,7 @@ spring:
     url: ${url}
     username: ${username}
     password: ${password}
+
+jwt:
+  secret-key: ${jwt-secret-key}
+  expired-time-ms: ${jwt-expired-time-ms}
