@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.response.ApiResponse;
+import site.travellaboratory.be.jwt.dto.JwtTokenResponse;
+import site.travellaboratory.be.jwt.model.JwtToken;
 import site.travellaboratory.be.user.controller.dto.UserJoinRequest;
 import site.travellaboratory.be.user.controller.dto.UserJoinResponse;
 import site.travellaboratory.be.user.controller.dto.UserLoginRequest;
-import site.travellaboratory.be.user.controller.dto.UserLoginResponse;
 import site.travellaboratory.be.user.service.UserAuthService;
 import site.travellaboratory.be.user.service.domain.User;
 
@@ -29,10 +30,10 @@ public class UserAuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<UserLoginResponse> login(
+    public ApiResponse<JwtTokenResponse> login(
         @RequestBody UserLoginRequest request
     ) {
-        String token = userAuthService.login(request.userName(), request.password());
-        return ApiResponse.success(UserLoginResponse.fromDomain(token));
+        JwtToken jwtToken = userAuthService.login(request.userName(), request.password());
+        return ApiResponse.success(JwtTokenResponse.fromDomain(jwtToken));
     }
 }

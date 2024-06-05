@@ -12,7 +12,13 @@ public enum ErrorCodes {
     AUTH_USER_NOT_FOUND("사용자를 찾을 수 없습니다.", 1002L),
     AUTH_INVALID_PASSWORD("잘못된 비밀번호입니다.", 1003L),
 
+    // todo : tokenErrorCode 로 분리
+    TOKEN_INVALID_TOKEN("유효하지 않은 토큰", 2000L),
+    TOKEN_EXPIRED_TOKEN("만료된 토큰", 2001L),
+    TOKEN_TOKEN_EXCEPTION("토큰 알수없는 에러", 2002L),
 
+    // NPE
+    NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L)
     ;
