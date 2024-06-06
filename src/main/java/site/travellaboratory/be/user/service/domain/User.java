@@ -2,12 +2,16 @@ package site.travellaboratory.be.user.service.domain;
 
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import site.travellaboratory.be.user.repository.entity.UserRole;
 
 
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     private @NotNull Long id;

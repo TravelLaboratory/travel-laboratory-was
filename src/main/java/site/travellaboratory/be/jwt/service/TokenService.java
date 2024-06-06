@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import site.travellaboratory.be.common.exception.BeApplicationException;
@@ -34,7 +35,7 @@ public class TokenService {
         return jwtTokenManager.issueRefreshToken(data);
     }
 
-    public Long validationToken(String token) {
+    public Long validationToken(@NotNull String token) {
         Map<String, Object> map = jwtTokenManager.validationTokenWithThrow(token);
         Object userId = map.get("userId");
 

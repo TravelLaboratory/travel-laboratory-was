@@ -1,6 +1,5 @@
 package site.travellaboratory.be.jwt.dto;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,7 @@ import site.travellaboratory.be.jwt.model.Token;
 
 public record JwtTokenResponse(
     @NotNull String accessToken,
-    @NotNull LocalDateTime accessTokenExpiredAt,
-    @NotNull String refreshToken,
-    @NotNull LocalDateTime refreshTokenExpiredAt
+    @NotNull String refreshToken
 ) {
 
     public static JwtTokenResponse fromDomain(JwtToken jwtToken
@@ -32,9 +29,7 @@ public record JwtTokenResponse(
 
         return new JwtTokenResponse(
             accessToken.getToken(),
-            accessToken.getExpiredAt(),
-            refreshToken.getToken(),
-            refreshToken.getExpiredAt()
+            refreshToken.getToken()
         );
     }
 }

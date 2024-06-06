@@ -65,6 +65,12 @@ public class UserAuthService {
         return new JwtToken(accessToken, refreshToken);
     }
 
+    // @AuthenticatedUser 를 위한 메서드 - AuthenticatedUserResolver 에서 사용
+    public UserEntity getAuthUserWithThrow(@NotNull Long userId) {
+        return userAuthRepository.findByIdAndDeleteAtOrderByIdDesc(userId, null)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.BAD_REQUEST));
+    }
+
     private static User mapToDomain(UserEntity entity) {
         return new User(
             entity.getId(),
