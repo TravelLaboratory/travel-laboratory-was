@@ -51,7 +51,7 @@ public class JwtTokenManager {
 
         try {
             Jws<Claims> result = parser.parseClaimsJws(token);
-            return new HashMap<String, Object>(result.getBody());
+            return new HashMap<>(result.getBody());
 
         } catch (Exception e) {
             // todo : BeApplicationException (ErrorCode) 수정 후 수정할 부분 , error도 추가해야함
@@ -61,7 +61,7 @@ public class JwtTokenManager {
             }
             else if (e instanceof ExpiredJwtException) {
                 // 만료된 토큰
-                throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN, HttpStatus.BAD_REQUEST);
+                throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED);
             }
             else {
                 // 그외 에러

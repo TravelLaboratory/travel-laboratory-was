@@ -44,6 +44,7 @@ public class AuthenticatedUserResolver implements HandlerMethodArgumentResolver 
         UserEntity userEntity = userAuthService.getAuthUserWithThrow(
             Long.parseLong(userId.toString()));
 
+        // todo : password 및 전달할 필요없는 것들 제거하고 클래스 새로 생성할 것!! 현재는 User로 임시 작성
         // 사용자 정보 설정
         return User.builder()
             .id(userEntity.getId())
@@ -54,6 +55,8 @@ public class AuthenticatedUserResolver implements HandlerMethodArgumentResolver 
             .profileImgUrl(userEntity.getProfileImgUrl())
             .registerAt(userEntity.getRegisterAt())
             .updateAt(userEntity.getUpdateAt())
-            .deleteAt(userEntity.getDeleteAt());
+            .deleteAt(userEntity.getDeleteAt())
+            .refreshToken(userEntity.getRefreshToken())
+            .build();
     }
 }

@@ -30,7 +30,7 @@ public class UserAuthService {
         @NotNull String nickName
     ) {
         // 이미 가입한 유저인지 체크
-        userAuthRepository.findByUserName(userName).ifPresent(it -> {
+        userAuthRepository.findByUserNameAndDeleteAtOrderByIdDesc(userName, null).ifPresent(it -> {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME, HttpStatus.CONFLICT);
         });
 
@@ -38,17 +38,17 @@ public class UserAuthService {
         userAuthRepository.findByNickName(nickName).ifPresent(it -> {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME, HttpStatus.CONFLICT);
         });
-
         UserEntity userEntity = userAuthRepository.save(UserEntity.of(userName, encoder.encode(password), nickName));
         return mapToDomain(userEntity);
     }
 
+    @Transactional
     public JwtToken login(
         @NotNull String userName,
         @NotNull String password
     ) {
         // 회원가입 여부 체크
-        UserEntity userEntity = userAuthRepository.findByUserName(userName)
+        UserEntity userEntity = userAuthRepository.findByUserNameAndDeleteAtOrderByIdDesc(userName, null)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -62,6 +62,8 @@ public class UserAuthService {
         Token accessToken = tokenService.issueAccessToken(userId);
         Token refreshToken = tokenService.issueRefreshToken(userId);
 
+        // 리프레시 토큰은 db에 저장
+        userAuthRepository.updateRefreshToken(userId, refreshToken.getToken());
         return new JwtToken(accessToken, refreshToken);
     }
 
@@ -81,7 +83,9 @@ public class UserAuthService {
             entity.getProfileImgUrl(),
             entity.getRegisterAt(),
             entity.getUpdateAt(),
-            entity.getDeleteAt()
+            entity.getDeleteAt(),
+            entity.getRefreshToken()
         );
     }
+
 }

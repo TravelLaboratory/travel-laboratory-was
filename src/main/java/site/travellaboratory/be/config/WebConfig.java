@@ -3,20 +3,24 @@ package site.travellaboratory.be.config;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import site.travellaboratory.be.interceptor.AuthorizationInterceptor;
+import site.travellaboratory.be.resolver.AuthenticatedUserResolver;
 
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     private final AuthorizationInterceptor authorizationInterceptor;
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     private final List<String> PASS_URL = List.of(
         "/api/*/auth/login",
         "/api/*/auth/join",
-        "/api/*/auth/nickname"
+        "/api/*/auth/nickname",
+        "/api/*/auth/refresh-token"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(
@@ -38,5 +42,10 @@ public class WebConfig implements WebMvcConfigurer {
             .excludePathPatterns(PASS_URL)
             .excludePathPatterns(DEFAULT_EXCLUDE)
             .excludePathPatterns(SWAGGER);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(authenticatedUserResolver);
     }
 }

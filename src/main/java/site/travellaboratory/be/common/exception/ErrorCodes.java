@@ -19,6 +19,7 @@ public enum ErrorCodes {
     TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND("인증 헤더 토큰이 없음", 2003L),
     TOKEN_AUTHORIZATION_FAIL("인증 실패", 2004L),
 
+    TOKEN_INVALID_REFRESH_TOKEN("유효하지 않은 리프레시 토큰", 2005L),
 
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),

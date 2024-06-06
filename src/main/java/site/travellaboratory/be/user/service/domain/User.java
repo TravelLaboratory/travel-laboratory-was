@@ -23,6 +23,7 @@ public class User {
     private @NotNull Timestamp registerAt;
     private @Nullable Timestamp updateAt;
     private @Nullable Timestamp deleteAt;
+    private @Nullable String refreshToken;
 
     public @NotNull Long getId() {
         return id;

@@ -52,7 +52,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         // 토큰이 있다면?
         // (2) accessToken을 validation 거치고
-        Long userId = tokenService.validationToken(accessToken);
+        Long userId = tokenService.validationAccessToken(accessToken);
 
 
         // (3) userId가 있다면?
