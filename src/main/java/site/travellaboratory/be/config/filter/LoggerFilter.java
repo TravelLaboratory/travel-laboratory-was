@@ -1,4 +1,4 @@
-package site.travellaboratory.be.filter;
+package site.travellaboratory.be.config.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
