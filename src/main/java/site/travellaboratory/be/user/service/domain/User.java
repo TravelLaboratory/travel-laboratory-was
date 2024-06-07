@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import site.travellaboratory.be.user.repository.entity.UserEntity;
 import site.travellaboratory.be.user.repository.entity.UserRole;
 
 
@@ -43,5 +44,20 @@ public class User {
 
     public @Nullable String getProfileImgUrl() {
         return profileImgUrl;
+    }
+
+    public static User mapToDomain(UserEntity entity) {
+        return new User(
+            entity.getId(),
+            entity.getUserName(),
+            entity.getPassword(),
+            entity.getRole(),
+            entity.getNickName(),
+            entity.getProfileImgUrl(),
+            entity.getRegisterAt(),
+            entity.getUpdateAt(),
+            entity.getDeleteAt(),
+            entity.getRefreshToken()
+        );
     }
 }

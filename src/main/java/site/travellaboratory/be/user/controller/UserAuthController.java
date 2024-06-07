@@ -1,6 +1,7 @@
 package site.travellaboratory.be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,12 +9,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.AuthenticatedUser;
-import site.travellaboratory.be.common.response.ApiResponse;
-import site.travellaboratory.be.jwt.dto.JwtTokenResponse;
-import site.travellaboratory.be.jwt.dto.RefreshAccessTokenResponse;
-import site.travellaboratory.be.jwt.model.JwtToken;
-import site.travellaboratory.be.jwt.model.Token;
-import site.travellaboratory.be.jwt.service.TokenService;
+import site.travellaboratory.be.jwt.dto.AccessTokenResponse;
+import site.travellaboratory.be.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.user.controller.dto.UserJoinRequest;
 import site.travellaboratory.be.user.controller.dto.UserJoinResponse;
 import site.travellaboratory.be.user.controller.dto.UserLoginRequest;
@@ -26,23 +23,21 @@ import site.travellaboratory.be.user.service.domain.User;
 public class UserAuthController {
 
     private final UserAuthService userAuthService;
-    private final TokenService tokenService;
 
     @PostMapping("/join")
-    public ApiResponse<UserJoinResponse> join(
-        @RequestBody UserJoinRequest request
+    public ResponseEntity<UserJoinResponse> join(
+        @RequestBody UserJoinRequest userJoinRequest
     ) {
-        User user = userAuthService.join(request.userName(), request.password(),
-            request.nickName());
-        return ApiResponse.success(UserJoinResponse.fromDomain(user));
+        return ResponseEntity.ok().body(userAuthService.join(userJoinRequest));
     }
 
     @PostMapping("/login")
-    public ApiResponse<JwtTokenResponse> login(
-        @RequestBody UserLoginRequest request
+    public ResponseEntity<AuthTokenResponse> login(
+        @RequestBody UserLoginRequest userLoginRequest
     ) {
-        JwtToken jwtToken = userAuthService.login(request.userName(), request.password());
-        return ApiResponse.success(JwtTokenResponse.fromDomain(jwtToken));
+        // todo : 헤더로 바꿔서 보내기
+        // todo : refresh는 set-cookie로 감싸서 보내기
+        return ResponseEntity.ok().body(userAuthService.login(userLoginRequest));
     }
 
     @GetMapping("/me")
@@ -57,12 +52,13 @@ public class UserAuthController {
     
 
     @PostMapping("/refresh-token")
-    public ApiResponse<RefreshAccessTokenResponse> refreshAccessToken(
+    public ResponseEntity<AccessTokenResponse> refreshAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @RequestHeader("refresh-token") String refreshToken
     ) {
-        Token newAccessToken = tokenService.refreshAccessToken(accessToken, refreshToken);
-        return ApiResponse.success(RefreshAccessTokenResponse.fromDomain(newAccessToken));
+        // todo: header로 보내기
+        return ResponseEntity.ok().body(userAuthService.reIssueAccessToken(accessToken,
+            refreshToken));
     }
 }
 

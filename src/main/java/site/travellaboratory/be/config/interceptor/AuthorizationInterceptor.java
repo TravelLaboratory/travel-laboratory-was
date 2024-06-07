@@ -14,14 +14,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.jwt.service.TokenService;
+import site.travellaboratory.be.jwt.util.JwtTokenUtility;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private final TokenService tokenService;
+    private final JwtTokenUtility jwtTokenUtility;
 
     @Override
     public boolean preHandle(
@@ -50,22 +50,19 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND, HttpStatus.BAD_REQUEST);
         }
 
-        // 토큰이 있다면?
-        // (2) accessToken을 validation 거치고
-        Long userId = tokenService.validationAccessToken(accessToken);
+        // (2) 토큰이 있다면? - accessToken을 validation 거치고
+        Long userId = jwtTokenUtility.extractUserId(accessToken);
 
-
-        // (3) userId가 있다면?
+        // (3)-1 userId가 있다면?
         if (userId != null) {
-            // (4)-1 현재 요청 request Context에다가 userId를 저장한다.
+            // (4)-1 현재 요청 request Context 에다가 userId를 저장한다.
             // (4)-2 범위는 이번 요청동안만! SCOPE_REQUEST
-            RequestAttributes requestContext = Objects.requireNonNull(
-                RequestContextHolder.getRequestAttributes());
+            RequestAttributes requestContext = Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
             requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
             return true;
         }
 
-        // userId가 없다면?
+        // (3)-2 userId가 없다면?
         throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
     }
 }
