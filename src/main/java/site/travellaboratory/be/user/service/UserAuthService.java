@@ -1,7 +1,7 @@
 package site.travellaboratory.be.user.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,35 +61,20 @@ public class UserAuthService {
                 HttpStatus.UNAUTHORIZED);
         }
 
-        // 토큰 생성
+        // 토큰 생성 - accessToken, refreshToken
         Long userId = userEntity.getId();
-        AuthTokenResponse authTokenResponse = authTokenGenerator.generateTokens(userId);
-
-        // 리프레시 토큰은 db에 저장
-        userAuthRepository.updateRefreshToken(userId, authTokenResponse.refreshToken());
-
-        return authTokenResponse;
+        return authTokenGenerator.generateTokens(userId);
     }
 
-    @Transactional
-    public AccessTokenResponse reIssueAccessToken(@NotNull String accessToken,
-        @NotNull String refreshToken) {
-        Long refreshTokenUserId = authTokenGenerator.getRefreshTokenUserId(accessToken,
-            refreshToken);
-
-        // DB에 저장된 리프레시 토큰과 비교 + userId
-        UserEntity userEntity = userAuthRepository.findByIdAndRefreshTokenAndDeleteAtOrderByIdDesc(
-                refreshTokenUserId, refreshToken, null)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REFRESH_TOKEN_NOT_CORRECT_USER,
-                HttpStatus.BAD_REQUEST));
-
-        return authTokenGenerator.reIssueAccessToken(userEntity.getId());
+    public AccessTokenResponse reIssueAccessToken(
+        final String accessToken,
+        final String refreshToken) {
+        return authTokenGenerator.reIssueAccessToken(accessToken, refreshToken);
     }
 
-    // @AuthenticatedUser 를 위한 메서드 - AuthenticatedUserResolver 에서 사용
-    public UserEntity getAuthUserWithThrow(@NotNull Long userId) {
-        return userAuthRepository.findByIdAndDeleteAtOrderByIdDesc(userId, null)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
-                HttpStatus.BAD_REQUEST));
+    public String test(Long userId) {
+        Optional<UserEntity> userEntity = userAuthRepository.findById(userId);
+        System.out.println("userEntity.get().getId(); = " + userEntity.get().getId());
+        return "Service Ok";
     }
 }

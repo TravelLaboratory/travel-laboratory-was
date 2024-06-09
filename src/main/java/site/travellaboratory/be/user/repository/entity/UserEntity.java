@@ -13,7 +13,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Entity
 @Table(name = "user")
@@ -22,26 +21,25 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NotNull Long id;
+    private Long id;
 
-    private @NotNull String userName;
+    private String userName;
 
-    private @NotNull String password;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private @NotNull UserRole role;
+    private UserRole role;
 
-    private @NotNull String nickName;
+    private String nickName;
 
-    private @Nullable String profileImgUrl;
+    private String profileImgUrl;
 
-    private @NotNull Timestamp registerAt;
+    private Timestamp registerAt;
 
-    private @Nullable Timestamp updateAt;
+    private Timestamp updateAt;
 
-    private @Nullable Timestamp deleteAt;
-
-    private @Nullable String refreshToken;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     public void setUserName(@NotNull String userName) {
         this.userName = userName;
@@ -60,6 +58,7 @@ public class UserEntity {
     void prePersist() {
         this.role = UserRole.USER;
         this.registerAt = Timestamp.from(Instant.now());
+        this.status = UserStatus.ACTIVE;
     }
 
     @PreUpdate

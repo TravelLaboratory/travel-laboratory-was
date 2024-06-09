@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.common.annotation.AuthenticatedUser;
+import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.jwt.dto.AccessTokenResponse;
 import site.travellaboratory.be.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.user.controller.dto.UserJoinRequest;
 import site.travellaboratory.be.user.controller.dto.UserJoinResponse;
 import site.travellaboratory.be.user.controller.dto.UserLoginRequest;
 import site.travellaboratory.be.user.service.UserAuthService;
-import site.travellaboratory.be.user.service.domain.User;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -41,13 +40,13 @@ public class UserAuthController {
     }
 
     @GetMapping("/me")
-    public User me(
-        @AuthenticatedUser User user
+    public Long me(
+        @UserId Long userId
     ) {
-        System.out.println("user.getId() = " + user.getId());
-        System.out.println("user.getUserName() = " + user.getUserName());
-        System.out.println("user.getNickName() = " + user.getNickName());
-        return user;
+        System.out.println("user.getId() = " + userId);
+        userAuthService.test(userId);
+        return userId;
+
     }
     
 

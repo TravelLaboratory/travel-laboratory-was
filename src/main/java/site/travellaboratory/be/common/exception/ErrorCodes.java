@@ -20,8 +20,11 @@ public enum ErrorCodes {
     TOKEN_AUTHORIZATION_FAIL("인증 실패", 2004L),
 
     TOKEN_INVALID_REFRESH_TOKEN("유효하지 않은 리프레시 토큰", 2005L),
-    REFRESH_TOKEN_NOT_CORRECT_USER("로그인한 유저의 리프레시 토큰이 아닙니다.", 2005L),
-    REFRESH_TOKEN_NOT_EXPIRED_ACCESS_TOKEN("만료되지 않은 토큰", 2005L),
+//    REFRESH_TOKEN_NOT_CORRECT_USER("로그인한 유저의 리프레시 토큰이 아닙니다.", 2006L),
+    TOKEN_NOT_EXPIRED_ACCESS_TOKEN("만료되지 않은 토큰", 2007L),
+    REFRESH_TOKEN_EXPIRED_TOKEN("만료된 리프레시 토큰 - 재로그인", 2008L),
+    REFRESH_TOKEN_TOKEN_EXCEPTION("리프레시 토큰 알수없는 에러", 2009L),
+
 
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
