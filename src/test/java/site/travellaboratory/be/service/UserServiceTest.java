@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import site.travellaboratory.be.controller.dto.ProfileImgUpdateRequest;
 import site.travellaboratory.be.controller.dto.UserProfileUpdateRequest;
 import site.travellaboratory.be.domain.user.User;
 import site.travellaboratory.be.domain.user.UserRepository;
@@ -39,6 +40,15 @@ class UserServiceTest {
     void asd() {
         //given
         userService.updateProfile(new UserProfileUpdateRequest("준",  "안녕하세요"), 1L);
+        //when
+
+        //then
+    }
+
+    @Test
+    void asdfadf() {
+        //given
+        userService.updateProfileImage(new ProfileImgUpdateRequest("asf"), 1L);
         //when
 
         //then
