@@ -1,6 +1,10 @@
 package site.travellaboratory.be.user.controller;
 
+import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,12 +35,25 @@ public class UserAuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthTokenResponse> login(
-        @RequestBody UserLoginRequest userLoginRequest
+    public ResponseEntity<Void> login(
+        @RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response
     ) {
-        // todo : 헤더로 바꿔서 보내기
-        // todo : refresh는 set-cookie로 감싸서 보내기
-        return ResponseEntity.ok().body(userAuthService.login(userLoginRequest));
+        AuthTokenResponse authTokenResponse = userAuthService.login(userLoginRequest);
+
+        // AccessToken - authorization-token 헤더에 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("authorization-token", authTokenResponse.accessToken());
+
+        // RefreshToken - refresh-token 쿠키에 추가
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh-token", authTokenResponse.refreshToken())
+            .httpOnly(true)
+            .path("/api/*/auth/reissue-token")
+            .maxAge(14 * 24 * 60 * 60) // 2주
+            .secure(true)
+            .sameSite(NONE.attributeValue())
+            .build();
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     @GetMapping("/me")
@@ -50,7 +67,7 @@ public class UserAuthController {
     }
     
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/reissue-token")
     public ResponseEntity<AccessTokenResponse> refreshAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @RequestHeader("refresh-token") String refreshToken
