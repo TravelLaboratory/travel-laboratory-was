@@ -16,6 +16,7 @@ import site.travellaboratory.be.user.controller.dto.UserJoinResponse;
 import site.travellaboratory.be.user.controller.dto.UserLoginRequest;
 import site.travellaboratory.be.user.repository.UserAuthRepository;
 import site.travellaboratory.be.user.repository.entity.UserEntity;
+import site.travellaboratory.be.user.repository.entity.UserStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class UserAuthService {
     @Transactional
     public UserJoinResponse join(UserJoinRequest request) {
         // 이미 가입한 유저인지 체크
-        userAuthRepository.findByUserNameAndDeleteAtOrderByIdDesc(request.userName(), null)
+        userAuthRepository.findByUserNameAndStatusOrderByIdDesc(request.userName(), UserStatus.ACTIVE)
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
                     HttpStatus.CONFLICT);
@@ -50,8 +51,8 @@ public class UserAuthService {
     @Transactional
     public AuthTokenResponse login(UserLoginRequest request) {
         // 회원가입 여부 체크
-        UserEntity userEntity = userAuthRepository.findByUserNameAndDeleteAtOrderByIdDesc(
-                request.userName(), null)
+        UserEntity userEntity = userAuthRepository.findByUserNameAndStatusOrderByIdDesc(
+                request.userName(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
