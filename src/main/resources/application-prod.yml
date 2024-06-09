@@ -6,4 +6,7 @@ spring:
 
 jwt:
   secret-key: ${jwt-secret-key}
-  expired-time-ms: ${jwt-expired-time-ms}
+  access-token:
+    plus-hour: ${jwt-access-token-plus-hour}
+  refresh-token:
+    plus-hour: ${jwt-refresh-token-plus-hour}
