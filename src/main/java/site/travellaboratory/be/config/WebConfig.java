@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
         "/api/*/auth/login",
         "/api/*/auth/join",
         "/api/*/auth/nickname",
-        "/api/*/auth/refresh-token"
+        "/api/*/auth/reissue-token"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(
