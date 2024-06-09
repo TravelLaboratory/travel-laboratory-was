@@ -12,14 +12,12 @@ import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.time.Instant;
 import lombok.Getter;
-import org.hibernate.annotations.SQLDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Entity
 @Table(name = "user")
 @Getter
-@SQLDelete(sql = "UPDATE user SET delete_at = NOW() where id = ?")
 public class UserEntity {
 
     @Id
@@ -43,6 +41,8 @@ public class UserEntity {
 
     private @Nullable Timestamp deleteAt;
 
+    private @Nullable String refreshToken;
+
     public void setUserName(@NotNull String userName) {
         this.userName = userName;
     }
@@ -54,6 +54,7 @@ public class UserEntity {
     public void setNickName(@NotNull String nickName) {
         this.nickName = nickName;
     }
+
 
     @PrePersist
     void prePersist() {

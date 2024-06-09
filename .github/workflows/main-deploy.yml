@@ -41,6 +41,8 @@ jobs:
           spring.datasource.url: ${{ secrets.DB_URL }}
           spring.datasource.username: ${{ secrets.DB_USERNAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          jwt.secret-key: ${( secrets.JWT_SECRET_KEY }}
+          jwt.expired-time-ms: ${{ secrets.JWT_EXPIRED_TIME_MS }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
