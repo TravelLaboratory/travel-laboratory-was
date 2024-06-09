@@ -41,7 +41,7 @@ public class JwtTokenUtility {
         claims.put("userId", userId);
 
         // expiration
-        LocalDateTime expiredLocalDateTime = LocalDateTime.now().plusSeconds(tokenPlusHour);
+        LocalDateTime expiredLocalDateTime = LocalDateTime.now().plusHours(tokenPlusHour);
         Date expiredAt = Date.from(expiredLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
