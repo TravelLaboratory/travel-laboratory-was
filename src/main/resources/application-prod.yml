@@ -3,3 +3,10 @@ spring:
     url: ${url}
     username: ${username}
     password: ${password}
+
+jwt:
+  secret-key: ${jwt-secret-key}
+  access-token:
+    plus-hour: ${jwt-access-token-plus-hour}
+  refresh-token:
+    plus-hour: ${jwt-refresh-token-plus-hour}
