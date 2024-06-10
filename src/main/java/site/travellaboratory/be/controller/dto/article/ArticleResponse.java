@@ -1,4 +1,4 @@
-package site.travellaboratory.be.controller.dto;
+package site.travellaboratory.be.controller.dto.article;
 
 import java.time.LocalDateTime;
 import java.util.List;

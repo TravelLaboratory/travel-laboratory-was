@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.controller.dto.ArticleRegisterRequest;
-import site.travellaboratory.be.controller.dto.ArticleResponse;
+import site.travellaboratory.be.controller.dto.article.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.dto.article.ArticleResponse;
 import site.travellaboratory.be.service.ArticleService;
 
 @RestController

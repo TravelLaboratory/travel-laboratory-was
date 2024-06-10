@@ -1,4 +1,4 @@
-package site.travellaboratory.be.controller.dto;
+package site.travellaboratory.be.controller.dto.user;
 
 
 import site.travellaboratory.be.domain.user.User;

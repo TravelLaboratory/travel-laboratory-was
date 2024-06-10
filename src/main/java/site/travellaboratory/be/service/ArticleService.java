@@ -1,11 +1,10 @@
 package site.travellaboratory.be.service;
 
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.travellaboratory.be.controller.dto.ArticleRegisterRequest;
-import site.travellaboratory.be.controller.dto.ArticleResponse;
+import site.travellaboratory.be.controller.dto.article.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.dto.article.ArticleResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.user.User;

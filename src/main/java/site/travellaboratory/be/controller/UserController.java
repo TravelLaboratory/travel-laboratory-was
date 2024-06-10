@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.controller.dto.ProfileImgUpdateRequest;
-import site.travellaboratory.be.controller.dto.ProfileImgUpdateResponse;
-import site.travellaboratory.be.controller.dto.UserProfileResponse;
-import site.travellaboratory.be.controller.dto.UserProfileUpdateRequest;
-import site.travellaboratory.be.controller.dto.UserProfileUpdateResponse;
+import site.travellaboratory.be.controller.dto.user.ProfileImgUpdateRequest;
+import site.travellaboratory.be.controller.dto.user.ProfileImgUpdateResponse;
+import site.travellaboratory.be.controller.dto.user.UserProfileResponse;
+import site.travellaboratory.be.controller.dto.user.UserProfileUpdateRequest;
+import site.travellaboratory.be.controller.dto.user.UserProfileUpdateResponse;
 import site.travellaboratory.be.service.UserService;
 
 @RestController

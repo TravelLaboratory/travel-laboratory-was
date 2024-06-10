@@ -1,4 +1,4 @@
-package site.travellaboratory.be.controller.dto;
+package site.travellaboratory.be.controller.dto.user;
 
 public record UserProfileUpdateResponse (
         String nickname,
