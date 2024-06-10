@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailRequest;
-import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
 import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
@@ -113,9 +115,9 @@ public class UserAuthService {
     }
 
     public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
-        String username = request.username();
 
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(username, UserStatus.ACTIVE)
+
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
@@ -124,5 +126,22 @@ public class UserAuthService {
             PwAnswerStatus.ACTIVE);
 
         return PwInquiryEmailResponse.from(user, pwAnswer);
+    }
+
+    public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
+        // 해당 이메일의 유저가 존재하는지
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 답변이 일치한지 판단
+        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                user.getId(),
+                request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
+                    HttpStatus.UNAUTHORIZED));
+
+        return PwInquiryVerificationResponse.from(user, pwAnswer);
     }
 }

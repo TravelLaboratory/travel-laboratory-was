@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailRequest;
-import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
 import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.service.UserAuthService;
@@ -92,6 +94,13 @@ public class UserAuthController {
         @RequestBody PwInquiryEmailRequest pwInQuiryEmailRequest
     ) {
         return ResponseEntity.ok().body(userAuthService.pwInquiryEmail(pwInQuiryEmailRequest));
+    }
+
+    @PostMapping("/pw-inquiry/verification")
+    public ResponseEntity<PwInquiryVerificationResponse> pwInquiryVerification(
+        @RequestBody PwInquiryVerificationRequest pwInQuiryVerificationRequest
+    ) {
+        return ResponseEntity.ok().body(userAuthService.pwInquiryVerification(pwInQuiryVerificationRequest));
     }
 
     @GetMapping("/me")

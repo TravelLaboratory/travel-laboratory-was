@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.auth.pwanswer.enums.PwAnswerStatus;
@@ -19,6 +20,7 @@ import site.travellaboratory.be.domain.auth.pwquestion.PwQuestion;
 import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class PwAnswer extends BaseEntity {
 
@@ -48,10 +50,6 @@ public class PwAnswer extends BaseEntity {
 
     public static PwAnswer of(final User user, final PwQuestion pwQuestion, final String answer) {
         return new PwAnswer(user, pwQuestion, answer);
-    }
-
-    public PwQuestion getPwQuestion() {
-        return pwQuestion;
     }
 
     @PrePersist
