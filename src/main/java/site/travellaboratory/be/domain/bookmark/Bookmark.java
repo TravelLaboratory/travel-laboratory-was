@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.article.Article;
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
 @Getter

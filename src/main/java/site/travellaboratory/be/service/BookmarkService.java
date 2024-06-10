@@ -3,12 +3,12 @@ package site.travellaboratory.be.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.travellaboratory.be.controller.dto.bookmark.BookmarkResponse;
+import site.travellaboratory.be.controller.bookmark.dto.BookmarkResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.bookmark.Bookmark;
 import site.travellaboratory.be.domain.bookmark.BookmarkRepository;
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.UserRepository;
 
 @Service

@@ -3,11 +3,11 @@ package site.travellaboratory.be.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.travellaboratory.be.controller.dto.article.ArticleRegisterRequest;
-import site.travellaboratory.be.controller.dto.article.ArticleResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.UserRepository;
 
 @Service

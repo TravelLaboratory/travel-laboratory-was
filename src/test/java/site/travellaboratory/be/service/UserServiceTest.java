@@ -5,9 +5,9 @@
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
-//import site.travellaboratory.be.controller.dto.user.ProfileImgUpdateRequest;
-//import site.travellaboratory.be.controller.dto.user.UserProfileUpdateRequest;
-//import site.travellaboratory.be.domain.user.User;
+//import site.travellaboratory.be.controller.dto.user.dto.ProfileImgUpdateRequest;
+//import site.travellaboratory.be.controller.dto.user.dto.UserProfileUpdateRequest;
+//import site.travellaboratory.be.domain.user.entity.User;
 //import site.travellaboratory.be.domain.user.UserRepository;
 //
 //@SpringBootTest

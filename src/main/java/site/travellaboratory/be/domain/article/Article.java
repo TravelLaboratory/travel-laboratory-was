@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.controller.dto.article.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.domain.BaseEntity;
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
 @Getter

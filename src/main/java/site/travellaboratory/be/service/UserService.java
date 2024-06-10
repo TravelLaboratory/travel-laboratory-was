@@ -2,12 +2,12 @@ package site.travellaboratory.be.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.travellaboratory.be.controller.dto.user.ProfileImgUpdateRequest;
-import site.travellaboratory.be.controller.dto.user.ProfileImgUpdateResponse;
-import site.travellaboratory.be.controller.dto.user.UserProfileResponse;
-import site.travellaboratory.be.controller.dto.user.UserProfileUpdateRequest;
-import site.travellaboratory.be.controller.dto.user.UserProfileUpdateResponse;
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.controller.user.dto.ProfileImgUpdateRequest;
+import site.travellaboratory.be.controller.user.dto.ProfileImgUpdateResponse;
+import site.travellaboratory.be.controller.user.dto.UserProfileResponse;
+import site.travellaboratory.be.controller.user.dto.UserProfileUpdateRequest;
+import site.travellaboratory.be.controller.user.dto.UserProfileUpdateResponse;
+import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.UserRepository;
 
 @Service
