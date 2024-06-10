@@ -35,7 +35,6 @@ public class User extends BaseEntity {
         this.username = username;
     }
 
-
     public static User of(Long id, String username) {
         return new User(id, username);
     }
@@ -48,5 +47,9 @@ public class User extends BaseEntity {
 
     public User update(String nickname, String introduce) {
         return new User(this.id, nickname, introduce);
+    }
+
+    public User updateProfileImg(String profileImgUrl) {
+        return new User(this.id, nickname, profileImgUrl);
     }
 }
