@@ -14,6 +14,11 @@ import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
+import site.travellaboratory.be.domain.auth.pwanswer.PwAnswer;
+import site.travellaboratory.be.domain.auth.pwanswer.PwAnswerRepository;
+import site.travellaboratory.be.domain.auth.pwquestion.PwQuestion;
+import site.travellaboratory.be.domain.auth.pwquestion.PwQuestionRepository;
+import site.travellaboratory.be.domain.auth.pwquestion.enums.PwQuestionStatus;
 import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.entity.UserStatus;
@@ -25,6 +30,8 @@ public class UserAuthService {
     private final BCryptPasswordEncoder encoder;
     private final AuthTokenGenerator authTokenGenerator;
     private final UserRepository userRepository;
+    private final PwQuestionRepository pwQuestionRepository;
+    private final PwAnswerRepository pwAnswerRepository;
 
     @Transactional
     public UserJoinResponse join(UserJoinRequest request) {
@@ -41,11 +48,22 @@ public class UserAuthService {
                 HttpStatus.CONFLICT);
         });
 
-        User userEntity = userRepository.save(
+        // 새로운 유저 생성
+        User user = userRepository.save(
             User.of(request.username(), encoder.encode(
                 request.password()), request.nickname()));
 
-        return UserJoinResponse.from(userEntity);
+        //비번 질문 조회
+        PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(request.pwQuestionId(),
+                PwQuestionStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.PASSWORD_INVALID_QUESTION,
+                HttpStatus.BAD_REQUEST));
+
+        // 비번 답변 저장
+        PwAnswer pwAnswer = PwAnswer.of(user, pwQuestion, request.pwAnswer());
+        pwAnswerRepository.save(pwAnswer);
+
+        return UserJoinResponse.from(user);
     }
 
     @Transactional
