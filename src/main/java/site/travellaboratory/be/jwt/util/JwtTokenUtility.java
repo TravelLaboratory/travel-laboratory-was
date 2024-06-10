@@ -35,7 +35,7 @@ public class JwtTokenUtility {
             .build();
     }
 
-    public String issueToken(Long userId, Long tokenPlusHour) {
+    public String issueToken(final Long userId, final Long tokenPlusHour) {
         // claims
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
@@ -51,14 +51,35 @@ public class JwtTokenUtility {
             .compact();
     }
 
-    public Long extractUserId(String token) {
-        try {
-            Jws<Claims> result = parser.parseClaimsJws(token);
-            HashMap<String, Object> claims = new HashMap<>(result.getBody());
+    public Long getAccessTokenUserId(final String accessToken) {
+        // token 검사
+        validAccessTokenWithThrow(accessToken);
+        return extractUserId(accessToken);
+    }
 
-            Object userId = claims.get("userId");
+    public Long getRefreshTokenUserId(final String accessToken, final String refreshToken) {
+        // 액세스 토큰 만료 유무 체크
+        if (!(isValidExpiredWithThrow(accessToken))) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_NOT_EXPIRED_ACCESS_TOKEN,
+                HttpStatus.BAD_REQUEST);
+        }
+        // 리프레시 토큰 검증
+        validRefreshTokenWithThrow(refreshToken);
+        return extractUserId(refreshToken);
+    }
+
+    private Long extractUserId(final String token) {
+        Jws<Claims> result = parser.parseClaimsJws(token);
+        HashMap<String, Object> claims = new HashMap<>(result.getBody());
+
+        Object userId = claims.get("userId");
+        parser.parseClaimsJws(token);
+        return Long.parseLong(userId.toString());
+    }
+
+    private void validAccessTokenWithThrow(final String token) {
+        try {
             parser.parseClaimsJws(token);
-            return Long.parseLong(userId.toString());
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException  e) {
             throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN,
                 HttpStatus.BAD_REQUEST);
@@ -66,18 +87,34 @@ public class JwtTokenUtility {
             throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN,
                 HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_TOKEN_EXCEPTION,
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL,
                 HttpStatus.BAD_REQUEST);
         }
     }
 
-    // todo: 리프레시 토큰 관련 예외처리를 세분화 할 것 - 현재 accesstoken, refreshtoken 같이 하나 예외메시지를 사용 헷갈린다.
-    // 리프레시 토큰을 발급받기 위해
-    public boolean isExpired(String token) {
+    private void validRefreshTokenWithThrow(final String token) {
         try {
-            extractUserId(token);
+            parser.parseClaimsJws(token);
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException  e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN,
+                HttpStatus.BAD_REQUEST);
+        } catch (ExpiredJwtException e) {
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN,
+                HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION,
+                HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // 리프레시 토큰을 발급받기 위해
+    private boolean isValidExpiredWithThrow(final String token) {
+        try {
+            validAccessTokenWithThrow(token);
+            // 통과하면 아직 유효한 토큰
             return false;
         } catch (BeApplicationException e) {
+            // 만료된 토큰일 경우에만!!
             if (e.getErrorCodes() == ErrorCodes.TOKEN_EXPIRED_TOKEN) {
                 return true;
             }

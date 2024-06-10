@@ -7,20 +7,20 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import site.travellaboratory.be.config.interceptor.AuthorizationInterceptor;
-import site.travellaboratory.be.resolver.AuthenticatedUserResolver;
+import site.travellaboratory.be.resolver.AuthenticatedUserIdResolver;
 
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     private final AuthorizationInterceptor authorizationInterceptor;
-    private final AuthenticatedUserResolver authenticatedUserResolver;
+    private final AuthenticatedUserIdResolver authenticatedUserIdResolver;
 
     private final List<String> PASS_URL = List.of(
         "/api/*/auth/login",
         "/api/*/auth/join",
         "/api/*/auth/nickname",
-        "/api/*/auth/refresh-token"
+        "/api/*/auth/reissue-token"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(
@@ -46,6 +46,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authenticatedUserResolver);
+        resolvers.add(authenticatedUserIdResolver);
     }
 }
