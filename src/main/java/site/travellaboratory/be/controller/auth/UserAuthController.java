@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
@@ -83,6 +85,13 @@ public class UserAuthController {
         response.setHeader("authorization-token", accessTokenResponse.accessToken());
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/pw-inquiry/email")
+    public ResponseEntity<PwInquiryEmailResponse> pwInquiryEmail(
+        @RequestBody PwInquiryEmailRequest pwInQuiryEmailRequest
+    ) {
+        return ResponseEntity.ok().body(userAuthService.pwInquiryEmail(pwInQuiryEmailRequest));
     }
 
     @GetMapping("/me")

@@ -8,10 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import lombok.Getter;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.auth.pwquestion.enums.PwQuestionStatus;
 
 @Entity
+@Getter
 public class PwQuestion extends BaseEntity {
 
     @Id
@@ -28,4 +30,5 @@ public class PwQuestion extends BaseEntity {
     void prePersist() {
         this.status = PwQuestionStatus.ACTIVE;
     }
+
 }

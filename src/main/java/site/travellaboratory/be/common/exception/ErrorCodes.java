@@ -27,6 +27,7 @@ public enum ErrorCodes {
 
     // 비밀번호 질문, 답 관련
     PASSWORD_INVALID_QUESTION("유효하지 않은 질문", 2010L),
+    PASSWORD_INVALID_EMAIL("유효하지 않은 이메일", 2010L),
 
 
     BAD_REQUEST("BAD_REQUEST", 9404L),

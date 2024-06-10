@@ -40,11 +40,7 @@ public class PwAnswer extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PwAnswerStatus status;
 
-    private PwAnswer(
-        final User user,
-        final PwQuestion pwQuestion,
-        final String answer
-    ) {
+    private PwAnswer(final User user, final PwQuestion pwQuestion, final String answer) {
         this.user = user;
         this.pwQuestion = pwQuestion;
         this.answer = answer;
@@ -52,6 +48,10 @@ public class PwAnswer extends BaseEntity {
 
     public static PwAnswer of(final User user, final PwQuestion pwQuestion, final String answer) {
         return new PwAnswer(user, pwQuestion, answer);
+    }
+
+    public PwQuestion getPwQuestion() {
+        return pwQuestion;
     }
 
     @PrePersist

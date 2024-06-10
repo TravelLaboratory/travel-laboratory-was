@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
@@ -18,6 +20,7 @@ import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
 import site.travellaboratory.be.domain.auth.pwanswer.PwAnswer;
 import site.travellaboratory.be.domain.auth.pwanswer.PwAnswerRepository;
+import site.travellaboratory.be.domain.auth.pwanswer.enums.PwAnswerStatus;
 import site.travellaboratory.be.domain.auth.pwquestion.PwQuestion;
 import site.travellaboratory.be.domain.auth.pwquestion.PwQuestionRepository;
 import site.travellaboratory.be.domain.auth.pwquestion.enums.PwQuestionStatus;
@@ -107,5 +110,19 @@ public class UserAuthService {
         Optional<User> userEntity = userRepository.findById(userId);
         System.out.println("userEntity.get().getId(); = " + userEntity.get().getId());
         return "Service Ok";
+    }
+
+    public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
+        String username = request.username();
+
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(username, UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 기획상 Optional 일 수 없다.
+        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(user.getId(),
+            PwAnswerStatus.ACTIVE);
+
+        return PwInquiryEmailResponse.from(user, pwAnswer);
     }
 }
