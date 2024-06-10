@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.jwt.util.JwtTokenUtility;
+import site.travellaboratory.be.controller.jwt.util.JwtTokenUtility;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,28 +41,24 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         /*
-        * Header 검증 로직
-        * */
+         * Header 검증 로직
+         * */
         // (1) 헤더에서 authorization-token 꺼내고
         String accessToken = request.getHeader("authorization-token");
         // 토큰이 없다면?
         if (accessToken == null) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND, HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND,
+                HttpStatus.BAD_REQUEST);
         }
 
-        // (2) 토큰이 있다면? - accessToken을 validation 거치고
-        Long userId = jwtTokenUtility.extractUserId(accessToken);
+        // (2) 토큰이 유효한지 체크 - 없다면 BAD_REQUEST 후, userId 반환
+        Long userId = jwtTokenUtility.getAccessTokenUserId(accessToken);
 
-        // (3)-1 userId가 있다면?
-        if (userId != null) {
-            // (4)-1 현재 요청 request Context 에다가 userId를 저장한다.
-            // (4)-2 범위는 이번 요청동안만! SCOPE_REQUEST
-            RequestAttributes requestContext = Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
-            requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
-            return true;
-        }
-
-        // (3)-2 userId가 없다면?
-        throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
+        // (4)-1 현재 요청 request Context 에다가 userId를 저장한다.
+        // (4)-2 범위는 이번 요청동안만! SCOPE_REQUEST
+        RequestAttributes requestContext = Objects.requireNonNull(
+            RequestContextHolder.getRequestAttributes());
+        requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
+        return true;
     }
 }

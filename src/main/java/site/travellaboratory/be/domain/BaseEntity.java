@@ -3,9 +3,8 @@ package site.travellaboratory.be.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PreUpdate;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Getter
 @MappedSuperclass
@@ -16,8 +15,6 @@ public abstract class BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    private LocalDateTime deleteAt;
 
     public BaseEntity() {
         this.registerAt = LocalDateTime.now();
