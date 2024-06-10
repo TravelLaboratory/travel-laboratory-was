@@ -39,6 +39,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private PwAnswer pwAnswer;
 
     public User(Long id, String username) {
         this.id = id;
@@ -82,10 +84,10 @@ public class User extends BaseEntity {
     }
 
     public static User of(String username, String password, String nickname) {
-        User userEntity = new User();
-        userEntity.setUsername(username);
-        userEntity.setPassword(password);
-        userEntity.setNickname(nickname);
-        return userEntity;
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setNickname(nickname);
+        return user;
     }
 }
