@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
-import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
-import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
+import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
+import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
+import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
+import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
 import site.travellaboratory.be.domain.auth.pwanswer.PwAnswer;
 import site.travellaboratory.be.domain.auth.pwanswer.PwAnswerRepository;
 import site.travellaboratory.be.domain.auth.pwquestion.PwQuestion;
@@ -64,6 +66,16 @@ public class UserAuthService {
         pwAnswerRepository.save(pwAnswer);
 
         return UserJoinResponse.from(user);
+    }
+
+    public UserNicknameResponse isNicknameAvailable(UserNicknameRequest request) {
+        // 닉네임 중복 체크
+        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
+            throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME,
+                HttpStatus.CONFLICT);
+        });
+
+        return UserNicknameResponse.from(true);
     }
 
     @Transactional
