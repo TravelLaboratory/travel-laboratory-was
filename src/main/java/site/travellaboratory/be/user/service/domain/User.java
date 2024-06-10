@@ -2,41 +2,44 @@ package site.travellaboratory.be.user.service.domain;
 
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import site.travellaboratory.be.user.repository.entity.UserRole;
 
 
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
-    private @NotNull Long id;
-    private @NotNull String userName;
-    private @NotNull String password;
-    private @NotNull UserRole role;
-    private @NotNull String nickName;
-    private @Nullable String profileImgUrl;
-    private @NotNull Timestamp registerAt;
-    private @Nullable Timestamp updateAt;
-    private @Nullable Timestamp deleteAt;
+    private Long id;
+    private String userName;
+    private String password;
+    private UserRole role;
+    private String nickName;
+    private String profileImgUrl;
+    private Timestamp registerAt;
+    private Timestamp updateAt;
+    private Timestamp deleteAt;
+    private String refreshToken;
 
-    public @NotNull Long getId() {
+    public Long getId() {
         return id;
     }
 
-    public @NotNull String getUserName() {
+    public String getUserName() {
         return userName;
     }
 
-    public @NotNull UserRole getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public @NotNull String getNickName() {
+    public String getNickName() {
         return nickName;
     }
 
-    public @Nullable String getProfileImgUrl() {
+    public String getProfileImgUrl() {
         return profileImgUrl;
     }
 }
