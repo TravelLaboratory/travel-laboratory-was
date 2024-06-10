@@ -1,4 +1,4 @@
-package site.travellaboratory.be.controller.auth.dto;
+package site.travellaboratory.be.controller.auth.dto.pw;
 
 import site.travellaboratory.be.domain.auth.pwanswer.PwAnswer;
 import site.travellaboratory.be.domain.user.entity.User;
