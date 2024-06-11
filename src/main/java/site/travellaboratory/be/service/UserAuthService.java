@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
-import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
@@ -115,8 +116,6 @@ public class UserAuthService {
     }
 
     public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
-
-
         User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
@@ -143,5 +142,25 @@ public class UserAuthService {
                     HttpStatus.UNAUTHORIZED));
 
         return PwInquiryVerificationResponse.from(user, pwAnswer);
+    }
+
+    @Transactional
+    public void pwInquiryRenewal(final PwInquiryRenewalRequest request) {
+        // 해당 이메일의 유저가 존재하는지
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 답변이 일치한지 판단
+        pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
+                    HttpStatus.UNAUTHORIZED));
+
+        // 비밀번호 암호화 및 업데이트 - 저장
+        String encodedPassword = encoder.encode(request.password());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 }

@@ -71,16 +71,16 @@ public class User extends BaseEntity {
         return new User(this.id, nickname, profileImgUrl);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(final String nickname) {
         this.nickname = nickname;
+    }
+
+    private void setUsername(final String username) {
+        this.username = username;
     }
 
     public static User of(String username, String password, String nickname) {

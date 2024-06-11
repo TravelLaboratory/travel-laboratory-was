@@ -21,6 +21,7 @@ import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
@@ -91,16 +92,24 @@ public class UserAuthController {
 
     @PostMapping("/pw-inquiry/email")
     public ResponseEntity<PwInquiryEmailResponse> pwInquiryEmail(
-        @RequestBody PwInquiryEmailRequest pwInQuiryEmailRequest
+        @RequestBody PwInquiryEmailRequest pwInquiryEmailRequest
     ) {
-        return ResponseEntity.ok().body(userAuthService.pwInquiryEmail(pwInQuiryEmailRequest));
+        return ResponseEntity.ok().body(userAuthService.pwInquiryEmail(pwInquiryEmailRequest));
     }
 
     @PostMapping("/pw-inquiry/verification")
     public ResponseEntity<PwInquiryVerificationResponse> pwInquiryVerification(
-        @RequestBody PwInquiryVerificationRequest pwInQuiryVerificationRequest
+        @RequestBody PwInquiryVerificationRequest pwInquiryVerificationRequest
     ) {
-        return ResponseEntity.ok().body(userAuthService.pwInquiryVerification(pwInQuiryVerificationRequest));
+        return ResponseEntity.ok().body(userAuthService.pwInquiryVerification(pwInquiryVerificationRequest));
+    }
+
+    @PostMapping("/pw-inquiry/renewal")
+    public ResponseEntity<Void> pwInquiryRenewal(
+        @RequestBody PwInquiryRenewalRequest pwInquiryRenewalRequest
+    ) {
+        userAuthService.pwInquiryRenewal(pwInquiryRenewalRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
