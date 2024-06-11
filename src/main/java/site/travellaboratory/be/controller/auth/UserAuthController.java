@@ -19,6 +19,11 @@ import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
 import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.service.UserAuthService;
@@ -82,6 +87,28 @@ public class UserAuthController {
         // AccessToken - authorization-token 헤더에 추가
         response.setHeader("authorization-token", accessTokenResponse.accessToken());
 
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/pw-inquiry/email")
+    public ResponseEntity<PwInquiryEmailResponse> pwInquiryEmail(
+        @RequestBody PwInquiryEmailRequest pwInquiryEmailRequest
+    ) {
+        return ResponseEntity.ok().body(userAuthService.pwInquiryEmail(pwInquiryEmailRequest));
+    }
+
+    @PostMapping("/pw-inquiry/verification")
+    public ResponseEntity<PwInquiryVerificationResponse> pwInquiryVerification(
+        @RequestBody PwInquiryVerificationRequest pwInquiryVerificationRequest
+    ) {
+        return ResponseEntity.ok().body(userAuthService.pwInquiryVerification(pwInquiryVerificationRequest));
+    }
+
+    @PostMapping("/pw-inquiry/renewal")
+    public ResponseEntity<Void> pwInquiryRenewal(
+        @RequestBody PwInquiryRenewalRequest pwInquiryRenewalRequest
+    ) {
+        userAuthService.pwInquiryRenewal(pwInquiryRenewalRequest);
         return ResponseEntity.ok().build();
     }
 
