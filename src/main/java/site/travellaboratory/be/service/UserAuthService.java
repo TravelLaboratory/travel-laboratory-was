@@ -8,12 +8,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
-import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
-import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
+import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
+import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
+import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
+import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
+import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
+import site.travellaboratory.be.controller.jwt.util.AuthTokenGenerator;
+import site.travellaboratory.be.domain.auth.pwanswer.PwAnswer;
+import site.travellaboratory.be.domain.auth.pwanswer.PwAnswerRepository;
+import site.travellaboratory.be.domain.auth.pwanswer.enums.PwAnswerStatus;
+import site.travellaboratory.be.domain.auth.pwquestion.PwQuestion;
+import site.travellaboratory.be.domain.auth.pwquestion.PwQuestionRepository;
+import site.travellaboratory.be.domain.auth.pwquestion.enums.PwQuestionStatus;
 import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.entity.UserStatus;
@@ -25,6 +38,8 @@ public class UserAuthService {
     private final BCryptPasswordEncoder encoder;
     private final AuthTokenGenerator authTokenGenerator;
     private final UserRepository userRepository;
+    private final PwQuestionRepository pwQuestionRepository;
+    private final PwAnswerRepository pwAnswerRepository;
 
     @Transactional
     public UserJoinResponse join(UserJoinRequest request) {
@@ -41,11 +56,32 @@ public class UserAuthService {
                 HttpStatus.CONFLICT);
         });
 
-        User userEntity = userRepository.save(
+        // 새로운 유저 생성
+        User user = userRepository.save(
             User.of(request.username(), encoder.encode(
                 request.password()), request.nickname()));
 
-        return UserJoinResponse.from(userEntity);
+        //비번 질문 조회
+        PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(request.pwQuestionId(),
+                PwQuestionStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.PASSWORD_INVALID_QUESTION,
+                HttpStatus.BAD_REQUEST));
+
+        // 비번 답변 저장
+        PwAnswer pwAnswer = PwAnswer.of(user, pwQuestion, request.pwAnswer());
+        pwAnswerRepository.save(pwAnswer);
+
+        return UserJoinResponse.from(user);
+    }
+
+    public UserNicknameResponse isNicknameAvailable(UserNicknameRequest request) {
+        // 닉네임 중복 체크
+        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
+            throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME,
+                HttpStatus.CONFLICT);
+        });
+
+        return UserNicknameResponse.from(true);
     }
 
     @Transactional
@@ -77,5 +113,54 @@ public class UserAuthService {
         Optional<User> userEntity = userRepository.findById(userId);
         System.out.println("userEntity.get().getId(); = " + userEntity.get().getId());
         return "Service Ok";
+    }
+
+    public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 기획상 Optional 일 수 없다.
+        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(user.getId(),
+            PwAnswerStatus.ACTIVE);
+
+        return PwInquiryEmailResponse.from(user, pwAnswer);
+    }
+
+    public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
+        // 해당 이메일의 유저가 존재하는지
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 답변이 일치한지 판단
+        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                user.getId(),
+                request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
+                    HttpStatus.UNAUTHORIZED));
+
+        return PwInquiryVerificationResponse.from(user, pwAnswer);
+    }
+
+    @Transactional
+    public void pwInquiryRenewal(final PwInquiryRenewalRequest request) {
+        // 해당 이메일의 유저가 존재하는지
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+
+        // 답변이 일치한지 판단
+        pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
+                    HttpStatus.UNAUTHORIZED));
+
+        // 비밀번호 암호화 및 업데이트 - 저장
+        String encodedPassword = encoder.encode(request.password());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 }

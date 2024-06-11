@@ -25,6 +25,13 @@ public enum ErrorCodes {
     REFRESH_TOKEN_EXPIRED_TOKEN("만료된 리프레시 토큰 - 재로그인", 2008L),
     REFRESH_TOKEN_TOKEN_EXCEPTION("리프레시 토큰 에러", 2009L),
 
+    // 비밀번호 질문, 답 관련
+    PASSWORD_INVALID_QUESTION("유효하지 않은 질문", 2010L),
+
+    // 비밀번호 문의 - 답변
+    PASSWORD_INVALID_EMAIL("유효하지 않은 이메일", 2011L),
+    PASSWORD_INQUIRY_INVALID_ANSWER("올바르지 않은 답변", 2012L),
+
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     // NPE
