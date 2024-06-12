@@ -13,6 +13,8 @@ import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
+import site.travellaboratory.be.controller.auth.dto.UsernameResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
@@ -82,6 +84,16 @@ public class UserAuthService {
         });
 
         return UserNicknameResponse.from(true);
+    }
+
+    public UsernameResponse isUsernameAvailable(final UsernameRequest request) {
+        // (회원아이디) 이메일 중복 체크
+        userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE).ifPresent(it -> {
+            throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
+                HttpStatus.CONFLICT);
+        });
+
+        return UsernameResponse.from(true);
     }
 
     @Transactional

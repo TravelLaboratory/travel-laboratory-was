@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
+import site.travellaboratory.be.controller.auth.dto.UsernameResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
@@ -47,6 +49,13 @@ public class UserAuthController {
         @RequestBody UserNicknameRequest userNicknameRequest
     ) {
         return ResponseEntity.ok(userAuthService.isNicknameAvailable(userNicknameRequest));
+    }
+
+    @PostMapping("/username")
+    public ResponseEntity<UsernameResponse> checkUsernameDuplicate(
+        @RequestBody UsernameRequest usernameRequest
+    ) {
+        return ResponseEntity.ok(userAuthService.isUsernameAvailable(usernameRequest));
     }
 
     @PostMapping("/login")
