@@ -1,41 +1,43 @@
 package site.travellaboratory.be.controller.article;
 
-
-import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.service.ArticleService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/users")
 public class ArticleController {
 
     private final ArticleService articleService;
 
-    @PostMapping("/user/{userId}/article")
-    public ResponseEntity<Long> registerArticle(
+    @PostMapping("/article")
+    public ResponseEntity<Long> registerMyArticle(
             @RequestBody final ArticleRegisterRequest articleRegisterRequest,
-            @PathVariable final Long userId
+            @UserId final Long userId
     ) {
         final Long articleId = articleService.saveArticle(userId, articleRegisterRequest);
-        return ResponseEntity.created(URI.create("/user/article/" + articleId)).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(articleId);
     }
 
-    @GetMapping("/user/{userId}/articles")
-    public ResponseEntity<List<ArticleResponse>> findArticles(@PathVariable final Long userId) {
+    @GetMapping("/articles")
+    public ResponseEntity<List<ArticleResponse>> findMyArticles(@UserId final Long userId) {
         final List<ArticleResponse> articleResponse = articleService.findByUserArticles(userId);
         return ResponseEntity.ok(articleResponse);
     }
 
-    @GetMapping("/user/articles/{articleId}")
+    @GetMapping("/articles/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
             @PathVariable final Long articleId
     ) {
