@@ -44,6 +44,7 @@ jobs:
           jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}
           jwt.access-token.plus-hour: ${{ secrets.JWT_ACCESS_TOKEN_PLUS_HOUR }}
           jwt.refresh-token.plus-hour: ${{ secrets.JWT_REFRESH_TOKEN_PLUS_HOUR }}
+          servers-url: ${{ secrets.SERVERS_URL}}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

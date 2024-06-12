@@ -10,3 +10,6 @@ jwt:
     plus-hour: ${jwt-access-token-plus-hour}
   refresh-token:
     plus-hour: ${jwt-refresh-token-plus-hour}
+
+servers:
+  url: ${servers-url}
