@@ -129,7 +129,6 @@ public class UserAuthController {
         System.out.println("user.getId() = " + userId);
         userAuthService.test(userId);
         return userId;
-
     }
 }
 

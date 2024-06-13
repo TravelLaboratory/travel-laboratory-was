@@ -15,7 +15,7 @@ public record ArticleResponse(
 ) {
 
     public static ArticleResponse from(final Article article) {
-        return new ArticleResponse(null, article.getTitle(), article.getNickname(), article.getStartAt(),
+        return new ArticleResponse(article.getId(), article.getTitle(), article.getNickname(), article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(), article.getImageUrl());
     }
