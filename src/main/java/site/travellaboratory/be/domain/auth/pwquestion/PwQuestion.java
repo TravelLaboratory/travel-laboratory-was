@@ -9,11 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.auth.pwquestion.enums.PwQuestionStatus;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class PwQuestion extends BaseEntity {
 
     @Id
@@ -24,10 +26,16 @@ public class PwQuestion extends BaseEntity {
     private String question;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PwQuestionStatus status;
 
     @PrePersist
     void prePersist() {
+        this.status = PwQuestionStatus.ACTIVE;
+    }
+
+    public PwQuestion(String question) {
+        this.question = question;
         this.status = PwQuestionStatus.ACTIVE;
     }
 
