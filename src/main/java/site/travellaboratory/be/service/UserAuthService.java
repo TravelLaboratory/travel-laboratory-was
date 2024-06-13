@@ -43,6 +43,12 @@ public class UserAuthService {
 
     @Transactional
     public UserJoinResponse join(UserJoinRequest request) {
+        // 개인정보 동의 유무
+        if (!request.isAgreement()) {
+            throw new BeApplicationException(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT,
+                HttpStatus.BAD_REQUEST);
+        }
+
         // 이미 가입한 유저인지 체크
         userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .ifPresent(it -> {
@@ -59,7 +65,7 @@ public class UserAuthService {
         // 새로운 유저 생성
         User user = userRepository.save(
             User.of(request.username(), encoder.encode(
-                request.password()), request.nickname()));
+                request.password()), request.nickname(), true));
 
         //비번 질문 조회
         PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(request.pwQuestionId(),

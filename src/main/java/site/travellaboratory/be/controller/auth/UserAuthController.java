@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +38,7 @@ public class UserAuthController {
 
     @PostMapping("/join")
     public ResponseEntity<UserJoinResponse> join(
-        @RequestBody UserJoinRequest userJoinRequest
+        @Validated @RequestBody UserJoinRequest userJoinRequest
     ) {
         return ResponseEntity.ok().body(userAuthService.join(userJoinRequest));
     }
