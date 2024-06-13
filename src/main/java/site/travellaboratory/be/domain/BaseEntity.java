@@ -3,9 +3,10 @@ package site.travellaboratory.be.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -13,19 +14,24 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime registerAt;
+    @CreatedDate // 처음 저장될 때 자동으로 기록
+    @Column(updatable = false, nullable = false, columnDefinition = "DATETIME")
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @LastModifiedDate // 수정될 때 자동으로 기록
+    @Column(nullable = false, columnDefinition = "DATETIME") // create 로 할 경우 datetime(6)으로 소수점까지 들어감
     private LocalDateTime updatedAt;
 
-    public BaseEntity() {
-        this.registerAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+    // todo : 지울부분
+    // 해당 부분 @CreatedDate, @LastModifiedDate 로 해결
+//    public BaseEntity() {
+//        this.createdAt = LocalDateTime.now();
+//        this.updatedAt = LocalDateTime.now();
+//    }
 
-    @PreUpdate
-    public void update() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    // @LastModifiedDate 와 중복되기에 삭제 전 주석 처리 (확인용)
+//    @PreUpdate
+//    public void update() {
+//        this.updatedAt = LocalDateTime.now();
+//    }
 }
