@@ -3,6 +3,7 @@ package site.travellaboratory.be.config;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,6 +15,7 @@ import site.travellaboratory.be.domain.auth.pwquestion.PwQuestionRepository;
 public class DataInitializer {
 
     @Bean
+    @ConditionalOnProperty(name = "spring.jpa.hibernate.ddl-auto", havingValue = "create")
     CommandLineRunner initDatabasePwQuestion(PwQuestionRepository pwQuestionRepository) {
         return args -> {
             List<PwQuestion> questions = Arrays.asList(
