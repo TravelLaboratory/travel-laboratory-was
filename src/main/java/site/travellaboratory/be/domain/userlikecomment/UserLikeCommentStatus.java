@@ -1,4 +1,4 @@
-package site.travellaboratory.be.domain.userLikeComment;
+package site.travellaboratory.be.domain.userlikecomment;
 
 public enum UserLikeCommentStatus {
     ACTIVE,

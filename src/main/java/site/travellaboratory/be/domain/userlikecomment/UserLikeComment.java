@@ -1,4 +1,4 @@
-package site.travellaboratory.be.domain.userLikeComment;
+package site.travellaboratory.be.domain.userlikecomment;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
