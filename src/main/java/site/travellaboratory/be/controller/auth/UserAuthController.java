@@ -3,6 +3,7 @@ package site.travellaboratory.be.controller.auth;
 import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
+import site.travellaboratory.be.controller.auth.dto.UsernameResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
@@ -37,7 +40,7 @@ public class UserAuthController {
 
     @PostMapping("/join")
     public ResponseEntity<UserJoinResponse> join(
-        @RequestBody UserJoinRequest userJoinRequest
+        @Valid @RequestBody UserJoinRequest userJoinRequest
     ) {
         return ResponseEntity.ok().body(userAuthService.join(userJoinRequest));
     }
@@ -47,6 +50,13 @@ public class UserAuthController {
         @RequestBody UserNicknameRequest userNicknameRequest
     ) {
         return ResponseEntity.ok(userAuthService.isNicknameAvailable(userNicknameRequest));
+    }
+
+    @PostMapping("/username")
+    public ResponseEntity<UsernameResponse> checkUsernameDuplicate(
+        @RequestBody UsernameRequest usernameRequest
+    ) {
+        return ResponseEntity.ok(userAuthService.isUsernameAvailable(usernameRequest));
     }
 
     @PostMapping("/login")
@@ -119,7 +129,6 @@ public class UserAuthController {
         System.out.println("user.getId() = " + userId);
         userAuthService.test(userId);
         return userId;
-
     }
 }
 

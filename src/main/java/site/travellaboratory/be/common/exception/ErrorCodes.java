@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 public enum ErrorCodes {
 
     // 회원가입
-    AUTH_DUPLICATED_USER_NAME("이미 존재하는 아이디입니다.", 1000L),
-    AUTH_DUPLICATED_NICK_NAME("중복된 닉네임입니다.", 1001L),
+    AUTH_USER_NOT_IS_AGREEMENT("개인정보 수집 미동의", 1000L),
+    AUTH_DUPLICATED_USER_NAME("이미 존재하는 아이디입니다.", 1001L),
+    AUTH_DUPLICATED_NICK_NAME("중복된 닉네임입니다.", 1002L),
     // 로그인
-    AUTH_USER_NOT_FOUND("사용자를 찾을 수 없습니다.", 1002L),
-    AUTH_INVALID_PASSWORD("잘못된 비밀번호입니다.", 1003L),
+    AUTH_USER_NOT_FOUND("사용자를 찾을 수 없습니다.", 1010L),
+    AUTH_INVALID_PASSWORD("잘못된 비밀번호입니다.", 1011L),
 
     // todo : tokenErrorCode 로 분리
     TOKEN_INVALID_TOKEN("유효하지 않은 토큰", 2000L),
@@ -33,7 +34,14 @@ public enum ErrorCodes {
     PASSWORD_INQUIRY_INVALID_ANSWER("올바르지 않은 답변", 2012L),
 
 
+    // 후기 (review)
+    REVIEW_INVALID_ARTICLE("유효하지 않은 여행 계획 ID", 4000L),
+    REVIEW_NOT_USER_ARTICLE("여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4001L),
+    REVIEW_EXIST_USER_ARTICLE("각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
+
+
     BAD_REQUEST("BAD_REQUEST", 9404L),
+    BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception

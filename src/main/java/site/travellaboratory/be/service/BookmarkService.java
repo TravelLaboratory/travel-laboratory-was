@@ -19,12 +19,17 @@ public class BookmarkService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
 
-    public Long saveBookmark(final Long userId, final Long articleId) {
+    public void saveBookmark(final Long userId, final Long articleId) {
         final User user = userRepository.getById(userId);
         final Article article = articleRepository.getById(articleId);
-        final Bookmark bookMark = Bookmark.of(user, article);
-        bookmarkRepository.save(bookMark);
-        return bookMark.getId();
+        final Bookmark bookmark = bookmarkRepository.findByArticleAndUser(article, user);
+
+        if (bookmark == null) {
+            final Bookmark newBookmark = Bookmark.of(user, article);
+            bookmarkRepository.save(newBookmark);
+        } else {
+            bookmarkRepository.delete(bookmark);
+        }
     }
 
     public List<BookmarkResponse> findAllBookmarkByUser(final Long userId) {

@@ -36,6 +36,8 @@ public class User extends BaseEntity {
 
     private String introduce;
 
+    private Boolean isAgreement;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
@@ -83,11 +85,16 @@ public class User extends BaseEntity {
         this.username = username;
     }
 
-    public static User of(String username, String password, String nickname) {
+    public void setIsAgreement(Boolean agreement) {
+        isAgreement = agreement;
+    }
+
+    public static User of(String username, String password, String nickname, Boolean isAgreement) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setNickname(nickname);
+        user.setIsAgreement(isAgreement);
         return user;
     }
 }

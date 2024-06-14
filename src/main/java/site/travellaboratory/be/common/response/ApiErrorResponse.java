@@ -1,13 +1,18 @@
 package site.travellaboratory.be.common.response;
 
-import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 
 public record ApiErrorResponse(
-    @NotNull String localMessage,
-    @NotNull Long code
+    String localMessage,
+    Long code,
+    Map<String, String> fieldErrors
 ) {
-    public static ApiErrorResponse from(ErrorCodes errorCodes) {
-        return new ApiErrorResponse(errorCodes.message, errorCodes.code);
+    public static ApiErrorResponse from(final ErrorCodes errorCodes) {
+        return new ApiErrorResponse(errorCodes.message, errorCodes.code, null);
+    }
+
+    public static ApiErrorResponse from(final ErrorCodes errorCodes, Map<String, String> fieldErrors) {
+        return new ApiErrorResponse(errorCodes.message, errorCodes.code, fieldErrors);
     }
 }
