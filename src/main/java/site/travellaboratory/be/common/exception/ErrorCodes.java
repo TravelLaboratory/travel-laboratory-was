@@ -34,7 +34,14 @@ public enum ErrorCodes {
     PASSWORD_INQUIRY_INVALID_ANSWER("올바르지 않은 답변", 2012L),
 
 
+    // 후기 (review)
+    REVIEW_INVALID_ARTICLE("유효하지 않은 여행 계획 ID", 4000L),
+    REVIEW_NOT_USER_ARTICLE("여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4001L),
+    REVIEW_EXIST_USER_ARTICLE("각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
+
+
     BAD_REQUEST("BAD_REQUEST", 9404L),
+    BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception

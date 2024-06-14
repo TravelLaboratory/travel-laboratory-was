@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
@@ -21,7 +22,7 @@ import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
     uniqueConstraints = @UniqueConstraint(columnNames = {"article_id"}) // 하나의 여행 계획에는 하나의 리뷰만 가능 (기획)
 )
@@ -51,4 +52,29 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReviewStatus status;
+
+    public Review(
+        User user,
+        Article article,
+        String title,
+        String representativeImgUrl,
+        String description)
+    {
+        this.user = user;
+        this.article = article;
+        this.title = title;
+        this.representativeImgUrl = representativeImgUrl;
+        this.description = description;
+        this.status = ReviewStatus.ACTIVE;
+    }
+
+    public static Review of(
+        final User user,
+        final Article article,
+        final String title,
+        final String representativeImgUrl,
+        final String description
+    ) {
+        return new Review(user, article, title, representativeImgUrl, description);
+    }
 }
