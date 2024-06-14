@@ -1,6 +1,8 @@
 package site.travellaboratory.be.domain.article;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +37,9 @@ public class Article extends BaseEntity {
 
     private String expense;
 
+    @Enumerated(EnumType.STRING)
+    private ArticleStatus status;
+
     public Article(final Long id,
                    final User user,
                    final LocalDateTime startAt,
@@ -49,6 +54,7 @@ public class Article extends BaseEntity {
         this.title = title;
         this.imageUrl = imageUrl;
         this.expense = expense;
+        this.status = ArticleStatus.ACTIVE;
     }
 
     public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {

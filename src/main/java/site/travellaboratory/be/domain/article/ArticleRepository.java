@@ -1,6 +1,7 @@
 package site.travellaboratory.be.domain.article;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.domain.user.entity.User;
@@ -12,4 +13,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     }
 
     List<Article> findArticlesByUser(final User user);
+
+    Optional<Article> findByIdAndStatusIn(final Long articleId, List<ArticleStatus> Status);
 }

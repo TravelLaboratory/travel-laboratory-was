@@ -3,10 +3,10 @@ package site.travellaboratory.be.controller.auth;
 import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
-import site.travellaboratory.be.controller.auth.dto.UsernameResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
+import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
+import site.travellaboratory.be.controller.auth.dto.UsernameResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryEmailResponse;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
@@ -40,7 +40,7 @@ public class UserAuthController {
 
     @PostMapping("/join")
     public ResponseEntity<UserJoinResponse> join(
-        @Validated @RequestBody UserJoinRequest userJoinRequest
+        @Valid @RequestBody UserJoinRequest userJoinRequest
     ) {
         return ResponseEntity.ok().body(userAuthService.join(userJoinRequest));
     }
