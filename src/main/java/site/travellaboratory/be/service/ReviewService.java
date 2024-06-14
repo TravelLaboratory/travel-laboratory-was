@@ -26,9 +26,9 @@ public class ReviewService {
     private final ArticleRepository articleRepository;
 
     @Transactional
-    public ReviewSaveResponse saveReview(Long userId, Long articleId, ReviewSaveRequest request) {
+    public ReviewSaveResponse saveReview(Long userId, ReviewSaveRequest request) {
         // 삭제된 여행 계획에 대한 후기를 작성할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        Article article = articleRepository.findByIdAndStatusIn(request.articleId(), List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_INVALID_ARTICLE,
                 HttpStatus.NOT_FOUND));
 

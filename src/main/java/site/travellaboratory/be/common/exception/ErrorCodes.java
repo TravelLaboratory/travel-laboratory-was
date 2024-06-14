@@ -36,9 +36,9 @@ public enum ErrorCodes {
 
     // 후기 (review)
     // 작성
-    REVIEW_INVALID_ARTICLE("유효하지 않은 여행 계획 ID", 4000L),
-    REVIEW_NOT_USER_ARTICLE("여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4001L),
-    REVIEW_EXIST_USER_ARTICLE("각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
+    REVIEW_INVALID_ARTICLE("[후기 작성] - 유효하지 않은 여행 계획 ID", 4000L),
+    REVIEW_NOT_USER_ARTICLE("[후기 작성] - 여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4001L),
+    REVIEW_EXIST_USER_ARTICLE("[후기 작성] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
     // 수정
     REVIEW_UPDATE_INVALID_ARTICLE("[후기 수정] - 유효하지 않은 후기 ID", 4003L),
     REVIEW_UPDATE_NOT_USER_ARTICLE("[후기 수정] - 본인의 후기가 아닙니다.", 4004L),

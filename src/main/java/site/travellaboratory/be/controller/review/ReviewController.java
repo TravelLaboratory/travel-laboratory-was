@@ -24,14 +24,12 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/articles/{articleId}/review")
+    @PostMapping("/review")
     public ResponseEntity<ReviewSaveResponse> saveReview(
         @UserId Long userId,
-        @PathVariable(name = "articleId") Long articleId,
         @Valid @RequestBody ReviewSaveRequest reviewSaveRequest
     ) {
-        ReviewSaveResponse response = reviewService.saveReview(userId, articleId,
-            reviewSaveRequest);
+        ReviewSaveResponse response = reviewService.saveReview(userId, reviewSaveRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
