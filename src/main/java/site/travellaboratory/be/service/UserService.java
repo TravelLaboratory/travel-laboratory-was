@@ -1,7 +1,10 @@
 package site.travellaboratory.be.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.user.dto.ProfileImgUpdateRequest;
 import site.travellaboratory.be.controller.user.dto.ProfileImgUpdateResponse;
 import site.travellaboratory.be.controller.user.dto.UserProfileResponse;
@@ -9,6 +12,7 @@ import site.travellaboratory.be.controller.user.dto.UserProfileUpdateRequest;
 import site.travellaboratory.be.controller.user.dto.UserProfileUpdateResponse;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.UserRepository;
+import site.travellaboratory.be.domain.user.entity.UserStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +21,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserProfileResponse findByUserProfile(final Long userId) {
-        final User user = userRepository.getById(userId);
+        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
+                HttpStatus.BAD_REQUEST)
+            );
         return UserProfileResponse.from(user);
     }
 

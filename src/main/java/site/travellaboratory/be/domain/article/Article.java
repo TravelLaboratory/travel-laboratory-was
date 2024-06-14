@@ -4,6 +4,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -52,10 +54,23 @@ public class Article extends BaseEntity {
     private List<String> travelStyles = new ArrayList<>();
 
     private String imageUrl;
+  
+    @Enumerated(EnumType.STRING)
+    private ArticleStatus status;
 
     public Article(Long id, User user, String title, List<String> location, final LocalDateTime startAt,
                    final LocalDateTime endAt, String expense,
                    List<String> travelCompanions, List<String> travelStyles) {
+    
+
+    public Article(final Long id,
+                   final User user,
+                   final LocalDateTime startAt,
+                   final LocalDateTime endAt,
+                   final String title,
+                   final String imageUrl,
+                   final String expense
+    ) {
         this.id = id;
         this.user = user;
         this.title = title;
@@ -63,7 +78,7 @@ public class Article extends BaseEntity {
         this.duration = new Duration(startAt, endAt);
         this.expense = expense;
         this.travelCompanions = travelCompanions;
-        this.travelStyles = travelStyles;
+        this.status = ArticleStatus.ACTIVE;
     }
 
     public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {

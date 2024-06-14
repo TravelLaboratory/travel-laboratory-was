@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,19 @@ import site.travellaboratory.be.common.response.ApiErrorResponse;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleJsonParseExceptionHandler(HttpMessageNotReadableException ex) {
+        log.info("Json Parse failed: {}", ex.getMessage());
+
+        final ApiErrorResponse body = ApiErrorResponse.from(ErrorCodes.BAD_REQUEST_JSON_PARSE_ERROR);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .contentType(contentType)
+            .body(body);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidExceptionHandler(MethodArgumentNotValidException ex) {
         log.info("Validation failed: {}", ex.getMessage());
