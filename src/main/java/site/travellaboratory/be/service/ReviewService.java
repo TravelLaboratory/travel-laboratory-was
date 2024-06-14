@@ -12,12 +12,16 @@ import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateResponse;
+import site.travellaboratory.be.controller.review.dto.userlikereview.ReviewToggleLikeResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
 import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.ReviewRepository;
 import site.travellaboratory.be.domain.review.ReviewStatus;
+import site.travellaboratory.be.domain.user.entity.User;
+import site.travellaboratory.be.domain.userlikereview.UserLikeReview;
+import site.travellaboratory.be.domain.userlikereview.UserLikeReviewRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ArticleRepository articleRepository;
+    private final UserLikeReviewRepository userLikeReviewRepository;
 
     @Transactional
     public ReviewSaveResponse saveReview(Long userId, ReviewSaveRequest request) {
@@ -94,5 +99,30 @@ public class ReviewService {
         review.delete();
         reviewRepository.save(review);
         return ReviewDeleteResponse.from(true);
+    }
+
+    @Transactional
+    public ReviewToggleLikeResponse toggleLikeReview(Long userId, Long reviewId) {
+        // 삭제된 후기를 좋아요 할 경우
+        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
+                HttpStatus.NOT_FOUND));
+
+        UserLikeReview userLikeReview = userLikeReviewRepository.findByUserIdAndReviewId(userId,
+                reviewId)
+            .orElse(null);
+
+        // 처음 좋아요를 누른 게 아닌 경우
+        if (userLikeReview != null) {
+            userLikeReview.toggleStatus();
+        } else {
+            // 처음 좋아요를 누른 경우 - 새로 생성
+            User user = User.of(userId);
+            userLikeReview = UserLikeReview.of(user, review);
+        }
+
+        UserLikeReview saveLikeReview = userLikeReviewRepository.save(userLikeReview);
+        return ReviewToggleLikeResponse.from(saveLikeReview.getStatus());
     }
 }

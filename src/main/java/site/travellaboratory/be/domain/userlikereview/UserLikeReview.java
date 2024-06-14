@@ -36,4 +36,22 @@ public class UserLikeReview extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserLikeReviewStatus status;
+
+    public static UserLikeReview of(User user, Review review) {
+        return new UserLikeReview(user, review);
+    }
+
+    private UserLikeReview(User user, Review review) {
+        this.user = user;
+        this.review = review;
+        this.status = UserLikeReviewStatus.ACTIVE;
+    }
+
+    public void toggleStatus() {
+        if (this.status == UserLikeReviewStatus.ACTIVE) {
+            this.status = UserLikeReviewStatus.INACTIVE;
+        } else {
+            this.status = UserLikeReviewStatus.ACTIVE;
+        }
+    }
 }

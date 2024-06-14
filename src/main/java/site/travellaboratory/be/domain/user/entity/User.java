@@ -97,4 +97,15 @@ public class User extends BaseEntity {
         user.setIsAgreement(isAgreement);
         return user;
     }
+
+    // 후기 좋아요를 위한 생성자
+    private User(Long id) {
+        this.id = id;
+    }
+
+    // 후기 좋아요를 위한 of
+    public static User of(Long userId) {
+        return new User(userId);
+    }
+
 }
