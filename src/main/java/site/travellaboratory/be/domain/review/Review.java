@@ -83,4 +83,8 @@ public class Review extends BaseEntity {
         this.representativeImgUrl = representativeImgUrl;
         this.description = description;
     }
+
+    public void delete() {
+        this.status = ReviewStatus.INACTIVE;
+    }
 }
