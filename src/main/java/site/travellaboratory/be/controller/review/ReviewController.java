@@ -6,12 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
+import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
+import site.travellaboratory.be.controller.review.dto.ReviewUpdateResponse;
 import site.travellaboratory.be.service.ReviewService;
 
 @RestController
@@ -30,5 +33,15 @@ public class ReviewController {
         ReviewSaveResponse response = reviewService.saveReview(userId, articleId,
             reviewSaveRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/reviews/{reviewId}")
+    public ResponseEntity<ReviewUpdateResponse> updateReview(
+        @UserId Long userId,
+        @PathVariable(name = "reviewId") Long reviewId,
+        @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
+    ) {
+        ReviewUpdateResponse response = reviewService.updateReview(userId, reviewId, reviewUpdateRequest);
+        return ResponseEntity.ok(response);
     }
 }

@@ -9,6 +9,8 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
+import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
+import site.travellaboratory.be.controller.review.dto.ReviewUpdateResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
@@ -53,5 +55,24 @@ public class ReviewService {
             )
         );
         return ReviewSaveResponse.from(saveEntity.getId());
+    }
+
+    @Transactional
+    public ReviewUpdateResponse updateReview(Long userId, Long reviewId, ReviewUpdateRequest request) {
+        // 삭제된 후기를 수정할 경우
+        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_UPDATE_INVALID_ARTICLE,
+                HttpStatus.NOT_FOUND));
+
+        // 유저가 작성한 후기가 아닌 경우
+        if (!review.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER_ARTICLE, HttpStatus.FORBIDDEN);
+        }
+
+        // 후기 업데이트
+        review.update(request.title(), request.representativeImgUrl(), request.description());
+        reviewRepository.save(review);
+        return new ReviewUpdateResponse(reviewId);
     }
 }
