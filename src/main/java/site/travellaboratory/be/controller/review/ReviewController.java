@@ -17,6 +17,7 @@ import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateResponse;
+import site.travellaboratory.be.controller.review.dto.userlikereview.ReviewToggleLikeResponse;
 import site.travellaboratory.be.service.ReviewService;
 
 @RestController
@@ -51,6 +52,16 @@ public class ReviewController {
         @PathVariable(name = "reviewId") Long reviewId
     ) {
         ReviewDeleteResponse response = reviewService.deleteReview(userId, reviewId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/reviews/{reviewId}/likes")
+    public ResponseEntity<ReviewToggleLikeResponse> toggleLikeReview(
+        @UserId Long userId,
+        @PathVariable(name = "reviewId") Long reviewId
+    ) {
+        ReviewToggleLikeResponse response = reviewService.toggleLikeReview(userId,
+            reviewId);
         return ResponseEntity.ok(response);
     }
 }

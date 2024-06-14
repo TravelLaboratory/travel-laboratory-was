@@ -45,6 +45,9 @@ public enum ErrorCodes {
     // 후기 삭제
     REVIEW_DELETE_INVALID("[후기 삭제] - 유효하지 않은 후기 ID", 4005L),
     REVIEW_DELETE_NOT_USER("[후기 삭제] - 본인의 후기가 아닙니다.", 4006L),
+    // 후기 좋아요
+    REVIEW_LIKE_INVALID("[후기 좋아요] - 유효하지 않은 후기 ID", 4007L),
+
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
