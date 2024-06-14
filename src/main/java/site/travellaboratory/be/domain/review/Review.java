@@ -77,4 +77,10 @@ public class Review extends BaseEntity {
     ) {
         return new Review(user, article, title, representativeImgUrl, description);
     }
+
+    public void update(String title, String representativeImgUrl, String description) {
+        this.title = title;
+        this.representativeImgUrl = representativeImgUrl;
+        this.description = description;
+    }
 }
