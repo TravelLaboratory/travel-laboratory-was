@@ -58,18 +58,15 @@ public class Article extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
-    public Article(Long id, User user, String title, List<String> location, final LocalDateTime startAt,
-                   final LocalDateTime endAt, String expense,
-                   List<String> travelCompanions, List<String> travelStyles) {
-    
-
     public Article(final Long id,
                    final User user,
+                   final String title,
+                   final List<String> location,
                    final LocalDateTime startAt,
                    final LocalDateTime endAt,
-                   final String title,
-                   final String imageUrl,
-                   final String expense
+                   final String expense,
+                   final List<String> travelCompanions,
+                   final List<String> travelStyles
     ) {
         this.id = id;
         this.user = user;
@@ -78,6 +75,7 @@ public class Article extends BaseEntity {
         this.duration = new Duration(startAt, endAt);
         this.expense = expense;
         this.travelCompanions = travelCompanions;
+        this.travelStyles = travelStyles;
         this.status = ArticleStatus.ACTIVE;
     }
 
