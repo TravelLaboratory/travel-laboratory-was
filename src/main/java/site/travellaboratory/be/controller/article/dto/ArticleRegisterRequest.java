@@ -3,10 +3,12 @@ package site.travellaboratory.be.controller.article.dto;
 import java.time.LocalDateTime;
 
 public record ArticleRegisterRequest(
+        String title,
+        String[] location,
         LocalDateTime startAt,
         LocalDateTime endAt,
-        String title,
-        String imageUrl,
-        String expense
+        String expense,
+        String[] travelCompanion,
+        String[] style
 ) {
 }

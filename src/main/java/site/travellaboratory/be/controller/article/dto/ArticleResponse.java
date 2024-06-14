@@ -5,19 +5,20 @@ import java.util.List;
 import site.travellaboratory.be.domain.article.Article;
 
 public record ArticleResponse(
-        Long id,
-        String tripSpotName,
-        String name,
+        String title,
+        List<String> location,
         LocalDateTime startAt,
         LocalDateTime endAt,
-        String expense,
-        String imageUrl
+        List<String> travelCompanions,
+        List<String> style,
+        String imageUrl,
+        String name
 ) {
 
     public static ArticleResponse from(final Article article) {
-        return new ArticleResponse(article.getId(), article.getTitle(), article.getNickname(), article.getStartAt(),
-                article.getEndAt(),
-                article.getExpense(), article.getImageUrl());
+        return new ArticleResponse(article.getTitle(), article.getLocation(),article.getStartAt(),article.getEndAt(),
+                article.getTravelCompanions(),article.getTravelStyles(),article.getImageUrl(),
+                article.getUser().getNickname());
     }
 
     public static List<ArticleResponse> from(final List<Article> articles) {
