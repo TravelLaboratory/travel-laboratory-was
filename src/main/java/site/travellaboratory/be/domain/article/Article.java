@@ -1,5 +1,7 @@
 package site.travellaboratory.be.domain.article;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,12 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,12 +45,10 @@ public class Article extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "article_travel_companions", joinColumns = @JoinColumn(name = "article_id"))
-    @Column(name = "travel_companion")
     private List<String> travelCompanions = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "article_travel_styles", joinColumns = @JoinColumn(name = "article_id"))
-    @Column(name = "travel_style")
     private List<String> travelStyles = new ArrayList<>();
 
     private String imageUrl;
@@ -75,12 +71,12 @@ public class Article extends BaseEntity {
                 null,
                 user,
                 articleRegisterRequest.title(),
-                Arrays.asList(articleRegisterRequest.location()),
+                articleRegisterRequest.location(),
                 articleRegisterRequest.startAt(),
                 articleRegisterRequest.endAt(),
                 articleRegisterRequest.expense(),
-                Arrays.asList(articleRegisterRequest.travelCompanion()),
-                Arrays.asList(articleRegisterRequest.style())
+                articleRegisterRequest.travelCompanion(),
+                articleRegisterRequest.style()
         );
     }
 

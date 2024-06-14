@@ -1,14 +1,15 @@
 package site.travellaboratory.be.controller.article.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record ArticleRegisterRequest(
         String title,
-        String[] location,
+        List<String> location,
         LocalDateTime startAt,
         LocalDateTime endAt,
         String expense,
-        String[] travelCompanion,
-        String[] style
+        List<String> travelCompanion,
+        List<String> style
 ) {
 }
