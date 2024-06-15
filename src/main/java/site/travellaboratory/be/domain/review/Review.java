@@ -53,6 +53,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private ReviewStatus status;
 
+    // todo: private 으로 변경
     public Review(
         User user,
         Article article,
@@ -76,5 +77,15 @@ public class Review extends BaseEntity {
         final String description
     ) {
         return new Review(user, article, title, representativeImgUrl, description);
+    }
+
+    public void update(String title, String representativeImgUrl, String description) {
+        this.title = title;
+        this.representativeImgUrl = representativeImgUrl;
+        this.description = description;
+    }
+
+    public void delete() {
+        this.status = ReviewStatus.INACTIVE;
     }
 }

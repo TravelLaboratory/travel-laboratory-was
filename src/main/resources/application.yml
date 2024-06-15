@@ -20,6 +20,19 @@ jwt:
   refresh-token:
     plus-hour: ${jwt-refresh-token-plus-hour}
 
+## s3 이미지 저장
+cloud:
+  aws:
+    s3:
+      bucket: ${s3-bucket}
+
+    credentials:
+      access-key: ${s3-access-key}
+      secret-key: ${s3-secret-key}
+
+    region:
+      static: ${s3-region-static}
+
 ---
 spring:
   config:
@@ -27,7 +40,7 @@ spring:
       on-profile: dev
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

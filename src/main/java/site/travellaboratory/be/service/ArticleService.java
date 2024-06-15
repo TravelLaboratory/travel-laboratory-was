@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.user.entity.User;
@@ -33,6 +35,12 @@ public class ArticleService {
     public ArticleResponse findByUserArticle(final Long articleId) {
         final Article article = articleRepository.getById(articleId);
         return ArticleResponse.from(article);
+    }
+
+    public List<ArticleSearchResponse> searchArticlesByKeyWord(final ArticleSearchRequest articleSearchRequest) {
+        final List<Article> articles = articleRepository.findByLocationContainingAndStatusActive(
+                articleSearchRequest.keyWord());
+        return ArticleSearchResponse.from(articles);
     }
 }
 

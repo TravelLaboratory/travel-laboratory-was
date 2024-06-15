@@ -1,15 +1,13 @@
 package site.travellaboratory.be.controller.review.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-public record ReviewSaveRequest(
-    @NotNull
-    Long articleId,
+public record ReviewUpdateRequest(
     @NotBlank
     String title,
     String representativeImgUrl,
     @NotBlank
     String description
 ) {
+
 }
