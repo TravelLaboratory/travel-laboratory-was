@@ -36,4 +36,22 @@ public class UserLikeComment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserLikeCommentStatus status;
+
+    private UserLikeComment(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
+        this.status = UserLikeCommentStatus.ACTIVE;
+    }
+
+    public static UserLikeComment of(User user, Comment comment) {
+        return new UserLikeComment(user, comment);
+    }
+
+    public void toggleStatus() {
+        if (this.status == UserLikeCommentStatus.ACTIVE) {
+            this.status = UserLikeCommentStatus.INACTIVE;
+        } else {
+            this.status = UserLikeCommentStatus.ACTIVE;
+        }
+    }
 }

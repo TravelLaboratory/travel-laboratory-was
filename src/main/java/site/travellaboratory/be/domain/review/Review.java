@@ -53,6 +53,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private ReviewStatus status;
 
+    // todo: private 으로 변경
     public Review(
         User user,
         Article article,
