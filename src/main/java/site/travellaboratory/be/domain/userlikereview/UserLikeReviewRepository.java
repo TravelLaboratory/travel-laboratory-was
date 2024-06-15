@@ -9,4 +9,7 @@ public interface UserLikeReviewRepository extends JpaRepository<UserLikeReview, 
 
     @Query("SELECT t FROM UserLikeReview t WHERE t.user.id = :userId AND t.review.id = :reviewId")
     Optional<UserLikeReview> findByUserIdAndReviewId(@Param("userId") Long userId, @Param("reviewId") Long reviewId);
+
+    // 후기 상세 조회 - 좋아요 개수
+    Long countByReviewIdAndStatus(Long reviewId, UserLikeReviewStatus status);
 }
