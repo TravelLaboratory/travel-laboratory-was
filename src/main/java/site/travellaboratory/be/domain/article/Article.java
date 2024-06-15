@@ -38,7 +38,6 @@ public class Article extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "article_locations", joinColumns = @JoinColumn(name = "article_id"))
-    @Column(name = "location")
     private List<String> location = new ArrayList<>();
 
     private Duration duration;

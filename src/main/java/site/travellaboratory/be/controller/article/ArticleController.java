@@ -1,5 +1,6 @@
 package site.travellaboratory.be.controller.article;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.service.ArticleService;
 
 @RestController
@@ -43,5 +46,12 @@ public class ArticleController {
     ) {
         final ArticleResponse articleResponse = articleService.findByUserArticle(articleId);
         return ResponseEntity.ok(articleResponse);
+    }
+
+    @GetMapping("/article/search")
+    public ResponseEntity<List<ArticleSearchResponse>> searchArticle(
+            @Valid @RequestBody final ArticleSearchRequest articleSearchRequest) {
+        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(articleSearchRequest);
+        return ResponseEntity.ok(response);
     }
 }
