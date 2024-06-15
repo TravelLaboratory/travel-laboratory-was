@@ -48,6 +48,17 @@ public enum ErrorCodes {
     // 후기 좋아요
     REVIEW_LIKE_INVALID("[후기 좋아요] - 유효하지 않은 후기 ID", 4007L),
 
+    // 댓글
+    // 댓글 작성
+    COMMENT_POST_INVALID("[댓글 작성] - 유효하지 않은 후기 ID", 5000L),
+    // 댓글 수정
+    COMMENT_UPDATE_INVALID("[댓글 수정] - 유효하지 않은 댓글 ID", 5010L),
+    COMMENT_UPDATE_NOT_USER("[댓글 수정] - 본인의 댓글이 아닙니다.", 5011L),
+    // 댓글 삭제
+    COMMENT_DELETE_INVALID("[댓글 삭제] - 유효하지 않은 댓글 ID", 5020L),
+    COMMENT_DELETE_NOT_USER("[댓글 삭제] - 본인의 댓글가 아닙니다.", 5021L),
+    // 댓글 좋아요
+    COMMENT_LIKE_INVALID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5030L),
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
