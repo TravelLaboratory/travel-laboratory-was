@@ -33,6 +33,9 @@ public enum ErrorCodes {
     PASSWORD_INVALID_EMAIL("유효하지 않은 이메일", 2011L),
     PASSWORD_INQUIRY_INVALID_ANSWER("올바르지 않은 답변", 2012L),
 
+    // 유저 관련
+    USER_NOT_FOUND("존재하지 않는 유저", 3000L),
+
 
     // 후기 (review)
     // 후기 작성

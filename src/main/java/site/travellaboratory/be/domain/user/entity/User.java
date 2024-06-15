@@ -44,34 +44,30 @@ public class User extends BaseEntity {
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private PwAnswer pwAnswer;
 
-    public User(Long id, String username) {
-        this.id = id;
-        this.username = username;
-    }
-
     @PrePersist
     void prePersist() {
         this.role = UserRole.USER;
         this.status = UserStatus.ACTIVE;
     }
 
-    public static User of(Long id, String username) {
-        return new User(id, username);
-    }
-
-    public User(Long id, String nickname, String introduce) {
+    // 프로필 변경
+    public User(Long id, String username, String nickname, String profileImgUrl, String introduce) {
         this.id = id;
+        this.username = username;
         this.nickname = nickname;
+        this.profileImgUrl = profileImgUrl;
         this.introduce = introduce;
+        this.status = UserStatus.ACTIVE;
     }
 
-    public User update(String nickname, String introduce) {
-        return new User(this.id, nickname, introduce);
+    // 프로필 변경
+    public User update(String username, String nickname, String profileImgUrl, String introduce) {
+        return new User(this.id, username, nickname, profileImgUrl, introduce);
     }
 
-    public User updateProfileImg(String profileImgUrl) {
-        return new User(this.id, nickname, profileImgUrl);
-    }
+//    public User updateProfileImg(String profileImgUrl) {
+//        return new User(this.id, nickname, profileImgUrl);
+//    }
 
     public void setPassword(final String password) {
         this.password = password;
