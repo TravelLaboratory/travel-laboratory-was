@@ -36,7 +36,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PatchMapping("/reviews/{reviewId}")
     public ResponseEntity<ReviewUpdateResponse> updateReview(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId,
