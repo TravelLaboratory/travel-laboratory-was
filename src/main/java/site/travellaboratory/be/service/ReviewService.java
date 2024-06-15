@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.review.dto.ReviewDeleteResponse;
+import site.travellaboratory.be.controller.review.dto.ReviewReadDetailResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
@@ -22,6 +23,7 @@ import site.travellaboratory.be.domain.review.ReviewStatus;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.userlikereview.UserLikeReview;
 import site.travellaboratory.be.domain.userlikereview.UserLikeReviewRepository;
+import site.travellaboratory.be.domain.userlikereview.UserLikeReviewStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,38 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ArticleRepository articleRepository;
     private final UserLikeReviewRepository userLikeReviewRepository;
+
+    public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
+        // 유효하지 않은 후기를 조회할 경우
+        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_INVALID,
+                HttpStatus.NOT_FOUND));
+
+        // 나만보기 상태의 글을 글쓴이가 아닌 다른 유저가 조회할 경우
+        if (review.getStatus() == ReviewStatus.PRIVATE && (!review.getUser().getId()
+            .equals(userId))) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_NOT_AUTHORIZATION,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // 후기 조회
+        // (1) 수정, 삭제 권한
+        boolean isEditable = review.getUser().getId().equals(userId);
+
+        // (2) 좋아요
+        boolean isLike = userLikeReviewRepository.findByUserIdAndReviewId(userId, reviewId)
+            .map(UserLikeReview::getStatus)
+            .orElse(UserLikeReviewStatus.INACTIVE) == UserLikeReviewStatus.ACTIVE;
+
+        // (3) 좋아요 개수
+        long likeCount = userLikeReviewRepository.countByReviewIdAndStatus(reviewId,
+            UserLikeReviewStatus.ACTIVE);
+
+        return ReviewReadDetailResponse.from(
+            review, isEditable, isLike, likeCount
+        );
+    }
 
     @Transactional
     public ReviewSaveResponse saveReview(Long userId, ReviewSaveRequest request) {
