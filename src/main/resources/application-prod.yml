@@ -13,3 +13,16 @@ jwt:
 
 servers:
   url: ${servers-url}
+
+## s3 이미지 저장
+cloud:
+  aws:
+    s3:
+      bucket: ${s3-bucket}
+
+    credentials:
+      access-key: ${s3-access-key}
+      secret-key: ${s3-secret-key}
+
+    region:
+      static: ${s3-region-static}

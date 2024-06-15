@@ -20,6 +20,7 @@ jwt:
   refresh-token:
     plus-hour: ${jwt-refresh-token-plus-hour}
 
+## s3 이미지 저장
 cloud:
   aws:
     s3:
