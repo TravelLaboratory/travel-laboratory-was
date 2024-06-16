@@ -37,7 +37,8 @@ public enum ErrorCodes {
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
 
     // 아티클 관련
-    ARTICLE_NOT_FOUND("존재 하지 않는 아티클", 3501L),
+    ARTICLE_NOT_FOUND("존재 하지 않는 여행 계획", 3501L),
+    ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 3502L),
 
 
     // 후기 (review)

@@ -4,8 +4,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
@@ -25,6 +27,7 @@ public class ArticleService {
     private final UserRepository userRepository;
 
     //아티클 저장
+    @Transactional
     public Long saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
@@ -36,6 +39,7 @@ public class ArticleService {
     }
 
     // 내 아티클 전체 조회
+    @Transactional
     public List<ArticleResponse> findByUserArticles(final Long userId) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
@@ -49,6 +53,7 @@ public class ArticleService {
     }
 
     // 내 아티클 한개 조회
+    @Transactional
     public ArticleResponse findByUserArticle(final Long articleId) {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
@@ -62,6 +67,21 @@ public class ArticleService {
         final List<Article> articles = articleRepository.findByLocationContainingAndStatusActive(
                 articleSearchRequest.keyWord());
         return ArticleSearchResponse.from(articles);
+    }
+
+    // 아티클 공개 범위 전환
+    @Transactional
+    public ArticleAuthorityResponse changeAuthorityArticle(final Long userId, final Long articleId) {
+        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        if (article.getStatus() == ArticleStatus.PRIVATE && (!article.getUser().getId().equals(userId))) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION,
+                    HttpStatus.UNAUTHORIZED);
+        }
+        article.toggleStatus();
+        return ArticleAuthorityResponse.from(article);
     }
 }
 

@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
@@ -53,5 +55,15 @@ public class ArticleController {
             @Valid @RequestBody final ArticleSearchRequest articleSearchRequest) {
         final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(articleSearchRequest);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/article/{articleId}/scope")
+    public ResponseEntity<ArticleAuthorityResponse> inActiveArticle(
+            @UserId final Long userId,
+            @PathVariable final Long articleId
+    ) {
+        final ArticleAuthorityResponse articleAuthorityResponse = articleService.changeAuthorityArticle(userId,
+                articleId);
+        return ResponseEntity.ok(articleAuthorityResponse);
     }
 }
