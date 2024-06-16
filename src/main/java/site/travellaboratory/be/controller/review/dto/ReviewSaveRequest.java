@@ -2,6 +2,7 @@ package site.travellaboratory.be.controller.review.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import site.travellaboratory.be.domain.review.ReviewStatus;
 
 public record ReviewSaveRequest(
     @NotNull
@@ -10,6 +11,8 @@ public record ReviewSaveRequest(
     String title,
     String representativeImgUrl,
     @NotBlank
-    String description
+    String description,
+    @NotNull
+    ReviewStatus status
 ) {
 }

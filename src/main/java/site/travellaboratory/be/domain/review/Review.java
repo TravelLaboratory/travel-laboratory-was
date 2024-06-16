@@ -10,9 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +20,6 @@ import site.travellaboratory.be.domain.user.entity.User;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-    uniqueConstraints = @UniqueConstraint(columnNames = {"article_id"}) // 하나의 여행 계획에는 하나의 리뷰만 가능 (기획)
-)
 public class Review extends BaseEntity {
 
     @Id
@@ -36,7 +30,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
@@ -53,20 +47,20 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private ReviewStatus status;
 
-    // todo: private 으로 변경
-    public Review(
+    private Review(
         User user,
         Article article,
         String title,
         String representativeImgUrl,
-        String description)
+        String description,
+        ReviewStatus status)
     {
         this.user = user;
         this.article = article;
         this.title = title;
         this.representativeImgUrl = representativeImgUrl;
         this.description = description;
-        this.status = ReviewStatus.ACTIVE;
+        this.status = status;
     }
 
     public static Review of(
@@ -74,15 +68,17 @@ public class Review extends BaseEntity {
         final Article article,
         final String title,
         final String representativeImgUrl,
-        final String description
+        final String description,
+        final ReviewStatus status
     ) {
-        return new Review(user, article, title, representativeImgUrl, description);
+        return new Review(user, article, title, representativeImgUrl, description, status);
     }
 
-    public void update(String title, String representativeImgUrl, String description) {
+    public void update(String title, String representativeImgUrl, String description, ReviewStatus status) {
         this.title = title;
         this.representativeImgUrl = representativeImgUrl;
         this.description = description;
+        this.status = status;
     }
 
     public void delete() {

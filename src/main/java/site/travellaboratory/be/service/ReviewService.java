@@ -78,7 +78,7 @@ public class ReviewService {
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusNotOrderByArticleDesc(article, ReviewStatus.INACTIVE)
+        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST,
                     HttpStatus.CONFLICT);
@@ -91,7 +91,8 @@ public class ReviewService {
                 article,
                 request.title(),
                 request.representativeImgUrl(),
-                request.description()
+                request.description(),
+                request.status()
             )
         );
         return ReviewSaveResponse.from(saveReview.getId());
@@ -111,7 +112,7 @@ public class ReviewService {
         }
 
         // 후기 업데이트
-        review.update(request.title(), request.representativeImgUrl(), request.description());
+        review.update(request.title(), request.representativeImgUrl(), request.description(), request.status());
         Review updateReview = reviewRepository.save(review);
         return ReviewUpdateResponse.from(updateReview.getId());
     }
