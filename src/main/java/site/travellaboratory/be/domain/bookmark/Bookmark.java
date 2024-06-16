@@ -1,6 +1,9 @@
 package site.travellaboratory.be.domain.bookmark;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,12 +35,25 @@ public class Bookmark extends BaseEntity {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookmarkStatus status;
+
     public Bookmark(final User user, final Article article) {
         this.user = user;
         this.article = article;
+        this.status = BookmarkStatus.ACTIVE;
     }
 
     public static Bookmark of(final User user, final Article article) {
         return new Bookmark(user, article);
+    }
+
+    public void toggleStatus() {
+        if (this.status == BookmarkStatus.ACTIVE) {
+            this.status = BookmarkStatus.INACTIVE;
+        } else {
+            this.status = BookmarkStatus.ACTIVE;
+        }
     }
 }
