@@ -39,6 +39,7 @@ public enum ErrorCodes {
     // 아티클 관련
     ARTICLE_NOT_FOUND("존재 하지 않는 여행 계획", 3501L),
     ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 3502L),
+    ARTICLE_DELETE_NOT_USER("[여행 계획 삭제] - 본인의 여행 계획이 아닙니다.", 3503L),
 
 
     // 후기 (review)

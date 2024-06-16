@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.bookmark.BookmarkStatus;
+import site.travellaboratory.be.domain.review.ReviewStatus;
 import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
@@ -104,6 +105,10 @@ public class Article extends BaseEntity {
         else if (this.status == ArticleStatus.PRIVATE) {
             this.status = ArticleStatus.ACTIVE;
         }
+    }
+
+    public void delete() {
+        this.status = ArticleStatus.INACTIVE;
     }
 
     public String getNickname() {

@@ -8,13 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
+import site.travellaboratory.be.controller.review.dto.ReviewDeleteResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
+import site.travellaboratory.be.domain.review.Review;
+import site.travellaboratory.be.domain.review.ReviewStatus;
 import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.entity.UserStatus;
@@ -82,6 +86,22 @@ public class ArticleService {
         }
         article.toggleStatus();
         return ArticleAuthorityResponse.from(article);
+    }
+
+
+    @Transactional
+    public ArticleDeleteResponse deleteReview(final Long userId, final Long articleId) {
+        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
+        }
+
+        article.delete();
+        articleRepository.save(article);
+        return ArticleDeleteResponse.from(true);
     }
 }
 
