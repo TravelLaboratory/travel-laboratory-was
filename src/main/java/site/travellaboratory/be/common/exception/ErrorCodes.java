@@ -36,6 +36,9 @@ public enum ErrorCodes {
     // 유저 관련
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
 
+    // 아티클 관련
+    ARTICLE_NOT_FOUND("존재 하지 않는 아티클", 3501L),
+
 
     // 후기 (review)
     // 후기 작성
