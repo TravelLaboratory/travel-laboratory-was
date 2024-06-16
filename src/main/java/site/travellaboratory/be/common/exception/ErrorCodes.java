@@ -66,6 +66,10 @@ public enum ErrorCodes {
     COMMENT_DELETE_NOT_USER("[댓글 삭제] - 본인의 댓글가 아닙니다.", 5021L),
     // 댓글 좋아요
     COMMENT_LIKE_INVALID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5030L),
+    // 댓글 전체 조회 (페이지네이션)
+    COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
+    COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
+
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
