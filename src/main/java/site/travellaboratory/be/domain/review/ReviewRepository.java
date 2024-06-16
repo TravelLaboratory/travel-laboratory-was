@@ -7,7 +7,7 @@ import site.travellaboratory.be.domain.article.Article;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    Optional<Review> findByArticleAndStatusNotOrderByArticleDesc(Article article, ReviewStatus status);
+    Optional<Review> findByArticleAndStatusInOrderByArticleDesc(Article article, List<ReviewStatus> status);
 
     Optional<Review> findByIdAndStatusIn(Long reviewId, List<ReviewStatus> status);
 }
