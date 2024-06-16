@@ -28,7 +28,7 @@ public class BookmarkService {
             final Bookmark newBookmark = Bookmark.of(user, article);
             bookmarkRepository.save(newBookmark);
         } else {
-            bookmarkRepository.delete(bookmark);
+            bookmarkRepository.deleteById(bookmark.getId());
         }
     }
 
