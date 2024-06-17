@@ -69,7 +69,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleAuthorityResponse);
     }
 
-    @PatchMapping("article/status/{articleId}")
+    @PatchMapping("/article/status/{articleId}")
     public ResponseEntity<ArticleDeleteResponse> deleteArticle(
             @UserId final Long userId,
             @PathVariable final Long articleId
