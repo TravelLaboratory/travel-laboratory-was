@@ -19,7 +19,7 @@ public record ArticleResponse(
 
     public static ArticleResponse from(final Article article) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
-                .map(TravelStyle::name)
+                .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
         return new ArticleResponse(
@@ -27,7 +27,7 @@ public record ArticleResponse(
                 article.getLocation(),
                 article.getStartAt(),
                 article.getEndAt(),
-                article.getTravelCompanion().name(),
+                article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getImageUrl(),
                 article.getUser().getNickname()
