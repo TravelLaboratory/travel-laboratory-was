@@ -30,12 +30,15 @@ public class UserService {
 
     private final AmazonS3Client amazonS3Client;
 
-    public UserProfileResponse findByUserProfile(final Long userId) {
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+    public UserProfileResponse findByUserProfile(final Long userId, final Long id) {
+        final User user = userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
                         HttpStatus.BAD_REQUEST)
                 );
-        return UserProfileResponse.from(user);
+
+        final boolean isEditable = user.getId().equals(userId);
+
+        return UserProfileResponse.from(user, isEditable);
     }
 
     public UserProfileUpdateResponse updateProfile(

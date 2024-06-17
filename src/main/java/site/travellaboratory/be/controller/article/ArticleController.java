@@ -20,7 +20,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
-import site.travellaboratory.be.controller.review.dto.ReviewDeleteResponse;
 import site.travellaboratory.be.service.ArticleService;
 
 @RestController
