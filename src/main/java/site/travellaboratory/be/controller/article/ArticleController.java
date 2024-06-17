@@ -20,6 +20,8 @@ import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.service.ArticleService;
 
 @RestController
@@ -48,8 +50,18 @@ public class ArticleController {
     public ResponseEntity<ArticleResponse> findArticle(
             @PathVariable final Long articleId
     ) {
-        final ArticleResponse articleResponse = articleService.findByUserArticle(articleId);
+        final ArticleResponse articleResponse = articleService.findByArticle(articleId);
         return ResponseEntity.ok(articleResponse);
+    }
+
+    @PutMapping("/update/article/{articleId}")
+    public ResponseEntity<ArticleUpdateResponse> updateArticle(
+            @RequestBody final ArticleUpdateRequest articleUpdateRequest,
+            @UserId final Long userId,
+            @PathVariable final Long articleId
+    ) {
+        final ArticleUpdateResponse articleUpdateResponse = articleService.updateArticle(articleUpdateRequest, userId, articleId);
+        return ResponseEntity.ok(articleUpdateResponse);
     }
 
     @GetMapping("/search/article")
