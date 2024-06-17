@@ -13,6 +13,8 @@ import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
@@ -27,7 +29,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
-    //아티클 저장
+    //내 초기 여행 계획 저장
     @Transactional
     public Long saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
@@ -39,7 +41,7 @@ public class ArticleService {
         return article.getId();
     }
 
-    // 내 아티클 전체 조회
+    // 내 초기 여행 계획 전체 조회
     @Transactional
     public List<ArticleResponse> findByUserArticles(final Long userId) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
@@ -53,14 +55,33 @@ public class ArticleService {
         return ArticleResponse.from(articles);
     }
 
-    // 내 아티클 한개 조회
+    // 초기 여행 계획 한개 조회
     @Transactional
-    public ArticleResponse findByUserArticle(final Long articleId) {
+    public ArticleResponse findByArticle(final Long articleId) {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         return ArticleResponse.from(article);
+    }
+
+    // 내 초기 여행 계획 수정
+    @Transactional
+    public ArticleUpdateResponse updateArticle(
+            final ArticleUpdateRequest articleUpdateRequest,
+            final Long userId,
+            final Long articleId
+    ) {
+        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_UPDATE_NOT_USER, HttpStatus.UNAUTHORIZED);
+        }
+
+        article.update(articleUpdateRequest);
+        return ArticleUpdateResponse.from(article);
     }
 
     // 아티클 검색
@@ -85,7 +106,7 @@ public class ArticleService {
         return ArticleAuthorityResponse.from(article);
     }
 
-
+    // 아티클 삭제
     @Transactional
     public ArticleDeleteResponse deleteReview(final Long userId, final Long articleId) {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,

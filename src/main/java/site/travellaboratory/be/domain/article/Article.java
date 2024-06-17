@@ -1,7 +1,7 @@
 package site.travellaboratory.be.domain.article;
 
 import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,10 +18,11 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.config.TravelCompanionConverter;
+import site.travellaboratory.be.config.TravelStyleConverter;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.domain.BaseEntity;
-import site.travellaboratory.be.domain.bookmark.BookmarkStatus;
-import site.travellaboratory.be.domain.review.ReviewStatus;
 import site.travellaboratory.be.domain.user.entity.User;
 
 @Entity
@@ -49,10 +50,12 @@ public class Article extends BaseEntity {
 
     private String expense;
 
+    @Convert(converter = TravelCompanionConverter.class)
     private TravelCompanion travelCompanion;
 
     @ElementCollection
     @CollectionTable(name = "article_travel_styles", joinColumns = @JoinColumn(name = "article_id"))
+    @Convert(converter = TravelStyleConverter.class)
     private List<TravelStyle> travelStyles = new ArrayList<>();
 
     private String imageUrl;
@@ -94,6 +97,16 @@ public class Article extends BaseEntity {
                 articleRegisterRequest.travelCompanion(),
                 articleRegisterRequest.style()
         );
+    }
+
+    public void update(final ArticleUpdateRequest articleUpdateRequest) {
+        this.title = articleUpdateRequest.title();
+        this.location = articleUpdateRequest.location();
+        this.startAt = articleUpdateRequest.startAt();
+        this.endAt = articleUpdateRequest.endAt();
+        this.expense = articleUpdateRequest.expense();
+        this.travelCompanion = TravelCompanion.from(articleUpdateRequest.travelCompanion());
+        this.travelStyles = TravelStyle.from(articleUpdateRequest.style());
     }
 
     public void toggleStatus() {
