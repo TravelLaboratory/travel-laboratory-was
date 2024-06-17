@@ -49,13 +49,11 @@ public class Article extends BaseEntity {
 
     private String expense;
 
-    @ElementCollection
-    @CollectionTable(name = "article_travel_companions", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> travelCompanions = new ArrayList<>();
+    private TravelCompanion travelCompanion;
 
     @ElementCollection
     @CollectionTable(name = "article_travel_styles", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> travelStyles = new ArrayList<>();
+    private List<TravelStyle> travelStyles = new ArrayList<>();
 
     private String imageUrl;
 
@@ -69,7 +67,7 @@ public class Article extends BaseEntity {
                    final LocalDateTime startAt,
                    final LocalDateTime endAt,
                    final String expense,
-                   final List<String> travelCompanions,
+                   final String travelCompanion,
                    final List<String> travelStyles
     ) {
         this.id = id;
@@ -79,8 +77,8 @@ public class Article extends BaseEntity {
         this.startAt = startAt;
         this.endAt = endAt;
         this.expense = expense;
-        this.travelCompanions = travelCompanions;
-        this.travelStyles = travelStyles;
+        this.travelCompanion = TravelCompanion.from(travelCompanion);
+        this.travelStyles = TravelStyle.from(travelStyles);
         this.status = ArticleStatus.ACTIVE;
     }
 
@@ -101,8 +99,7 @@ public class Article extends BaseEntity {
     public void toggleStatus() {
         if (this.status == ArticleStatus.ACTIVE) {
             this.status = ArticleStatus.PRIVATE;
-        }
-        else if (this.status == ArticleStatus.PRIVATE) {
+        } else if (this.status == ArticleStatus.PRIVATE) {
             this.status = ArticleStatus.ACTIVE;
         }
     }

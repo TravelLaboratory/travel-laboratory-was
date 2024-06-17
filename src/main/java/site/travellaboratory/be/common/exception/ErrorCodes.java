@@ -36,12 +36,6 @@ public enum ErrorCodes {
     // 유저 관련
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
 
-    // 아티클 관련
-    ARTICLE_NOT_FOUND("존재 하지 않는 여행 계획", 3501L),
-    ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 3502L),
-    ARTICLE_DELETE_NOT_USER("[여행 계획 삭제] - 본인의 여행 계획이 아닙니다.", 3503L),
-
-
     // 후기 (review)
     // 후기 작성
     REVIEW_POST_INVALID("[후기 작성] - 유효하지 않은 여행 계획 ID", 4000L),
@@ -74,6 +68,17 @@ public enum ErrorCodes {
     // 댓글 전체 조회 (페이지네이션)
     COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
     COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
+
+    // 아티클 관련
+    ARTICLE_NOT_FOUND("존재 하지 않는 여행 계획", 6000L),
+    ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 6010L),
+    ARTICLE_DELETE_NOT_USER("[여행 계획 삭제] - 본인의 여행 계획이 아닙니다.", 6020L),
+
+    // Style 관련
+    STYLE_NOT_FOUND("존재 하지 않는 스타일", 7000L),
+
+    // Companion 관련
+    COMPANION_NOT_FOUND("존재 하지 않는 companion", 8000L),
 
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
