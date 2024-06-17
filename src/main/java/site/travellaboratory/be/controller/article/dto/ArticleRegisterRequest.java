@@ -9,7 +9,7 @@ public record ArticleRegisterRequest(
         LocalDateTime startAt,
         LocalDateTime endAt,
         String expense,
-        List<String> travelCompanion,
+        String travelCompanion,
         List<String> style
 ) {
 }
