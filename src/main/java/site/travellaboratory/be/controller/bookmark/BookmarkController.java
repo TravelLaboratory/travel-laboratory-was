@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-    @PutMapping("/register/bookmark/{articleId}")
+    @PatchMapping("/register/bookmark/{articleId}")
     public ResponseEntity<BookmarkSaveResponse> registerBookmark(@UserId final Long userId,
                                                                  @PathVariable final Long articleId) {
         final BookmarkSaveResponse bookmarkSaveResponse = bookmarkService.saveBookmark(userId, articleId);
