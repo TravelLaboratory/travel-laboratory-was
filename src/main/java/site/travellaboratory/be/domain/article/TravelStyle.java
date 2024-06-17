@@ -27,7 +27,7 @@ public enum TravelStyle {
     }
 
     public static List<TravelStyle> from(List<String> names) {
-        return names.stream()
+        return names == null ? List.of() : names.stream()
                 .map(TravelStyle::fromDbValue)
                 .collect(Collectors.toList());
     }
