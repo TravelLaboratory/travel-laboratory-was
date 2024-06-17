@@ -21,7 +21,7 @@ public enum ErrorCodes {
     TOKEN_AUTHORIZATION_FAIL("인증 실패", 2004L),
 
     TOKEN_INVALID_REFRESH_TOKEN("유효하지 않은 리프레시 토큰", 2005L),
-//    REFRESH_TOKEN_NOT_CORRECT_USER("로그인한 유저의 리프레시 토큰이 아닙니다.", 2006L),
+    //    REFRESH_TOKEN_NOT_CORRECT_USER("로그인한 유저의 리프레시 토큰이 아닙니다.", 2006L),
     TOKEN_NOT_EXPIRED_ACCESS_TOKEN("만료되지 않은 토큰", 2007L),
     REFRESH_TOKEN_EXPIRED_TOKEN("만료된 리프레시 토큰 - 재로그인", 2008L),
     REFRESH_TOKEN_TOKEN_EXCEPTION("리프레시 토큰 에러", 2009L),
@@ -35,7 +35,6 @@ public enum ErrorCodes {
 
     // 유저 관련
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
-
 
     // 후기 (review)
     // 후기 작성
@@ -66,14 +65,29 @@ public enum ErrorCodes {
     COMMENT_DELETE_NOT_USER("[댓글 삭제] - 본인의 댓글가 아닙니다.", 5021L),
     // 댓글 좋아요
     COMMENT_LIKE_INVALID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5030L),
+    // 댓글 전체 조회 (페이지네이션)
+    COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
+    COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
+
+    // 아티클 관련
+    ARTICLE_NOT_FOUND("존재 하지 않는 초기 여행 계획", 6000L),
+    ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[초기 여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 6010L),
+    ARTICLE_DELETE_NOT_USER("[초기 여행 계획 삭제] - 본인의 초기 여행 계획이 아닙니다.", 6020L),
+    ARTICLE_UPDATE_NOT_USER("[초기 여행 계획 수정] - 본인의 초기 여행 계획이 아닙니다.", 6030L),
+
+    // Style 관련
+    STYLE_NOT_FOUND("존재 하지 않는 스타일", 7000L),
+
+    // Companion 관련
+    COMPANION_NOT_FOUND("존재 하지 않는 companion", 8000L),
+
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception
-    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L)
-    ;
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L);
     public final @NotNull String message;
     public final @NotNull Long code;
 

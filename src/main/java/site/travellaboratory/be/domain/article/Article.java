@@ -1,11 +1,12 @@
 package site.travellaboratory.be.domain.article;
 
 import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +18,10 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.config.TravelCompanionConverter;
+import site.travellaboratory.be.config.TravelStyleConverter;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.user.entity.User;
 
@@ -30,7 +34,7 @@ public class Article extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -40,20 +44,22 @@ public class Article extends BaseEntity {
     @CollectionTable(name = "article_locations", joinColumns = @JoinColumn(name = "article_id"))
     private List<String> location = new ArrayList<>();
 
-    private Duration duration;
+    private LocalDateTime startAt;
+
+    private LocalDateTime endAt;
 
     private String expense;
 
-    @ElementCollection
-    @CollectionTable(name = "article_travel_companions", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> travelCompanions = new ArrayList<>();
+    @Convert(converter = TravelCompanionConverter.class)
+    private TravelCompanion travelCompanion;
 
     @ElementCollection
     @CollectionTable(name = "article_travel_styles", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> travelStyles = new ArrayList<>();
+    @Convert(converter = TravelStyleConverter.class)
+    private List<TravelStyle> travelStyles = new ArrayList<>();
 
     private String imageUrl;
-  
+
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
@@ -64,17 +70,18 @@ public class Article extends BaseEntity {
                    final LocalDateTime startAt,
                    final LocalDateTime endAt,
                    final String expense,
-                   final List<String> travelCompanions,
+                   final String travelCompanion,
                    final List<String> travelStyles
     ) {
         this.id = id;
         this.user = user;
         this.title = title;
         this.location = location;
-        this.duration = new Duration(startAt, endAt);
+        this.startAt = startAt;
+        this.endAt = endAt;
         this.expense = expense;
-        this.travelCompanions = travelCompanions;
-        this.travelStyles = travelStyles;
+        this.travelCompanion = TravelCompanion.from(travelCompanion);
+        this.travelStyles = TravelStyle.from(travelStyles);
         this.status = ArticleStatus.ACTIVE;
     }
 
@@ -92,15 +99,30 @@ public class Article extends BaseEntity {
         );
     }
 
+    public void update(final ArticleUpdateRequest articleUpdateRequest) {
+        this.title = articleUpdateRequest.title();
+        this.location = articleUpdateRequest.location();
+        this.startAt = articleUpdateRequest.startAt();
+        this.endAt = articleUpdateRequest.endAt();
+        this.expense = articleUpdateRequest.expense();
+        this.travelCompanion = TravelCompanion.from(articleUpdateRequest.travelCompanion());
+        this.travelStyles = TravelStyle.from(articleUpdateRequest.style());
+    }
+
+    public void toggleStatus() {
+        if (this.status == ArticleStatus.ACTIVE) {
+            this.status = ArticleStatus.PRIVATE;
+        } else if (this.status == ArticleStatus.PRIVATE) {
+            this.status = ArticleStatus.ACTIVE;
+        }
+    }
+
+    public void delete() {
+        this.status = ArticleStatus.INACTIVE;
+    }
+
     public String getNickname() {
         return user.getNickname();
     }
 
-    public LocalDateTime getStartAt() {
-        return duration.getStartAt();
-    }
-
-    public LocalDateTime getEndAt() {
-        return duration.getEndAt();
-    }
 }

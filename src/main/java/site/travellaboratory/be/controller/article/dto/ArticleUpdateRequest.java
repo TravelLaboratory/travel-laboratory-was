@@ -3,7 +3,7 @@ package site.travellaboratory.be.controller.article.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ArticleRegisterRequest(
+public record ArticleUpdateRequest(
         String title,
         List<String> location,
         LocalDateTime startAt,

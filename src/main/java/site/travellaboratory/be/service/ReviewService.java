@@ -40,7 +40,7 @@ public class ReviewService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_INVALID,
                 HttpStatus.NOT_FOUND));
 
-        // 나만보기 상태의 글을 글쓴이가 아닌 다른 유저가 조회할 경우
+        // 나만보기 상태의 후기를 다른 유저가 조회할 경우
         if (review.getStatus() == ReviewStatus.PRIVATE && (!review.getUser().getId()
             .equals(userId))) {
             throw new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_NOT_AUTHORIZATION,
@@ -67,7 +67,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewSaveResponse saveReview(Long userId, ReviewSaveRequest request) {
-        // 삭제된 여행 계획에 대한 후기를 작성할 경우
+        // 유효하지 않은 여행 계획에 대한 후기를 작성할 경우
         Article article = articleRepository.findByIdAndStatusIn(request.articleId(), List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_POST_INVALID,
                 HttpStatus.NOT_FOUND));
@@ -78,7 +78,7 @@ public class ReviewService {
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusNotOrderByArticleDesc(article, ReviewStatus.INACTIVE)
+        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST,
                     HttpStatus.CONFLICT);
@@ -91,7 +91,8 @@ public class ReviewService {
                 article,
                 request.title(),
                 request.representativeImgUrl(),
-                request.description()
+                request.description(),
+                request.status()
             )
         );
         return ReviewSaveResponse.from(saveReview.getId());
@@ -99,7 +100,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewUpdateResponse updateReview(Long userId, Long reviewId, ReviewUpdateRequest request) {
-        // 삭제된 후기를 수정할 경우
+        // 유효하지 않은 후기를 수정할 경우
         Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_UPDATE_INVALID,
@@ -111,14 +112,14 @@ public class ReviewService {
         }
 
         // 후기 업데이트
-        review.update(request.title(), request.representativeImgUrl(), request.description());
+        review.update(request.title(), request.representativeImgUrl(), request.description(), request.status());
         Review updateReview = reviewRepository.save(review);
         return ReviewUpdateResponse.from(updateReview.getId());
     }
 
     @Transactional
     public ReviewDeleteResponse deleteReview(final Long userId,final Long reviewId) {
-        // 삭제된 후기를 삭제할 경우
+        // 유효하지 않은 후기를 삭제할 경우
         Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_DELETE_INVALID,
@@ -137,7 +138,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewToggleLikeResponse toggleLikeReview(Long userId, Long reviewId) {
-        // 삭제된 후기를 좋아요 할 경우
+        // 유효하지 않은 후기를 좋아요 할 경우
         Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
