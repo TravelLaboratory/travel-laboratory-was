@@ -15,19 +15,19 @@ import site.travellaboratory.be.service.BookmarkService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1")
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-    @PutMapping("/{articleId}/bookmark")
+    @PutMapping("/register/bookmark/{articleId}")
     public ResponseEntity<BookmarkSaveResponse> registerBookmark(@UserId final Long userId,
                                                                  @PathVariable final Long articleId) {
         final BookmarkSaveResponse bookmarkSaveResponse = bookmarkService.saveBookmark(userId, articleId);
         return ResponseEntity.ok(bookmarkSaveResponse);
     }
 
-    @GetMapping("/bookmarks")
+    @GetMapping("/find/bookmarks")
     public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(@UserId final Long userId) {
         final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(userId);
         return ResponseEntity.ok(allBookmarkByUser);
