@@ -24,12 +24,12 @@ import site.travellaboratory.be.service.ArticleService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1")
 public class ArticleController {
 
     private final ArticleService articleService;
 
-    @PostMapping("/article")
+    @PostMapping("/register/article")
     public ResponseEntity<Long> registerMyArticle(
             @RequestBody final ArticleRegisterRequest articleRegisterRequest,
             @UserId final Long userId
@@ -38,13 +38,13 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(articleId);
     }
 
-    @GetMapping("/articles")
+    @GetMapping("/find/articles")
     public ResponseEntity<List<ArticleResponse>> findMyArticles(@UserId final Long userId) {
         final List<ArticleResponse> articleResponse = articleService.findByUserArticles(userId);
         return ResponseEntity.ok(articleResponse);
     }
 
-    @GetMapping("/articles/{articleId}")
+    @GetMapping("/find/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
             @PathVariable final Long articleId
     ) {
@@ -52,15 +52,15 @@ public class ArticleController {
         return ResponseEntity.ok(articleResponse);
     }
 
-    @GetMapping("/article/search")
+    @GetMapping("/search/article")
     public ResponseEntity<List<ArticleSearchResponse>> searchArticle(
             @Valid @RequestBody final ArticleSearchRequest articleSearchRequest) {
         final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(articleSearchRequest);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/article/{articleId}/scope")
-    public ResponseEntity<ArticleAuthorityResponse> inActiveArticle(
+    @PutMapping("/article/{articleId}/authority")
+    public ResponseEntity<ArticleAuthorityResponse> authorityArticle(
             @UserId final Long userId,
             @PathVariable final Long articleId
     ) {
@@ -69,7 +69,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleAuthorityResponse);
     }
 
-    @PatchMapping("article/{articleId}/status")
+    @PatchMapping("article/status/{articleId}")
     public ResponseEntity<ArticleDeleteResponse> deleteArticle(
             @UserId final Long userId,
             @PathVariable final Long articleId
