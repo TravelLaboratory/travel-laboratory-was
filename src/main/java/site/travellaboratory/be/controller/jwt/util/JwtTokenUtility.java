@@ -41,7 +41,7 @@ public class JwtTokenUtility {
         claims.put("userId", userId);
 
         // expiration
-        LocalDateTime expiredLocalDateTime = LocalDateTime.now().plusHours(tokenPlusHour);
+        LocalDateTime expiredLocalDateTime = LocalDateTime.now().plusSeconds(tokenPlusHour);
         Date expiredAt = Date.from(expiredLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
@@ -49,6 +49,13 @@ public class JwtTokenUtility {
             .setClaims(claims)
             .setExpiration(expiredAt)
             .compact();
+    }
+
+    public LocalDateTime getAccessTokenExpiredAt(Long tokenPlusHour) {
+        // expiration
+        return LocalDateTime.now().plusHours(tokenPlusHour);
+//        return Date.from(expiredLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
     }
 
     public Long getAccessTokenUserId(final String accessToken) {
