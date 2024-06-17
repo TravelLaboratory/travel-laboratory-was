@@ -24,7 +24,7 @@ import site.travellaboratory.be.service.ArticleService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1")
 public class ArticleController {
 
     private final ArticleService articleService;
