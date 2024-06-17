@@ -51,6 +51,13 @@ public class JwtTokenUtility {
             .compact();
     }
 
+    public LocalDateTime getAccessTokenExpiredAt(Long tokenPlusHour) {
+        // expiration
+        return LocalDateTime.now().plusHours(tokenPlusHour);
+//        return Date.from(expiredLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+    }
+
     public Long getAccessTokenUserId(final String accessToken) {
         // token 검사
         validAccessTokenWithThrow(accessToken);

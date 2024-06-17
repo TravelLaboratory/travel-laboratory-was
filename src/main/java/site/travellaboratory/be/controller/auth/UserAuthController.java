@@ -66,8 +66,9 @@ public class UserAuthController {
     ) {
         AuthTokenResponse authTokenResponse = userAuthService.login(userLoginRequest);
 
-        // AccessToken - authorization-token 헤더에 추가
+        // AccessToken - authorization-token 헤더에 추가 (+만료기간까지)
         response.setHeader("authorization-token", authTokenResponse.accessToken());
+        response.setHeader("authorization-token-expired-at", authTokenResponse.expiredAt());
 
         // RefreshToken - refresh-token 쿠키에 추가
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh-token", authTokenResponse.refreshToken())
@@ -94,8 +95,9 @@ public class UserAuthController {
         AccessTokenResponse accessTokenResponse = userAuthService.reIssueAccessToken(accessToken,
             refreshToken);
 
-        // AccessToken - authorization-token 헤더에 추가
+        // AccessToken - authorization-token 헤더에 추가 (+ 만료기간)
         response.setHeader("authorization-token", accessTokenResponse.accessToken());
+        response.setHeader("authorization-token-expired-at", accessTokenResponse.expiredAt());
 
         return ResponseEntity.ok().build();
     }
