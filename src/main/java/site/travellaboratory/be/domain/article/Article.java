@@ -60,6 +60,8 @@ public class Article extends BaseEntity {
 
     private int bookmarkCount;
 
+    private boolean isBookmarked;
+
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
@@ -83,6 +85,7 @@ public class Article extends BaseEntity {
         this.travelCompanion = TravelCompanion.from(travelCompanion);
         this.travelStyles = TravelStyle.from(travelStyles);
         this.status = ArticleStatus.ACTIVE;
+        this.bookmarkCount = 0;
     }
 
     public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {
@@ -131,6 +134,14 @@ public class Article extends BaseEntity {
         } else {
             this.bookmarkCount--;
         }
+    }
+
+    public void pushBookmark() {
+        this.isBookmarked = true;
+    }
+
+    public void cancelBookmark() {
+        this.isBookmarked = false;
     }
 
     public String getNickname() {

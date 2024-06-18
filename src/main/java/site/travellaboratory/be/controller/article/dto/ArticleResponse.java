@@ -14,7 +14,9 @@ public record ArticleResponse(
         LocalDate endAt,
         String travelCompanion,
         List<String> travelStyle,
-        String name
+        String name,
+        int bookmarkCount,
+        boolean isBookmarked
 ) {
 
     public static ArticleResponse from(final Article article) {
@@ -29,7 +31,9 @@ public record ArticleResponse(
                 article.getEndAt(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
-                article.getUser().getNickname()
+                article.getUser().getNickname(),
+                article.getBookmarkCount(),
+                article.isBookmarked()
         );
     }
 

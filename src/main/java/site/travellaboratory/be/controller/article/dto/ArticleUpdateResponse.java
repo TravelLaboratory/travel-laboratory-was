@@ -14,7 +14,9 @@ public record ArticleUpdateResponse(
         LocalDate endAt,
         String expense,
         String travelCompanion,
-        List<String> travelStyles
+        List<String> travelStyles,
+        int bookmarkCount,
+        boolean isBookmarked
 ) {
     public static ArticleUpdateResponse from(final Article article) {
         List<String> travelStyleNames = article.getTravelStyles()
@@ -29,7 +31,9 @@ public record ArticleUpdateResponse(
                 article.getEndAt(),
                 article.getExpense(),
                 article.getTravelCompanion().getName(),
-                travelStyleNames
+                travelStyleNames,
+                article.getBookmarkCount(),
+                article.isBookmarked()
         );
     }
 }
