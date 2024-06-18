@@ -1,5 +1,6 @@
 package site.travellaboratory.be.domain.article;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
@@ -12,12 +13,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import site.travellaboratory.be.config.TravelCompanionConverter;
 import site.travellaboratory.be.config.TravelStyleConverter;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
@@ -41,12 +45,12 @@ public class Article extends BaseEntity {
     private String title;
 
     @ElementCollection
-    @CollectionTable(name = "article_locations", joinColumns = @JoinColumn(name = "article_id"))
+    @CollectionTable(name = "article_location", joinColumns = @JoinColumn(name = "article_id"))
     private List<Location> location = new ArrayList<>();
 
-    private LocalDateTime startAt;
+    private LocalDate startAt;
 
-    private LocalDateTime endAt;
+    private LocalDate endAt;
 
     private String expense;
 
@@ -58,8 +62,6 @@ public class Article extends BaseEntity {
     @Convert(converter = TravelStyleConverter.class)
     private List<TravelStyle> travelStyles = new ArrayList<>();
 
-    private String imageUrl;
-
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
@@ -67,8 +69,8 @@ public class Article extends BaseEntity {
                    final User user,
                    final String title,
                    final List<Location> location,
-                   final LocalDateTime startAt,
-                   final LocalDateTime endAt,
+                   final LocalDate startAt,
+                   final LocalDate endAt,
                    final String expense,
                    final String travelCompanion,
                    final List<String> travelStyles

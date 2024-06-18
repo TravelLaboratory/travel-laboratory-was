@@ -1,5 +1,6 @@
 package site.travellaboratory.be.controller.article.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,8 +11,8 @@ import site.travellaboratory.be.domain.article.TravelStyle;
 public record ArticleUpdateResponse(
         String title,
         List<Location> location,
-        LocalDateTime startAt,
-        LocalDateTime endAt,
+        LocalDate startAt,
+        LocalDate endAt,
         String expense,
         String travelCompanion,
         List<String> travelStyles
