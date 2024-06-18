@@ -50,24 +50,24 @@ public class User extends BaseEntity {
         this.status = UserStatus.ACTIVE;
     }
 
-    // 프로필 변경
-    public User(Long id, String username, String nickname, String profileImgUrl, String introduce) {
+    public User(Long id, String username, String password, UserRole role, String nickname, String profileImgUrl,
+                String introduce, boolean isAgreement) {
         this.id = id;
         this.username = username;
+        this.password = password;
+        this.role = role;
         this.nickname = nickname;
         this.profileImgUrl = profileImgUrl;
         this.introduce = introduce;
+        this.isAgreement = isAgreement;
         this.status = UserStatus.ACTIVE;
     }
 
-    // 프로필 변경
-    public User update(String username, String nickname, String profileImgUrl, String introduce) {
-        return new User(this.id, username, nickname, profileImgUrl, introduce);
+    public void update(final String nickname, final String profileImgUrl, final String introduce) {
+        this.nickname = nickname;
+        this.profileImgUrl = profileImgUrl;
+        this.introduce = introduce;
     }
-
-//    public User updateProfileImg(String profileImgUrl) {
-//        return new User(this.id, nickname, profileImgUrl);
-//    }
 
     public void setPassword(final String password) {
         this.password = password;
