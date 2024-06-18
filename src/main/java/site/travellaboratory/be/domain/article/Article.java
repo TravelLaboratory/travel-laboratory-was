@@ -58,6 +58,8 @@ public class Article extends BaseEntity {
     @Convert(converter = TravelStyleConverter.class)
     private List<TravelStyle> travelStyles = new ArrayList<>();
 
+    private int bookmarkCount;
+
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
@@ -117,6 +119,18 @@ public class Article extends BaseEntity {
 
     public void delete() {
         this.status = ArticleStatus.INACTIVE;
+    }
+
+    public void increasedBookmarkCount() {
+        this.bookmarkCount++;
+    }
+
+    public void decreasedBookmarkCount() {
+        if (bookmarkCount <= 0) {
+            this.bookmarkCount = 0;
+        } else {
+            this.bookmarkCount--;
+        }
     }
 
     public String getNickname() {

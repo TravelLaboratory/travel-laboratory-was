@@ -27,9 +27,10 @@ public class BookmarkController {
         return ResponseEntity.ok(bookmarkSaveResponse);
     }
 
-    @GetMapping("/find/bookmarks")
-    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(@UserId final Long userId) {
-        final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(userId);
+    @GetMapping("/find/bookmarks/{userId}")
+    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(@UserId final Long loginId,
+                                                                    @PathVariable final Long userId) {
+        final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(loginId, userId);
         return ResponseEntity.ok(allBookmarkByUser);
     }
 }

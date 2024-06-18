@@ -51,9 +51,19 @@ public class Bookmark extends BaseEntity {
 
     public void toggleStatus() {
         if (this.status == BookmarkStatus.ACTIVE) {
+            decreasedBookmarkCount(article);
             this.status = BookmarkStatus.INACTIVE;
         } else {
+            increasedBookmarkCount(article);
             this.status = BookmarkStatus.ACTIVE;
         }
+    }
+
+    private void increasedBookmarkCount(final Article article) {
+        article.increasedBookmarkCount();
+    }
+
+    private void decreasedBookmarkCount(final Article article) {
+        article.decreasedBookmarkCount();
     }
 }
