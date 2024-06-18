@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import site.travellaboratory.be.domain.article.Article;
+import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
 
 public record ArticleResponse(
         String title,
-        List<String> location,
+        List<Location> location,
         LocalDateTime startAt,
         LocalDateTime endAt,
         String travelCompanion,

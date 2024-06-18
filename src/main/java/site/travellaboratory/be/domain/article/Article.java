@@ -42,7 +42,7 @@ public class Article extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "article_locations", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> location = new ArrayList<>();
+    private List<Location> location = new ArrayList<>();
 
     private LocalDateTime startAt;
 
@@ -66,7 +66,7 @@ public class Article extends BaseEntity {
     public Article(final Long id,
                    final User user,
                    final String title,
-                   final List<String> location,
+                   final List<Location> location,
                    final LocalDateTime startAt,
                    final LocalDateTime endAt,
                    final String expense,
@@ -124,5 +124,4 @@ public class Article extends BaseEntity {
     public String getNickname() {
         return user.getNickname();
     }
-
 }

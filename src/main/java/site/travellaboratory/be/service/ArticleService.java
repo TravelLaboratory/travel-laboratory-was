@@ -10,6 +10,7 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
@@ -31,14 +32,14 @@ public class ArticleService {
 
     //내 초기 여행 계획 저장
     @Transactional
-    public Long saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
+    public ArticleRegisterResponse saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
         final Article article = Article.of(user, articleRegisterRequest);
         articleRepository.save(article);
-        return article.getId();
+        return ArticleRegisterResponse.from(article.getId());
     }
 
     // 내 초기 여행 계획 전체 조회
