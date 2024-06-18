@@ -1,7 +1,6 @@
 package site.travellaboratory.be.controller.article.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import site.travellaboratory.be.domain.article.Location;
 

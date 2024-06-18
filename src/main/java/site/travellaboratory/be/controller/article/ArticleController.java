@@ -41,9 +41,9 @@ public class ArticleController {
         return ResponseEntity.ok(articleRegisterResponse);
     }
 
-    @GetMapping("/find/articles")
-    public ResponseEntity<List<ArticleResponse>> findMyArticles(@UserId final Long userId) {
-        final List<ArticleResponse> articleResponse = articleService.findByUserArticles(userId);
+    @GetMapping("/find/articles/{userId}")
+    public ResponseEntity<List<ArticleResponse>> findArticles(@UserId final Long loginId, @PathVariable final Long userId) {
+        final List<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId);
         return ResponseEntity.ok(articleResponse);
     }
 

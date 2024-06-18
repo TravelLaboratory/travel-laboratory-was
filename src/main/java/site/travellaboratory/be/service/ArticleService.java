@@ -44,16 +44,25 @@ public class ArticleService {
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
-    public List<ArticleResponse> findByUserArticles(final Long userId) {
+    public List<ArticleResponse> findByUserArticles(final Long loginId, final Long userId) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final List<Article> articles = articleRepository.findByUserAndStatusIn(user,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+        final boolean isEditable = user.getId().equals(loginId);
 
-        return ArticleResponse.from(articles);
+        if (isEditable) {
+            final List<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+            return ArticleResponse.from(myArticles);
+        } else {
+            final List<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE))
+                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+            return ArticleResponse.from(anotherArticles);
+        }
     }
 
     // 초기 여행 계획 한개 조회
