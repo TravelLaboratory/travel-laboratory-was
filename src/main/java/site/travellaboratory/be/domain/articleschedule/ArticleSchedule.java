@@ -5,14 +5,18 @@ import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import site.travellaboratory.be.domain.BaseEntity;
+import site.travellaboratory.be.domain.article.Article;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // 조인 전략
@@ -23,8 +27,9 @@ public abstract class ArticleSchedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long articleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private Article article;
 
     @Column(nullable = false)
     private LocalDate visitedDate;
