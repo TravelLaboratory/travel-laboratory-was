@@ -3,6 +3,7 @@ package site.travellaboratory.be.controller.article.dto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
@@ -37,9 +38,7 @@ public record ArticleResponse(
         );
     }
 
-    public static List<ArticleResponse> from(final List<Article> articles) {
-        return articles.stream()
-                .map(ArticleResponse::from)
-                .toList();
+    public static Page<ArticleResponse> from(final Page<Article> articles) {
+        return articles.map(ArticleResponse::from);
     }
 }
