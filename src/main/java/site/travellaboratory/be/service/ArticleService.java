@@ -14,7 +14,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -97,9 +96,9 @@ public class ArticleService {
     }
 
     // 아티클 검색
-    public List<ArticleSearchResponse> searchArticlesByKeyWord(final ArticleSearchRequest articleSearchRequest) {
-        final List<Article> articles = articleRepository.findByLocationContainingAndStatusActive(
-                articleSearchRequest.keyWord());
+    @Transactional
+    public List<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
+        final Page<Article> articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, pageable);
         return ArticleSearchResponse.from(articles);
     }
 

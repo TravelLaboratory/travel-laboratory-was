@@ -1,6 +1,5 @@
 package site.travellaboratory.be.controller.article;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -77,8 +75,11 @@ public class ArticleController {
 
     @GetMapping("/search/article")
     public ResponseEntity<List<ArticleSearchResponse>> searchArticle(
-            @Valid @RequestBody final ArticleSearchRequest articleSearchRequest) {
-        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(articleSearchRequest);
+            @RequestParam("keyword") final String keyword,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size) {
+        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(keyword,
+                PageRequest.of(page, size));
         return ResponseEntity.ok(response);
     }
 
