@@ -3,7 +3,6 @@ package site.travellaboratory.be.controller.article;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +16,7 @@ import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
@@ -32,17 +32,18 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("/register/article")
-    public ResponseEntity<Long> registerMyArticle(
+    public ResponseEntity<ArticleRegisterResponse> registerMyArticle(
             @RequestBody final ArticleRegisterRequest articleRegisterRequest,
             @UserId final Long userId
     ) {
-        final Long articleId = articleService.saveArticle(userId, articleRegisterRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(articleId);
+        final ArticleRegisterResponse articleRegisterResponse = articleService.saveArticle(userId,
+                articleRegisterRequest);
+        return ResponseEntity.ok(articleRegisterResponse);
     }
 
-    @GetMapping("/find/articles")
-    public ResponseEntity<List<ArticleResponse>> findMyArticles(@UserId final Long userId) {
-        final List<ArticleResponse> articleResponse = articleService.findByUserArticles(userId);
+    @GetMapping("/find/articles/{userId}")
+    public ResponseEntity<List<ArticleResponse>> findArticles(@UserId final Long loginId, @PathVariable final Long userId) {
+        final List<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId);
         return ResponseEntity.ok(articleResponse);
     }
 
@@ -60,7 +61,8 @@ public class ArticleController {
             @UserId final Long userId,
             @PathVariable final Long articleId
     ) {
-        final ArticleUpdateResponse articleUpdateResponse = articleService.updateArticle(articleUpdateRequest, userId, articleId);
+        final ArticleUpdateResponse articleUpdateResponse = articleService.updateArticle(articleUpdateRequest, userId,
+                articleId);
         return ResponseEntity.ok(articleUpdateResponse);
     }
 

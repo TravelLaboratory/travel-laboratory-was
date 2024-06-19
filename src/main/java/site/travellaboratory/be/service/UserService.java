@@ -52,14 +52,12 @@ public class UserService {
 
         final String url = uploadFiles(file);
 
-        final User updatedUser = user.update(userProfileUpdateRequest.username(), userProfileUpdateRequest.nickname(),
+        user.update(userProfileUpdateRequest.nickname(),
                 url, userProfileUpdateRequest.introduce());
 
-        userRepository.save(updatedUser);
-
-        return new UserProfileUpdateResponse(updatedUser.getUsername(), updatedUser.getNickname(),
-                updatedUser.getProfileImgUrl(),
-                updatedUser.getIntroduce());
+        return new UserProfileUpdateResponse(user.getNickname(),
+                user.getProfileImgUrl(),
+                user.getIntroduce());
     }
 
     private String uploadFiles(final MultipartFile file) {
