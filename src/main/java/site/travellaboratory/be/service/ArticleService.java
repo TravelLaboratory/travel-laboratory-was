@@ -2,6 +2,8 @@ package site.travellaboratory.be.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +14,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -44,7 +45,7 @@ public class ArticleService {
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
-    public List<ArticleResponse> findByUserArticles(final Long loginId, final Long userId) {
+    public Page<ArticleResponse> findByUserArticles(final Long loginId, final Long userId, final Pageable pageable) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
@@ -52,14 +53,14 @@ public class ArticleService {
         final boolean isEditable = user.getId().equals(loginId);
 
         if (isEditable) {
-            final List<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
-                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            final Page<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
             return ArticleResponse.from(myArticles);
         } else {
-            final List<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
-                            List.of(ArticleStatus.ACTIVE))
+            final Page<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
             return ArticleResponse.from(anotherArticles);
         }
@@ -95,9 +96,9 @@ public class ArticleService {
     }
 
     // 아티클 검색
-    public List<ArticleSearchResponse> searchArticlesByKeyWord(final ArticleSearchRequest articleSearchRequest) {
-        final List<Article> articles = articleRepository.findByLocationContainingAndStatusActive(
-                articleSearchRequest.keyWord());
+    @Transactional
+    public List<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
+        final Page<Article> articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, pageable);
         return ArticleSearchResponse.from(articles);
     }
 

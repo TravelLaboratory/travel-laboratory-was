@@ -1,8 +1,9 @@
 package site.travellaboratory.be.controller.article;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
@@ -18,7 +20,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -42,14 +43,20 @@ public class ArticleController {
     }
 
     @GetMapping("/find/articles/{userId}")
-    public ResponseEntity<List<ArticleResponse>> findArticles(@UserId final Long loginId, @PathVariable final Long userId) {
-        final List<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId);
+    public ResponseEntity<Page<ArticleResponse>> findArticles(
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size
+    ) {
+        final Page<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId,
+                PageRequest.of(page, size));
         return ResponseEntity.ok(articleResponse);
     }
 
     @GetMapping("/find/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleResponse articleResponse = articleService.findByArticle(articleId);
         return ResponseEntity.ok(articleResponse);
@@ -59,7 +66,7 @@ public class ArticleController {
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
             @RequestBody final ArticleUpdateRequest articleUpdateRequest,
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleUpdateResponse articleUpdateResponse = articleService.updateArticle(articleUpdateRequest, userId,
                 articleId);
@@ -68,15 +75,18 @@ public class ArticleController {
 
     @GetMapping("/search/article")
     public ResponseEntity<List<ArticleSearchResponse>> searchArticle(
-            @Valid @RequestBody final ArticleSearchRequest articleSearchRequest) {
-        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(articleSearchRequest);
+            @RequestParam("keyword") final String keyword,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size) {
+        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(keyword,
+                PageRequest.of(page, size));
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/article/{articleId}/authority")
     public ResponseEntity<ArticleAuthorityResponse> authorityArticle(
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleAuthorityResponse articleAuthorityResponse = articleService.changeAuthorityArticle(userId,
                 articleId);
@@ -86,7 +96,7 @@ public class ArticleController {
     @PatchMapping("/article/status/{articleId}")
     public ResponseEntity<ArticleDeleteResponse> deleteArticle(
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         ArticleDeleteResponse articleDeleteResponse = articleService.deleteReview(userId, articleId);
         return ResponseEntity.ok(articleDeleteResponse);

@@ -21,15 +21,19 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @PatchMapping("/register/bookmark/{articleId}")
-    public ResponseEntity<BookmarkSaveResponse> registerBookmark(@UserId final Long userId,
-                                                                 @PathVariable final Long articleId) {
+    public ResponseEntity<BookmarkSaveResponse> registerBookmark(
+            @UserId final Long userId,
+            @PathVariable(name = "articleId") final Long articleId
+    ) {
         final BookmarkSaveResponse bookmarkSaveResponse = bookmarkService.saveBookmark(userId, articleId);
         return ResponseEntity.ok(bookmarkSaveResponse);
     }
 
     @GetMapping("/find/bookmarks/{userId}")
-    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(@UserId final Long loginId,
-                                                                    @PathVariable final Long userId) {
+    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId
+    ) {
         final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(loginId, userId);
         return ResponseEntity.ok(allBookmarkByUser);
     }

@@ -24,7 +24,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<UserProfileResponse> findMyProfile(@UserId final Long userId, @PathVariable final Long id) {
+    public ResponseEntity<UserProfileResponse> findMyProfile(
+            @UserId final Long userId,
+            @PathVariable(name = "id") final Long id
+    ) {
         final UserProfileResponse userProfileResponse = userService.findByUserProfile(userId, id);
         return ResponseEntity.ok(userProfileResponse);
     }
