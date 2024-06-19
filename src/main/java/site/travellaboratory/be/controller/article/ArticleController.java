@@ -42,14 +42,17 @@ public class ArticleController {
     }
 
     @GetMapping("/find/articles/{userId}")
-    public ResponseEntity<List<ArticleResponse>> findArticles(@UserId final Long loginId, @PathVariable final Long userId) {
+    public ResponseEntity<List<ArticleResponse>> findArticles(
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId
+    ) {
         final List<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId);
         return ResponseEntity.ok(articleResponse);
     }
 
     @GetMapping("/find/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleResponse articleResponse = articleService.findByArticle(articleId);
         return ResponseEntity.ok(articleResponse);
@@ -59,7 +62,7 @@ public class ArticleController {
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
             @RequestBody final ArticleUpdateRequest articleUpdateRequest,
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleUpdateResponse articleUpdateResponse = articleService.updateArticle(articleUpdateRequest, userId,
                 articleId);
@@ -76,7 +79,7 @@ public class ArticleController {
     @PutMapping("/article/{articleId}/authority")
     public ResponseEntity<ArticleAuthorityResponse> authorityArticle(
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleAuthorityResponse articleAuthorityResponse = articleService.changeAuthorityArticle(userId,
                 articleId);
@@ -86,7 +89,7 @@ public class ArticleController {
     @PatchMapping("/article/status/{articleId}")
     public ResponseEntity<ArticleDeleteResponse> deleteArticle(
             @UserId final Long userId,
-            @PathVariable final Long articleId
+            @PathVariable(name = "articleId") final Long articleId
     ) {
         ArticleDeleteResponse articleDeleteResponse = articleService.deleteReview(userId, articleId);
         return ResponseEntity.ok(articleDeleteResponse);
