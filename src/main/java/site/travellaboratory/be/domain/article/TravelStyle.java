@@ -11,14 +11,14 @@ public enum TravelStyle {
     HOCANCE("호캉스"),
     HEALING("힐링"),
     WALK("뚜벅이"),
-    FOOD_TOUR("맛집탐방"),
-    NONSTOP_TOUR("쉴틈없이 관광"),
-    CAFE_TOUR("카페투어"),
+    NONSTOP_TOUR("쉴 틈 없이 관광"),
+    CAFE_TOUR("카페 투어"),
+    FOOD_TOUR("맛집 탐방"),
     WITH_NATURE("자연과 함께"),
     SHOPPING_LOVER("쇼핑 러버"),
     ACTIVITY("액티비티"),
     HOT_PLACE("핫플레이스"),
-    PHOTO_SPOT("남는건 사진");
+    PHOTO_SPOT("남는 건 사진");
 
     private final String name;
 

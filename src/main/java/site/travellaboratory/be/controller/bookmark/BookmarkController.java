@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
@@ -22,15 +21,20 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @PatchMapping("/register/bookmark/{articleId}")
-    public ResponseEntity<BookmarkSaveResponse> registerBookmark(@UserId final Long userId,
-                                                                 @PathVariable final Long articleId) {
+    public ResponseEntity<BookmarkSaveResponse> registerBookmark(
+            @UserId final Long userId,
+            @PathVariable(name = "articleId") final Long articleId
+    ) {
         final BookmarkSaveResponse bookmarkSaveResponse = bookmarkService.saveBookmark(userId, articleId);
         return ResponseEntity.ok(bookmarkSaveResponse);
     }
 
-    @GetMapping("/find/bookmarks")
-    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(@UserId final Long userId) {
-        final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(userId);
+    @GetMapping("/find/bookmarks/{userId}")
+    public ResponseEntity<List<BookmarkResponse>> findMyAllBookmark(
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId
+    ) {
+        final List<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(loginId, userId);
         return ResponseEntity.ok(allBookmarkByUser);
     }
 }

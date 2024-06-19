@@ -2,6 +2,8 @@ package site.travellaboratory.be.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +12,8 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
+import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -31,28 +33,37 @@ public class ArticleService {
 
     //내 초기 여행 계획 저장
     @Transactional
-    public Long saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
+    public ArticleRegisterResponse saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
         final Article article = Article.of(user, articleRegisterRequest);
         articleRepository.save(article);
-        return article.getId();
+        return ArticleRegisterResponse.from(article.getId());
     }
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
-    public List<ArticleResponse> findByUserArticles(final Long userId) {
+    public Page<ArticleResponse> findByUserArticles(final Long loginId, final Long userId, final Pageable pageable) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final List<Article> articles = articleRepository.findByUserAndStatusIn(user,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+        final boolean isEditable = user.getId().equals(loginId);
 
-        return ArticleResponse.from(articles);
+        if (isEditable) {
+            final Page<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
+                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+            return ArticleResponse.from(myArticles);
+        } else {
+            final Page<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
+                            List.of(ArticleStatus.ACTIVE), pageable)
+                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+            return ArticleResponse.from(anotherArticles);
+        }
     }
 
     // 초기 여행 계획 한개 조회
@@ -85,9 +96,9 @@ public class ArticleService {
     }
 
     // 아티클 검색
-    public List<ArticleSearchResponse> searchArticlesByKeyWord(final ArticleSearchRequest articleSearchRequest) {
-        final List<Article> articles = articleRepository.findByLocationContainingAndStatusActive(
-                articleSearchRequest.keyWord());
+    @Transactional
+    public List<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
+        final Page<Article> articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, pageable);
         return ArticleSearchResponse.from(articles);
     }
 

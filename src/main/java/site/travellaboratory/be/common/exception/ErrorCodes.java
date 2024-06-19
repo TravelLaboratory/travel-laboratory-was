@@ -81,6 +81,9 @@ public enum ErrorCodes {
     // Companion 관련
     COMPANION_NOT_FOUND("존재 하지 않는 companion", 8000L),
 
+    // 북마크 관련
+    BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
+
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),

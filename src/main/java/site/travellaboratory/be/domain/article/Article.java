@@ -12,7 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -41,12 +41,12 @@ public class Article extends BaseEntity {
     private String title;
 
     @ElementCollection
-    @CollectionTable(name = "article_locations", joinColumns = @JoinColumn(name = "article_id"))
-    private List<String> location = new ArrayList<>();
+    @CollectionTable(name = "article_location", joinColumns = @JoinColumn(name = "article_id"))
+    private List<Location> location = new ArrayList<>();
 
-    private LocalDateTime startAt;
+    private LocalDate startAt;
 
-    private LocalDateTime endAt;
+    private LocalDate endAt;
 
     private String expense;
 
@@ -58,7 +58,9 @@ public class Article extends BaseEntity {
     @Convert(converter = TravelStyleConverter.class)
     private List<TravelStyle> travelStyles = new ArrayList<>();
 
-    private String imageUrl;
+    private int bookmarkCount;
+
+    private boolean isBookmarked;
 
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
@@ -66,9 +68,9 @@ public class Article extends BaseEntity {
     public Article(final Long id,
                    final User user,
                    final String title,
-                   final List<String> location,
-                   final LocalDateTime startAt,
-                   final LocalDateTime endAt,
+                   final List<Location> location,
+                   final LocalDate startAt,
+                   final LocalDate endAt,
                    final String expense,
                    final String travelCompanion,
                    final List<String> travelStyles
@@ -83,6 +85,7 @@ public class Article extends BaseEntity {
         this.travelCompanion = TravelCompanion.from(travelCompanion);
         this.travelStyles = TravelStyle.from(travelStyles);
         this.status = ArticleStatus.ACTIVE;
+        this.bookmarkCount = 0;
     }
 
     public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {
@@ -121,8 +124,27 @@ public class Article extends BaseEntity {
         this.status = ArticleStatus.INACTIVE;
     }
 
+    public void increasedBookmarkCount() {
+        this.bookmarkCount++;
+    }
+
+    public void decreasedBookmarkCount() {
+        if (bookmarkCount <= 0) {
+            this.bookmarkCount = 0;
+        } else {
+            this.bookmarkCount--;
+        }
+    }
+
+    public void pushBookmark() {
+        this.isBookmarked = true;
+    }
+
+    public void cancelBookmark() {
+        this.isBookmarked = false;
+    }
+
     public String getNickname() {
         return user.getNickname();
     }
-
 }
