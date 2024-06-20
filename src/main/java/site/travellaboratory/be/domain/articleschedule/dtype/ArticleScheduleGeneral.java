@@ -1,4 +1,4 @@
-package site.travellaboratory.be.domain.articleschedule;
+package site.travellaboratory.be.domain.articleschedule.dtype;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import java.time.LocalTime;
 import lombok.Getter;
+import site.travellaboratory.be.domain.articleschedule.ArticleSchedule;
 
 @Entity
 @DiscriminatorValue("GENERAL")
@@ -18,9 +19,6 @@ public class ArticleScheduleGeneral extends ArticleSchedule {
 
     @Column(nullable = false, columnDefinition = "TIME")
     private LocalTime durationTime;
-
-    @Column(nullable = false, length = 10)
-    private String generalCategory;
 
     @Column(nullable = false, length = 15)
     private String expense;

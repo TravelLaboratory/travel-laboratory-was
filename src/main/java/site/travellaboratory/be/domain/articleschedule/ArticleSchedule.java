@@ -37,6 +37,9 @@ public abstract class ArticleSchedule extends BaseEntity {
     @Column(nullable = false)
     private LocalTime visitedTime;
 
+    @Column(nullable = false, length = 15)
+    private String category;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ArticleScheduleStatus status;
