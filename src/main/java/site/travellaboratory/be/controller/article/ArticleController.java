@@ -30,7 +30,7 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
-    @PostMapping("/register/article")
+    @PostMapping("/article")
     public ResponseEntity<ArticleRegisterResponse> registerMyArticle(
             @RequestBody final ArticleRegisterRequest articleRegisterRequest,
             @UserId final Long userId
@@ -40,7 +40,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleRegisterResponse);
     }
 
-    @GetMapping("/find/articles/{userId}")
+    @GetMapping("/articles/{userId}")
     public ResponseEntity<Page<ArticleResponse>> findArticles(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
@@ -52,7 +52,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleResponse);
     }
 
-    @GetMapping("/find/article/{articleId}")
+    @GetMapping("/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
             @PathVariable(name = "articleId") final Long articleId
     ) {
@@ -60,7 +60,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleResponse);
     }
 
-    @PutMapping("/update/article/{articleId}")
+    @PutMapping("/article/{articleId}")
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
             @RequestBody final ArticleUpdateRequest articleUpdateRequest,
             @UserId final Long userId,
