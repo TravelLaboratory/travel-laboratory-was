@@ -11,7 +11,6 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleRequest;
-import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleSaveResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleUpdateResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
@@ -29,29 +28,6 @@ public class ArticleScheduleService {
 
     private final ArticleRepository articleRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
-
-    @Transactional
-    public ArticleScheduleSaveResponse saveSchedules(Long userId, Long articleId, List<ArticleScheduleRequest> requests) {
-        // 유효하지 않은 여행 계획에 대한 상세 일정을 작성할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
-                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_POST_INVALID,
-                HttpStatus.NOT_FOUND));
-
-        // 유저가 작성한 초기 여행 계획이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_POST_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
-
-        // 상세 일정 리스트 - 저장
-        List<ArticleSchedule> saveSchedules = requests.stream()
-            .map(request -> toArticleSchedule(article, request))
-            .toList();
-
-        articleScheduleRepository.saveAll(saveSchedules);
-        return ArticleScheduleSaveResponse.from(article.getId());
-    }
 
     @Transactional
     public ArticleScheduleUpdateResponse updateSchedules(Long userId, Long articleId,
