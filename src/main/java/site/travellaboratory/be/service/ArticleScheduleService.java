@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleRequest;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleSaveResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleUpdateResponse;
@@ -101,6 +102,36 @@ public class ArticleScheduleService {
         }
         return ArticleScheduleUpdateResponse.from(article.getId());
     }
+
+    //
+    @Transactional
+    public ArticleScheduleDeleteResponse deleteArticleSchedules(Long userId, Long articleId) {
+        // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
+        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_INVALID,
+                HttpStatus.NOT_FOUND));
+
+
+        // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_NOT_USER,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // 초기 여행 계획 삭제
+        article.delete();
+
+        // 관련된 일정들 삭제
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderByIdDesc(
+            article, ArticleScheduleStatus.ACTIVE);
+        for (ArticleSchedule schedule : schedules) {
+            schedule.delete();
+        }
+
+        return ArticleScheduleDeleteResponse.from(true);
+    }
+
 
     private ArticleSchedule toArticleSchedule(Article article, ArticleScheduleRequest request) {
         switch (request.dtype()) {
