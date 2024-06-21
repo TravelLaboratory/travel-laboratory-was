@@ -13,14 +13,19 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.article.Article;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // 조인 전략
 @DiscriminatorColumn(name = "dtype") // 조인 전략은 default DTYPE을 만들지 않기에 명시
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class ArticleSchedule extends BaseEntity {
 
     @Id
@@ -34,8 +39,11 @@ public abstract class ArticleSchedule extends BaseEntity {
     @Column(nullable = false)
     private LocalDate visitedDate;
 
-    @Column(nullable = false)
-    private LocalTime visitedTime;
+    @Column(nullable = false, columnDefinition = "TIME(4)")
+    private Time visitedTime;
+
+    @Column(nullable = false, columnDefinition = "TINYINT")
+    private Integer sortOrder;
 
     @Column(nullable = false, length = 15)
     private String category;
@@ -47,4 +55,19 @@ public abstract class ArticleSchedule extends BaseEntity {
     // insertable, updatable false 한 이유 : JPA 알아서 처리, 직접 조작하지 못하게 막기 위해
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
     private String dtype;
+
+    protected ArticleSchedule(
+        Article article,
+        LocalDate visitedDate,
+        Time visitedTime,
+        Integer sortOrder,
+        String category,
+        ArticleScheduleStatus status) {
+        this.article = article;
+        this.visitedDate = visitedDate;
+        this.visitedTime = visitedTime;
+        this.sortOrder = sortOrder;
+        this.category = category;
+        this.status = status;
+    }
 }
