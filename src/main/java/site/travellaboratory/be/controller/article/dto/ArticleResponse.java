@@ -13,8 +13,9 @@ public record ArticleResponse(
         List<Location> location,
         LocalDate startAt,
         LocalDate endAt,
+        String expense,
         String travelCompanion,
-        List<String> travelStyle,
+        List<String> travelStyles,
         String name,
         int bookmarkCount,
         boolean isBookmarked
@@ -30,6 +31,7 @@ public record ArticleResponse(
                 article.getLocation(),
                 article.getStartAt(),
                 article.getEndAt(),
+                article.getExpense(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getUser().getNickname(),

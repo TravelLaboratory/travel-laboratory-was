@@ -11,6 +11,6 @@ public record ArticleRegisterRequest(
         LocalDate endAt,
         String expense,
         String travelCompanion,
-        List<String> style
+        List<String> travelStyles
 ) {
 }

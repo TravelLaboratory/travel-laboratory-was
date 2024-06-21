@@ -98,7 +98,7 @@ public class Article extends BaseEntity {
                 articleRegisterRequest.endAt(),
                 articleRegisterRequest.expense(),
                 articleRegisterRequest.travelCompanion(),
-                articleRegisterRequest.style()
+                articleRegisterRequest.travelStyle()
         );
     }
 
@@ -109,7 +109,7 @@ public class Article extends BaseEntity {
         this.endAt = articleUpdateRequest.endAt();
         this.expense = articleUpdateRequest.expense();
         this.travelCompanion = TravelCompanion.from(articleUpdateRequest.travelCompanion());
-        this.travelStyles = TravelStyle.from(articleUpdateRequest.style());
+        this.travelStyles = TravelStyle.from(articleUpdateRequest.travelStyles());
     }
 
     public void toggleStatus() {
