@@ -1,6 +1,5 @@
 package site.travellaboratory.be.controller.article;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
@@ -74,23 +72,13 @@ public class ArticleController {
     }
 
     @GetMapping("/search/article")
-    public ResponseEntity<List<ArticleSearchResponse>> searchArticle(
+    public ResponseEntity<Page<ArticleSearchResponse>> searchArticle(
             @RequestParam("keyword") final String keyword,
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size) {
-        final List<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(keyword,
+        final Page<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(keyword,
                 PageRequest.of(page, size));
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/article/{articleId}/authority")
-    public ResponseEntity<ArticleAuthorityResponse> authorityArticle(
-            @UserId final Long userId,
-            @PathVariable(name = "articleId") final Long articleId
-    ) {
-        final ArticleAuthorityResponse articleAuthorityResponse = articleService.changeAuthorityArticle(userId,
-                articleId);
-        return ResponseEntity.ok(articleAuthorityResponse);
+        return ResponseEntity.ok(response);  // 게시물 전체 개수, 추가로 보내야 함
     }
 
     @PatchMapping("/article/status/{articleId}")

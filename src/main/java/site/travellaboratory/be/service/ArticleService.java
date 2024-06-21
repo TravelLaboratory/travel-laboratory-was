@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.article.dto.ArticleAuthorityResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
@@ -72,7 +71,7 @@ public class ArticleService {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
+    // 본인것이 아니면 에러
         return ArticleResponse.from(article);
     }
 
@@ -97,24 +96,9 @@ public class ArticleService {
 
     // 아티클 검색
     @Transactional
-    public List<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
+    public Page<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
         final Page<Article> articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, pageable);
         return ArticleSearchResponse.from(articles);
-    }
-
-    // 아티클 공개 범위 전환
-    @Transactional
-    public ArticleAuthorityResponse changeAuthorityArticle(final Long userId, final Long articleId) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        if (article.getStatus() == ArticleStatus.PRIVATE && (!article.getUser().getId().equals(userId))) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION,
-                    HttpStatus.UNAUTHORIZED);
-        }
-        article.toggleStatus();
-        return ArticleAuthorityResponse.from(article);
     }
 
     // 아티클 삭제
