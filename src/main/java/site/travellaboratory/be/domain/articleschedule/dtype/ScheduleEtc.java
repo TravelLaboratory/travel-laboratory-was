@@ -58,4 +58,8 @@ public class ScheduleEtc extends ArticleSchedule {
 
             request.placeName());
     }
+
+    public void update(ScheduleEtcRequest request) {
+        this.placeName = request.placeName();
+    }
 }

@@ -120,6 +120,7 @@ public class Article extends BaseEntity {
         }
     }
 
+    // 지우지 마세요!!! [상권] - 초기 여행 계획 + 일정 리스트 삭제 시 사용중
     public void delete() {
         this.status = ArticleStatus.INACTIVE;
     }
