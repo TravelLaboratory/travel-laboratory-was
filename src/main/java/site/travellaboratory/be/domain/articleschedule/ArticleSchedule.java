@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleRequest;
 import site.travellaboratory.be.domain.BaseEntity;
 import site.travellaboratory.be.domain.article.Article;
 
@@ -69,5 +70,16 @@ public abstract class ArticleSchedule extends BaseEntity {
         this.sortOrder = sortOrder;
         this.category = category;
         this.status = status;
+    }
+
+    public void delete() {
+        this.status = ArticleScheduleStatus.INACTIVE;
+    }
+
+    public void update(ArticleScheduleRequest request) {
+        this.visitedDate = request.visitedDate();
+        this.visitedTime = request.visitedTime();
+        this.sortOrder = request.sortOrder();
+        this.category = request.category();
     }
 }

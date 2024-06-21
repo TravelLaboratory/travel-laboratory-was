@@ -108,4 +108,16 @@ public class ScheduleTransport extends ArticleSchedule {
             request.googleMapEndLongitude()
         );
     }
+
+    public void update(ScheduleTransportRequest request) {
+        this.transportation = request.transportation();
+        this.startPlaceName = request.startPlaceName();
+        this.googleMapStartPlaceAddress = request.googleMapStartPlaceAddress();
+        this.googleMapStartLatitude = request.googleMapStartLatitude();
+        this.googleMapStartLongitude = request.googleMapStartLongitude();
+        this.endPlaceName = request.endPlaceName();
+        this.googleMapEndPlaceAddress = request.googleMapEndPlaceAddress();
+        this.googleMapEndLatitude = request.googleMapEndLatitude();
+        this.googleMapEndLongitude = request.googleMapEndLongitude();
+    }
 }
