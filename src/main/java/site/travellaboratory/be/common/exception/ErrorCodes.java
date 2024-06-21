@@ -74,16 +74,19 @@ public enum ErrorCodes {
 
     ARTICLE_SCHEDULE_POST_INVALID("[일정 상세 - 작성] - 유효하지 않은 초기 여행 계획 ID", 10000L),
     ARTICLE_SCHEDULE_POST_NOT_USER("[일정 상세 - 작성] - 초기 여행 계획 작성자만 상세 여행 계획을 작성할 수 있습니다.", 10001L),
-    ARTICLE_SCHEDULE_POST_NOT_DTYPE("[일정 상세 - 작성] - 올바르지 않은 DTYPE이 포함되어 있습니다.", 10002L),
+    ARTICLE_SCHEDULE_POST_NOT_DTYPE("[일정 상세] - 올바르지 않은 DTYPE이 포함되어 있습니다.", 10002L),
 
     // 일정 상세 - 수정
-    ARTICLE_SCHEDULE_UPDATE_INVALID("[일정 상세 - 수정] - 유효하지 않은 일정 상세 - ID", 10010L),
-    ARTICLE_SCHEDULE_UPDATE_NOT_USER("[일정 상세 - 수정] - 본인의 일정 상세 -이 아닙니다.", 10011L),
+    ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID("[일정 상세 - 수정] - 유효하지 않은 초기 여행 계획(article) - ID", 10010L),
+    ARTICLE_SCHEDULE_UPDATE_NOT_USER("[일정 상세 - 수정] - 초기 여행 계획 작성자만 상세 여행 계획을 수정할 수 있습니다.", 10011L),
+    ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID("[일정 상세 - 수정] - 유효하지 않은 일정(schedule) ID", 10012L),
+
+
     // 일정 상세 - 삭제
-    ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 일정 상세 - ID", 10020L),
+    ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 초기 여행 계획 - ID", 10020L),
     ARTICLE_SCHEDULE_DELETE_NOT_USER("[일정 상세 - 삭제] - 본인의 일정 상세 -가 아닙니다.", 10021L),
     // 일정 상세 - 좋아요
-    ARTICLE_SCHEDULE_LIKE_INVALID("[일정 상세 - 좋아요] - 유효하지 않은 일정 상세 - ID", 10030L),
+    ARTICLE_SCHEDULE_LIKE_INVALID("[일정 상세 - 좋아요] - 유효하지 않은 초기 여행 계획 - ID", 10030L),
     // 일정 상세 - 전체 조회 (페이지네이션)
     ARTICLE_SCHEDULE_READ_ALL_PAGINATION_INVALID("[일정 상세 - 전체 조회] - 유효하지 않은 후기 ID", 10040L),
     ARTICLE_SCHEDULE_READ_ALL_PAGINATION_NOT_USER("[일정 상세 - 전체 조회] - 해당 후기에 접근 권한 없음", 10041L),

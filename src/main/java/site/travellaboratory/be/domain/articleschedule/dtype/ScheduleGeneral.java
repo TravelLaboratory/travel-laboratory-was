@@ -114,4 +114,17 @@ public class ScheduleGeneral extends ArticleSchedule {
             request.googleMapHomePageUrl()
         );
     }
+
+    public void update(ScheduleGeneralRequest request) {
+        this.placeName = request.placeName();
+        this.durationTime = request.durationTime();
+        this.expense = request.expense();
+        this.memo = request.memo();
+        this.googleMapPlaceId = request.googleMapPlaceId();
+        this.googleMapLatitude = request.googleMapLatitude();
+        this.googleMapLongitude = request.googleMapLongitude();
+        this.googleMapAddress = request.googleMapAddress();
+        this.googleMapPhoneNumber = request.googleMapPhoneNumber();
+        this.googleMapHomePageUrl = request.googleMapHomePageUrl();
+    }
 }
