@@ -69,6 +69,26 @@ public enum ErrorCodes {
     COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
     COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
 
+    // 일정 상세 (article_schedule)
+    // 일정 상세 - 작성
+
+    ARTICLE_SCHEDULE_POST_INVALID("[일정 상세 - 작성] - 유효하지 않은 초기 여행 계획 ID", 10000L),
+    ARTICLE_SCHEDULE_POST_NOT_USER("[일정 상세 - 작성] - 초기 여행 계획 작성자만 상세 여행 계획을 작성할 수 있습니다.", 10001L),
+    ARTICLE_SCHEDULE_POST_NOT_DTYPE("[일정 상세 - 작성] - 올바르지 않은 DTYPE이 포함되어 있습니다.", 10002L),
+
+    // 일정 상세 - 수정
+    ARTICLE_SCHEDULE_UPDATE_INVALID("[일정 상세 - 수정] - 유효하지 않은 일정 상세 - ID", 10010L),
+    ARTICLE_SCHEDULE_UPDATE_NOT_USER("[일정 상세 - 수정] - 본인의 일정 상세 -이 아닙니다.", 10011L),
+    // 일정 상세 - 삭제
+    ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 일정 상세 - ID", 10020L),
+    ARTICLE_SCHEDULE_DELETE_NOT_USER("[일정 상세 - 삭제] - 본인의 일정 상세 -가 아닙니다.", 10021L),
+    // 일정 상세 - 좋아요
+    ARTICLE_SCHEDULE_LIKE_INVALID("[일정 상세 - 좋아요] - 유효하지 않은 일정 상세 - ID", 10030L),
+    // 일정 상세 - 전체 조회 (페이지네이션)
+    ARTICLE_SCHEDULE_READ_ALL_PAGINATION_INVALID("[일정 상세 - 전체 조회] - 유효하지 않은 후기 ID", 10040L),
+    ARTICLE_SCHEDULE_READ_ALL_PAGINATION_NOT_USER("[일정 상세 - 전체 조회] - 해당 후기에 접근 권한 없음", 10041L),
+
+
     // 아티클 관련
     ARTICLE_NOT_FOUND("존재 하지 않는 초기 여행 계획", 6000L),
     ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[초기 여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 6010L),
@@ -83,7 +103,6 @@ public enum ErrorCodes {
 
     // 북마크 관련
     BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
-
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),

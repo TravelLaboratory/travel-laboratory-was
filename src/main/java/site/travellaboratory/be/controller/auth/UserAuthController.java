@@ -84,7 +84,7 @@ public class UserAuthController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reissue-token")
+    @GetMapping("/reissue-token")
     public ResponseEntity<Void> refreshAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @CookieValue(value = "refresh-token") String refreshToken,
