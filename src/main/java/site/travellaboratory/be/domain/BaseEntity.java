@@ -22,16 +22,4 @@ public abstract class BaseEntity {
     @Column(nullable = false, columnDefinition = "DATETIME") // create 로 할 경우 datetime(6)으로 소수점까지 들어감
     private LocalDateTime updatedAt;
 
-    // todo : 지울부분
-    // 해당 부분 @CreatedDate, @LastModifiedDate 로 해결
-//    public BaseEntity() {
-//        this.createdAt = LocalDateTime.now();
-//        this.updatedAt = LocalDateTime.now();
-//    }
-
-    // @LastModifiedDate 와 중복되기에 삭제 전 주석 처리 (확인용)
-//    @PreUpdate
-//    public void update() {
-//        this.updatedAt = LocalDateTime.now();
-//    }
 }
