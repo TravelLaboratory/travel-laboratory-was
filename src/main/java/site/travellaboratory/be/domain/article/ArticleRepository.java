@@ -19,7 +19,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Optional<Page<Article>> findByUserAndStatusIn(User user, List<ArticleStatus> status, Pageable pageable);
 
-    @Query("SELECT a FROM Article a JOIN a.location l WHERE l.city LIKE %:keyword% AND a.status = site.travellaboratory.be.domain.article.ArticleStatus.ACTIVE")
-    Page<Article> findByLocationCityContainingAndStatusActive(@Param("keyword") String keyword, Pageable pageable);
-
+    @Query("SELECT a FROM Article a JOIN a.location l WHERE l.city LIKE %:keyword% AND a.status = :status")
+    Page<Article> findByLocationCityContainingAndStatusActive(
+            @Param("keyword") String keyword,
+            Pageable pageable,
+            @Param("status") ArticleStatus status);
 }

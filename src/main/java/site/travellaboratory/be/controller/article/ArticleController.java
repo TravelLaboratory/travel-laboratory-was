@@ -1,6 +1,5 @@
 package site.travellaboratory.be.controller.article;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +18,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleResponseWithEditable;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -44,7 +41,6 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{userId}")
-    @JsonIgnoreProperties(value = {"pageable"})
     public ResponseEntity<Page<ArticleTotalResponse>> findArticles(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
@@ -77,13 +73,16 @@ public class ArticleController {
     }
 
     @GetMapping("/search/article")
-    public ResponseEntity<Page<ArticleSearchResponse>> searchArticle(
+    public ResponseEntity<Page<ArticleTotalResponse>> searchArticle(
             @RequestParam("keyword") final String keyword,
             @RequestParam(defaultValue = "0", value = "page") int page,
-            @RequestParam(defaultValue = "10", value = "size") int size) {
-        final Page<ArticleSearchResponse> response = articleService.searchArticlesByKeyWord(keyword,
-                PageRequest.of(page, size));
-        return ResponseEntity.ok(response);  // 게시물 전체 개수, 추가로 보내야 함
+            @RequestParam(defaultValue = "10", value = "size") int size,
+            @RequestParam(required = false, defaultValue = "createdAt,desc") String sort,
+            @UserId final Long loginId
+    ) {
+        final Page<ArticleTotalResponse> response = articleService.searchArticlesByKeyWord(keyword,
+                PageRequest.of(page, size), loginId, sort);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/article/status/{articleId}")

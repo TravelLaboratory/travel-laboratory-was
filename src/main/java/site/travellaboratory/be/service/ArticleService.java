@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +17,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleResponseWithEditable;
-import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -127,9 +127,71 @@ public class ArticleService {
 
     // 아티클 검색
     @Transactional
-    public Page<ArticleSearchResponse> searchArticlesByKeyWord(final String keyword, final Pageable pageable) {
-        final Page<Article> articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, pageable);
-        return ArticleSearchResponse.from(articles);
+    public Page<ArticleTotalResponse> searchArticlesByKeyWord(
+            final String keyword,
+            final Pageable pageable,
+            final Long loginId,
+            final String sort
+    ) {
+        Page<Article> articles;
+
+        if (sort.equals("popularity")) {
+            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, Pageable.unpaged(),
+                    ArticleStatus.ACTIVE);
+            articles = sortByBookmarkCount(articles);
+
+            articles = slicePage(pageable, articles);
+        } else {
+            String[] sortParams = sort.split(",");
+            Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
+            Sort sortOrder = Sort.by(direction, sortParams[0]);
+
+            Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, sortedPageable,
+                    ArticleStatus.ACTIVE);
+        }
+
+        List<ArticleTotalResponse> articleResponses = articles.getContent().stream()
+                .map(article -> {
+                    boolean isEditable = article.getUser().getId().equals(loginId);
+                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
+                            article.getUser().getId(), article.getId(), BookmarkStatus.ACTIVE);
+
+                    return ArticleTotalResponse.of(
+                            article,
+                            bookmarkCount,
+                            isBookmarked,
+                            isEditable
+                    );
+                })
+                .toList();
+
+        return new PageImpl<>(articleResponses, pageable, articles.getTotalElements());
+    }
+
+    private Page<Article> slicePage(Pageable pageable, Page<Article> articles) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int fromIndex = pageNumber * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, articles.getContent().size());
+
+        List<Article> pagedArticles = articles.getContent().subList(fromIndex, toIndex);
+        articles = new PageImpl<>(pagedArticles, pageable, articles.getTotalElements());
+        return articles;
+    }
+
+    private Page<Article> sortByBookmarkCount(Page<Article> articles) {
+        List<Article> sortedArticles = articles.stream()
+                .sorted((a1, a2) -> {
+                    Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
+                    Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
+                    return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(sortedArticles, articles.getPageable(), articles.getTotalElements());
     }
 
     // 아티클 삭제
