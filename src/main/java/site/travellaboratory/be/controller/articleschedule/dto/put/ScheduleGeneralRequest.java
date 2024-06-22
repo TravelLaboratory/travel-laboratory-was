@@ -1,4 +1,4 @@
-package site.travellaboratory.be.controller.articleschedule.dto;
+package site.travellaboratory.be.controller.articleschedule.dto.put;
 
 public record ScheduleGeneralRequest(
     String placeName,

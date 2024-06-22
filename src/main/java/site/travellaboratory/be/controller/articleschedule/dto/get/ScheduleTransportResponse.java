@@ -1,6 +1,6 @@
-package site.travellaboratory.be.controller.articleschedule.dto;
+package site.travellaboratory.be.controller.articleschedule.dto.get;
 
-public record ScheduleTransportRequest(
+public record ScheduleTransportResponse(
     String transportation,
     String startPlaceName,
     String googleMapStartPlaceAddress,

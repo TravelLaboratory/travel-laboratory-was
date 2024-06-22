@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.controller.articleschedule.dto.ScheduleTransportRequest;
+import site.travellaboratory.be.controller.articleschedule.dto.put.ScheduleTransportRequest;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.domain.articleschedule.ArticleScheduleStatus;
