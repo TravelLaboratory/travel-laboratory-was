@@ -14,25 +14,26 @@ public record ArticleSearchResponse(
         LocalDate startAt,
         LocalDate endAt,
         String expense,
+        String imageUrl,
         String travelCompanion,
-        List<String> travelStyle,
+        List<String> travelStyles,
         String nickname
 ) {
 
-    public static List<ArticleSearchResponse> from(final Page<Article> articles) {
-        return articles.stream()
-                .map(article -> new ArticleSearchResponse(
-                        article.getTitle(),
-                        article.getLocation(),
-                        article.getStartAt(),
-                        article.getEndAt(),
-                        article.getExpense(),
-                        article.getTravelCompanion().getName(),
-                        article.getTravelStyles().stream()
-                                .map(TravelStyle::getName)
-                                .collect(Collectors.toList()),
-                        article.getNickname()
-                ))
-                .toList();
+    public static Page<ArticleSearchResponse> from(final Page<Article> articles) {
+        return articles.map(article -> new ArticleSearchResponse(
+                article.getTitle(),
+                article.getLocation(),
+                article.getStartAt(),
+                article.getEndAt(),
+                article.getExpense(),
+                article.getImageUrl(),
+                article.getTravelCompanion().getName(),
+                article.getTravelStyles().stream()
+                        .map(TravelStyle::getName)
+                        .collect(Collectors.toList()),
+                article.getNickname()
+        ));
     }
+
 }

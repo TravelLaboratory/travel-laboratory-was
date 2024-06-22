@@ -6,7 +6,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 
 public enum TravelCompanion {
-    FAMILY("가족과"),
+    FAMILY("가족들과"),
     FRIENDS("친구와"),
     CHILD("아이와"),
     PARTNER("연인과"),
