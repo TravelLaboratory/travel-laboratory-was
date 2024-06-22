@@ -118,6 +118,9 @@ public class ArticleScheduleService {
                     request.visitedTime(),
                     request.sortOrder(),
                     request.category(),
+                    request.durationTime(),
+                    request.expense(),
+                    request.memo(),
                     ArticleScheduleStatus.ACTIVE,
                     request.scheduleGeneral()
                 );
@@ -131,6 +134,9 @@ public class ArticleScheduleService {
                     request.visitedTime(),
                     request.sortOrder(),
                     request.category(),
+                    request.durationTime(),
+                    request.expense(),
+                    request.memo(),
                     ArticleScheduleStatus.ACTIVE,
                     request.scheduleTransport()
                 );
@@ -142,6 +148,9 @@ public class ArticleScheduleService {
                     request.visitedTime(),
                     request.sortOrder(),
                     request.category(),
+                    request.durationTime(),
+                    request.expense(),
+                    request.memo(),
                     ArticleScheduleStatus.ACTIVE,
                     request.scheduleEtc()
                 );

@@ -61,7 +61,7 @@ public class Article extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
-    private String imageUrl;
+    private String coverImageUrl;
 
     public Article(final Long id,
                    final User user,
@@ -107,6 +107,10 @@ public class Article extends BaseEntity {
         this.expense = articleUpdateRequest.expense();
         this.travelCompanion = TravelCompanion.from(articleUpdateRequest.travelCompanion());
         this.travelStyles = TravelStyle.from(articleUpdateRequest.travelStyles());
+    }
+
+    public void updateCoverImage(final String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
     }
 
     // 지우지 마세요!!! [상권] - 초기 여행 계획 + 일정 리스트 삭제 시 사용중
