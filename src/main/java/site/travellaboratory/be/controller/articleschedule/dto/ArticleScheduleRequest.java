@@ -10,6 +10,10 @@ public record ArticleScheduleRequest(
     Time visitedTime,
     Integer sortOrder,
     String category,
+    Time durationTime,
+    String expense,
+    String memo,
+
     String dtype,
     ScheduleGeneralRequest scheduleGeneral,
     ScheduleTransportRequest scheduleTransport,

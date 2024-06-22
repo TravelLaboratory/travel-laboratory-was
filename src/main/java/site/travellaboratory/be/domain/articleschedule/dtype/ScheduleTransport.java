@@ -53,8 +53,11 @@ public class ScheduleTransport extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status,
 
 
@@ -67,7 +70,7 @@ public class ScheduleTransport extends ArticleSchedule {
         String googleMapEndPlaceAddress,
         Double googleMapEndLatitude,
         Double googleMapEndLongitude) {
-        super(article, visitedDate, visitedTime, sort_order, category, status);
+        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.transportation = transportation;
         this.startPlaceName = startPlaceName;
         this.googleMapStartPlaceAddress = googleMapStartPlaceAddress;
@@ -83,8 +86,11 @@ public class ScheduleTransport extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status,
 
         ScheduleTransportRequest request
@@ -93,8 +99,11 @@ public class ScheduleTransport extends ArticleSchedule {
             article,
             visitedDate,
             visitedTime,
-            sort_order,
+            sortOrder,
             category,
+            durationTime,
+            expense,
+            memo,
             status,
 
             request.transportation(),

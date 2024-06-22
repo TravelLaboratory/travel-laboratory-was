@@ -28,12 +28,14 @@ public class ScheduleEtc extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status,
-
         String placeName) {
-        super(article, visitedDate, visitedTime, sort_order, category,status);
+        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.placeName = placeName;
     }
 
@@ -41,21 +43,24 @@ public class ScheduleEtc extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status,
-
-
         ScheduleEtcRequest request
         ) {
         return new ScheduleEtc(
             article,
             visitedDate,
             visitedTime,
-            sort_order,
+            sortOrder,
             category,
+            durationTime,
+            expense,
+            memo,
             status,
-
             request.placeName());
     }
 

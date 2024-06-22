@@ -24,17 +24,8 @@ public class ScheduleGeneral extends ArticleSchedule {
     @Column(nullable = false, length = 255)
     private String placeName;
 
-    @Column(nullable = false, columnDefinition = "TIME(4)")
-    private Time durationTime;
-
-    @Column(nullable = false, length = 15)
-    private String expense;
-
-    @Column(length = 500)
-    private String memo;
-
-    @Column(nullable = false)
-    private Long googleMapPlaceId;
+    @Column(nullable = false, length = 255)
+    private String googleMapPlaceId;
 
     @Column(nullable = false, columnDefinition = "DECIMAL(10,8)")
     private Double googleMapLatitude;
@@ -56,26 +47,23 @@ public class ScheduleGeneral extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
-        ArticleScheduleStatus status,
-
-        String placeName,
         Time durationTime,
         String expense,
         String memo,
-        Long googleMapPlaceId,
+        ArticleScheduleStatus status,
+
+        String placeName,
+        String googleMapPlaceId,
         Double googleMapLatitude,
         Double googleMapLongitude,
         String googleMapAddress,
         String googleMapPhoneNumber,
         String googleMapHomePageUrl
         ) {
-        super(article, visitedDate, visitedTime, sort_order, category, status);
+        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.placeName = placeName;
-        this.durationTime = durationTime;
-        this.expense = expense;
-        this.memo = memo;
         this.googleMapPlaceId = googleMapPlaceId;
         this.googleMapLatitude = googleMapLatitude;
         this.googleMapLongitude = googleMapLongitude;
@@ -88,8 +76,11 @@ public class ScheduleGeneral extends ArticleSchedule {
         Article article,
         LocalDate visitedDate,
         Time visitedTime,
-        Integer sort_order,
+        Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status,
 
         ScheduleGeneralRequest request
@@ -98,14 +89,14 @@ public class ScheduleGeneral extends ArticleSchedule {
             article,
             visitedDate,
             visitedTime,
-            sort_order,
+            sortOrder,
             category,
+            durationTime,
+            expense,
+            memo,
             status,
 
             request.placeName(),
-            request.durationTime(),
-            request.expense(),
-            request.memo(),
             request.googleMapPlaceId(),
             request.googleMapLatitude(),
             request.googleMapLongitude(),
@@ -117,9 +108,6 @@ public class ScheduleGeneral extends ArticleSchedule {
 
     public void update(ScheduleGeneralRequest request) {
         this.placeName = request.placeName();
-        this.durationTime = request.durationTime();
-        this.expense = request.expense();
-        this.memo = request.memo();
         this.googleMapPlaceId = request.googleMapPlaceId();
         this.googleMapLatitude = request.googleMapLatitude();
         this.googleMapLongitude = request.googleMapLongitude();
