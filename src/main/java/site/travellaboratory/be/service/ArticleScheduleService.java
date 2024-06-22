@@ -57,7 +57,7 @@ public class ArticleScheduleService {
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAscFetchJoinSchedules(
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
             article, ArticleScheduleStatus.ACTIVE);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
@@ -79,9 +79,8 @@ public class ArticleScheduleService {
         }
 
         // (0) 기존 일정들 불러오기 (삭제된 건 제외 + sortOrder로 내림차순) (N+1을 막기 위해 FETCH JOIN)
-        List<ArticleSchedule> existingSchedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAscFetchJoinSchedules(
+        List<ArticleSchedule> existingSchedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
             article, ArticleScheduleStatus.ACTIVE);
-
         // (1) 일정 수정 - id o , 일정 생성 - id x -> 이를 분리
         Map<Long, ArticleScheduleRequest> requestMap = requests.stream()
             .filter(request -> request.scheduleId() != null)
