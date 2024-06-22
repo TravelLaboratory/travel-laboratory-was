@@ -58,10 +58,6 @@ public class Article extends BaseEntity {
     @Convert(converter = TravelStyleConverter.class)
     private List<TravelStyle> travelStyles = new ArrayList<>();
 
-    private int bookmarkCount;
-
-    private boolean isBookmarked;
-
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
@@ -85,7 +81,6 @@ public class Article extends BaseEntity {
         this.travelCompanion = TravelCompanion.from(travelCompanion);
         this.travelStyles = TravelStyle.from(travelStyles);
         this.status = ArticleStatus.ACTIVE;
-        this.bookmarkCount = 0;
     }
 
     public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {
@@ -112,36 +107,8 @@ public class Article extends BaseEntity {
         this.travelStyles = TravelStyle.from(articleUpdateRequest.travelStyles());
     }
 
-    public void toggleStatus() {
-        if (this.status == ArticleStatus.ACTIVE) {
-            this.status = ArticleStatus.PRIVATE;
-        } else if (this.status == ArticleStatus.PRIVATE) {
-            this.status = ArticleStatus.ACTIVE;
-        }
-    }
-
     public void delete() {
         this.status = ArticleStatus.INACTIVE;
-    }
-
-    public void increasedBookmarkCount() {
-        this.bookmarkCount++;
-    }
-
-    public void decreasedBookmarkCount() {
-        if (bookmarkCount <= 0) {
-            this.bookmarkCount = 0;
-        } else {
-            this.bookmarkCount--;
-        }
-    }
-
-    public void pushBookmark() {
-        this.isBookmarked = true;
-    }
-
-    public void cancelBookmark() {
-        this.isBookmarked = false;
     }
 
     public String getNickname() {

@@ -17,11 +17,10 @@ public record ArticleResponse(
         String travelCompanion,
         List<String> travelStyles,
         String name,
-        int bookmarkCount,
-        boolean isBookmarked
+        Long bookmarkCount
 ) {
 
-    public static ArticleResponse from(final Article article) {
+    public static ArticleResponse from(final Article article,Long bookmarkCount) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
@@ -35,12 +34,11 @@ public record ArticleResponse(
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getUser().getNickname(),
-                article.getBookmarkCount(),
-                article.isBookmarked()
+                bookmarkCount
         );
     }
 
-    public static Page<ArticleResponse> from(final Page<Article> articles) {
-        return articles.map(ArticleResponse::from);
-    }
+//    public static Page<ArticleResponse> from(final Page<Article> articles) {
+//        return articles.map(ArticleResponse::from);
+//    }
 }

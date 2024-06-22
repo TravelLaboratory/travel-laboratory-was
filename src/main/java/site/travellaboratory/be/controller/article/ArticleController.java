@@ -40,23 +40,24 @@ public class ArticleController {
         return ResponseEntity.ok(articleRegisterResponse);
     }
 
-    @GetMapping("/articles/{userId}")
-    public ResponseEntity<Page<ArticleResponse>> findArticles(
-            @UserId final Long loginId,
-            @PathVariable(name = "userId") final Long userId,
-            @RequestParam(defaultValue = "0", value = "page") int page,
-            @RequestParam(defaultValue = "10", value = "size") int size
-    ) {
-        final Page<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId,
-                PageRequest.of(page, size));
-        return ResponseEntity.ok(articleResponse);
-    }
+//    @GetMapping("/articles/{userId}")
+//    public ResponseEntity<Page<ArticleResponse>> findArticles(
+//            @UserId final Long loginId,
+//            @PathVariable(name = "userId") final Long userId,
+//            @RequestParam(defaultValue = "0", value = "page") int page,
+//            @RequestParam(defaultValue = "10", value = "size") int size
+//    ) {
+//        final Page<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId,
+//                PageRequest.of(page, size));
+//        return ResponseEntity.ok(articleResponse);
+//    }
 
     @GetMapping("/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(
+            @UserId final Long loginId,
             @PathVariable(name = "articleId") final Long articleId
     ) {
-        final ArticleResponse articleResponse = articleService.findByArticle(articleId);
+        final ArticleResponse articleResponse = articleService.findByArticle(loginId, articleId);
         return ResponseEntity.ok(articleResponse);
     }
 

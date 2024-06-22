@@ -19,6 +19,9 @@ import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
+import site.travellaboratory.be.domain.bookmark.Bookmark;
+import site.travellaboratory.be.domain.bookmark.BookmarkRepository;
+import site.travellaboratory.be.domain.bookmark.BookmarkStatus;
 import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
 import site.travellaboratory.be.domain.user.entity.UserStatus;
@@ -29,6 +32,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     //내 초기 여행 계획 저장
     @Transactional
@@ -43,36 +47,41 @@ public class ArticleService {
     }
 
     // 내 초기 여행 계획 전체 조회
-    @Transactional
-    public Page<ArticleResponse> findByUserArticles(final Long loginId, final Long userId, final Pageable pageable) {
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                        HttpStatus.NOT_FOUND));
-
-        final boolean isEditable = user.getId().equals(loginId);
-
-        if (isEditable) {
-            final Page<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
-                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
-                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-            return ArticleResponse.from(myArticles);
-        } else {
-            final Page<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
-                            List.of(ArticleStatus.ACTIVE), pageable)
-                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-            return ArticleResponse.from(anotherArticles);
-        }
-    }
+//    @Transactional
+//    public Page<ArticleResponse> findByUserArticles(final Long loginId, final Long userId, final Pageable pageable) {
+//        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+//                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+//                        HttpStatus.NOT_FOUND));
+//
+//        final boolean isEditable = user.getId().equals(loginId);
+//
+//        if (isEditable) {
+//            final Page<Article> myArticles = articleRepository.findByUserAndStatusIn(user,
+//                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
+//                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+//            return ArticleResponse.from(myArticles);
+//        } else {
+//            final Page<Article> anotherArticles = articleRepository.findByUserAndStatusIn(user,
+//                            List.of(ArticleStatus.ACTIVE), pageable)
+//                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+//            return ArticleResponse.from(anotherArticles);
+//        }
+//    }
 
     // 초기 여행 계획 한개 조회
     @Transactional
-    public ArticleResponse findByArticle(final Long articleId) {
+    public ArticleResponse findByArticle(final Long loginId, final Long articleId) {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-    // 본인것이 아니면 에러
-        return ArticleResponse.from(article);
+
+        final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(articleId, BookmarkStatus.ACTIVE);
+
+        if (!article.getUser().getId().equals(loginId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION, HttpStatus.UNAUTHORIZED);
+        }
+
+        return ArticleResponse.from(article,bookmarkCount);
     }
 
     // 내 초기 여행 계획 수정
