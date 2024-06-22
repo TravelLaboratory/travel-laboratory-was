@@ -27,7 +27,7 @@ public record ArticleSearchResponse(
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
-                article.getImageUrl(),
+                article.getUser().getProfileImgUrl(),
                 article.getTravelCompanion().getName(),
                 article.getTravelStyles().stream()
                         .map(TravelStyle::getName)

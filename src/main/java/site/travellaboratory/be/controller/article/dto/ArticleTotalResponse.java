@@ -47,7 +47,7 @@ public record ArticleTotalResponse(
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
-                article.getImageUrl(),
+                article.getUser().getProfileImgUrl(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getUser().getNickname(),
