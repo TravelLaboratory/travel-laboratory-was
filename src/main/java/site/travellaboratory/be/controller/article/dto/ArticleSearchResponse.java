@@ -20,14 +20,14 @@ public record ArticleSearchResponse(
         String nickname
 ) {
 
-    public static Page<ArticleSearchResponse> from(final Page<Article> articles) {
+   public static Page<ArticleSearchResponse> from(final Page<Article> articles) {
         return articles.map(article -> new ArticleSearchResponse(
                 article.getTitle(),
                 article.getLocation(),
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
-                article.getImageUrl(),
+                article.getUser().getProfileImgUrl(),
                 article.getTravelCompanion().getName(),
                 article.getTravelStyles().stream()
                         .map(TravelStyle::getName)
