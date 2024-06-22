@@ -43,8 +43,6 @@ public class BookmarkService {
             bookmark.toggleStatus();
         } else {
             bookmark = Bookmark.of(user, article);
-            article.increasedBookmarkCount();
-            article.pushBookmark();
         }
 
         final Bookmark newBookmark = bookmarkRepository.save(bookmark);
