@@ -51,7 +51,7 @@ public class ArticleService {
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
-    public Page<ArticleResponseWithEditable> findByUserArticles(final Long loginId, final Long userId, Pageable pageable) {
+    public Page<ArticleTotalResponse> findByUserArticles(final Long loginId, final Long userId, Pageable pageable) {
         // 사용자 조회
         User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -72,24 +72,13 @@ public class ArticleService {
         }
 
         // 각 아티클의 북마크 수 및 북마크 상태 확인하여 ArticleResponse로 변환
-        List<ArticleResponseWithEditable> articleResponses = articlesPage.getContent().stream()
+        List<ArticleTotalResponse> articleResponses = articlesPage.getContent().stream()
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
                     boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(loginId,
                             article.getId(), BookmarkStatus.ACTIVE);
-                    return new ArticleResponseWithEditable(
-                            ArticleTotalResponse.of(
-                                    article,
-                                    bookmarkCount,
-                                    isBookmarked
-//                                    articlesPage.getTotalPages(),
-//                                    articlesPage.getTotalElements(),
-//                                    pageable.getPageNumber(),
-//                                    pageable.getPageNumber() == articlesPage.getTotalPages() - 1
-                            ),
-                            isEditable
-                    );
+                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
                 })
                 .collect(Collectors.toList());
 

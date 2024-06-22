@@ -21,6 +21,7 @@ import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponseWithEditable;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.service.ArticleService;
@@ -33,7 +34,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("/article")
-    public ResponseEntity<ArticleRegisterResponse> registerMyArticle(
+    public ResponseEntity<ArticleRegisterResponse> registerArticle(
             @RequestBody final ArticleRegisterRequest articleRegisterRequest,
             @UserId final Long userId
     ) {
@@ -44,13 +45,13 @@ public class ArticleController {
 
     @GetMapping("/articles/{userId}")
     @JsonIgnoreProperties(value = {"pageable"})
-    public ResponseEntity<Page<ArticleResponseWithEditable>> findArticles(
+    public ResponseEntity<Page<ArticleTotalResponse>> findArticles(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size
     ) {
-        final Page<ArticleResponseWithEditable> articleResponse = articleService.findByUserArticles(loginId, userId,
+        final Page<ArticleTotalResponse> articleResponse = articleService.findByUserArticles(loginId, userId,
                 PageRequest.of(page, size));
         return ResponseEntity.ok(articleResponse);
     }

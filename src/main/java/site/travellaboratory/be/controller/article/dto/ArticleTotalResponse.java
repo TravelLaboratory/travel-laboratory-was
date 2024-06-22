@@ -14,11 +14,13 @@ public record ArticleTotalResponse(
         LocalDate startAt,
         LocalDate endAt,
         String expense,
+        String imageUrl,
         String travelCompanion,
         List<String> travelStyles,
         String name,
         Long bookmarkCount,
-        Boolean isBookmarked
+        Boolean isBookmarked,
+        Boolean isEditable
 //        int totalPages,
 //        Long totalElements,
 //        int pageNumber,
@@ -27,7 +29,8 @@ public record ArticleTotalResponse(
     public static ArticleTotalResponse of(
             final Article article,
             final Long bookmarkCount,
-            final Boolean isBookmarked
+            final Boolean isBookmarked,
+            final Boolean isEditable
 //            final int totalPages,
 //            final long totalElements,
 //            final int pageNumber,
@@ -44,11 +47,13 @@ public record ArticleTotalResponse(
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
+                article.getImageUrl(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getUser().getNickname(),
                 bookmarkCount,
-                isBookmarked
+                isBookmarked,
+                isEditable
 //                totalPages,
 //                totalElements,
 //                pageNumber,

@@ -61,6 +61,8 @@ public class Article extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
+    private String imageUrl;
+
     public Article(final Long id,
                    final User user,
                    final String title,
