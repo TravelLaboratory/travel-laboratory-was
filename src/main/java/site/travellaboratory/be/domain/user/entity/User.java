@@ -81,14 +81,29 @@ public class User extends BaseEntity {
         this.username = username;
     }
 
+    private void setProfileImgUrl(final String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
     public void setIsAgreement(Boolean agreement) {
         isAgreement = agreement;
     }
 
+    // 일반 회원가입 시
     public static User of(String username, String password, String nickname, Boolean isAgreement) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
+        user.setNickname(nickname);
+        user.setIsAgreement(isAgreement);
+        return user;
+    }
+
+    // 소셜 로그인 시
+    public static User socialOf(String email, String profileImgUrl, String nickname, Boolean isAgreement) {
+        User user = new User();
+        user.setUsername(email);
+        user.setProfileImgUrl(profileImgUrl);
         user.setNickname(nickname);
         user.setIsAgreement(isAgreement);
         return user;

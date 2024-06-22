@@ -3,6 +3,7 @@ package site.travellaboratory.be.controller.article.dto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
@@ -14,7 +15,8 @@ public record ArticleTotalResponse(
         LocalDate startAt,
         LocalDate endAt,
         String expense,
-        String imageUrl,
+        String profileImageUrl,
+        String coverImageUrl,
         String travelCompanion,
         List<String> travelStyles,
         String name,
@@ -48,6 +50,7 @@ public record ArticleTotalResponse(
                 article.getEndAt(),
                 article.getExpense(),
                 article.getUser().getProfileImgUrl(),
+                article.getCoverImageUrl(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
                 article.getUser().getNickname(),

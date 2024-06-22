@@ -23,6 +23,4 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     boolean existsByUserIdAndArticleIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
 
-//    @Query("SELECT t.comment.id, COUNT(t) FROM UserLikeComment t WHERE t.comment.id IN :commentIds AND t.status = :status GROUP BY t.comment.id")
-//    List<Object[]> countByCommentIdsAndStatusGroupByCommentId(@Param("commentIds") List<Long> commentIds, @Param("status") UserLikeCommentStatus status);
 }
