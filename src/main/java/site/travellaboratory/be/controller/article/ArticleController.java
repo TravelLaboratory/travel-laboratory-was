@@ -3,6 +3,7 @@ package site.travellaboratory.be.controller.article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,13 +13,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.service.ArticleService;
@@ -60,6 +64,16 @@ public class ArticleController {
         final ArticleResponse articleResponse = articleService.findByArticle(loginId, articleId);
         return ResponseEntity.ok(articleResponse);
     }
+
+    @PutMapping("/article/{articleId}/coverImage")
+    public ResponseEntity<ArticleUpdateCoverImageResponse> updateCoverImage(
+            @RequestPart("coverImage") final MultipartFile coverImage,
+            @PathVariable(name = "articleId") final Long articleId
+    ) {
+        final ArticleUpdateCoverImageResponse articleUpdateCoverImageResponse = articleService.updateCoverImage(coverImage, articleId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(articleUpdateCoverImageResponse);
+    }
+
 
     @PutMapping("/article/{articleId}")
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
