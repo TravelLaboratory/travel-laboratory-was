@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleDeleteResponse;
-import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleRequest;
-import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleUpdateResponse;
+import site.travellaboratory.be.controller.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
+import site.travellaboratory.be.controller.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
+import site.travellaboratory.be.controller.articleschedule.dto.put.ArticleScheduleRequest;
+import site.travellaboratory.be.controller.articleschedule.dto.put.ArticleScheduleUpdateResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
 import site.travellaboratory.be.domain.article.ArticleStatus;
@@ -21,6 +22,9 @@ import site.travellaboratory.be.domain.articleschedule.ArticleScheduleStatus;
 import site.travellaboratory.be.domain.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.domain.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.domain.articleschedule.dtype.ScheduleTransport;
+import site.travellaboratory.be.domain.review.Review;
+import site.travellaboratory.be.domain.review.ReviewRepository;
+import site.travellaboratory.be.domain.review.ReviewStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,36 @@ public class ArticleScheduleService {
 
     private final ArticleRepository articleRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
+    private final ReviewRepository reviewRepository;
+
+    @Transactional(readOnly = true)
+    public ArticleScheduleReadDetailResponse readSchedulesDetail(Long userId, Long articleId) {
+        // 유효하지 않은 여행 계획을 조회할 경우
+        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
+                HttpStatus.NOT_FOUND));
+
+        // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
+        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // reviewId 찾아오기 없다면 null
+        Long reviewId = reviewRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
+            .map(Review::getId)
+            .orElse(null);
+
+        boolean isEditable = article.getUser().getId().equals(userId);
+
+        System.out.println("조회 시작");
+        // 일정 리스트 조회
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAscFetchJoinSchedules(
+            article, ArticleScheduleStatus.ACTIVE);
+
+        return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
+    }
 
     @Transactional
     public ArticleScheduleUpdateResponse updateSchedules(Long userId, Long articleId,
