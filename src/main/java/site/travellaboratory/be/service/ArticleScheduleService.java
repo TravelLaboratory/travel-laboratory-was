@@ -50,9 +50,9 @@ public class ArticleScheduleService {
 
         // (1) 일정 수정 - id o , 일정 생성 - id x -> 이를 분리
         Map<Long, ArticleScheduleRequest> requestMap = requests.stream()
-            .filter(request -> request.id() != null)
+            .filter(request -> request.scheduleId() != null)
             // key - schedule id , value - schedule
-            .collect(Collectors.toMap(ArticleScheduleRequest::id, request -> request));
+            .collect(Collectors.toMap(ArticleScheduleRequest::scheduleId, request -> request));
 
         // (2) 삭제 처리 - 요청에 없음
         for (ArticleSchedule existingSchedule : existingSchedules) {
@@ -65,14 +65,14 @@ public class ArticleScheduleService {
         // (3) 작성, 수정 처리
         for (ArticleScheduleRequest request : requests) {
             // id x -> 새로운 일정 생성 [INSERT]
-            if (request.id() == null) {
+            if (request.scheduleId() == null) {
                 ArticleSchedule newSchedule = toArticleSchedule(article, request);
                 articleScheduleRepository.save(newSchedule);
             }
             // id o -> 기존 일정 수정 [UPDATE]
             else {
                 // 유효하지 않은 일정을 수정하려고 하는 경우
-                ArticleSchedule existingSchedule = findScheduleById(existingSchedules, request.id());
+                ArticleSchedule existingSchedule = findScheduleById(existingSchedules, request.scheduleId());
                 updateExistingSchedule(existingSchedule, request);
             }
         }
