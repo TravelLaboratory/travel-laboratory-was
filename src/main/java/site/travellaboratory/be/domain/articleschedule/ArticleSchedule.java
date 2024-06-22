@@ -49,6 +49,15 @@ public abstract class ArticleSchedule extends BaseEntity {
     @Column(nullable = false, length = 15)
     private String category;
 
+    @Column(nullable = false, columnDefinition = "TIME(4)")
+    private Time durationTime;
+
+    @Column(nullable = false, length = 15)
+    private String expense;
+
+    @Column(length = 500)
+    private String memo;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ArticleScheduleStatus status;
@@ -63,12 +72,18 @@ public abstract class ArticleSchedule extends BaseEntity {
         Time visitedTime,
         Integer sortOrder,
         String category,
+        Time durationTime,
+        String expense,
+        String memo,
         ArticleScheduleStatus status) {
         this.article = article;
         this.visitedDate = visitedDate;
         this.visitedTime = visitedTime;
         this.sortOrder = sortOrder;
         this.category = category;
+        this.durationTime = durationTime;
+        this.expense = expense;
+        this.memo = memo;
         this.status = status;
     }
 
@@ -81,5 +96,8 @@ public abstract class ArticleSchedule extends BaseEntity {
         this.visitedTime = request.visitedTime();
         this.sortOrder = request.sortOrder();
         this.category = request.category();
+        this.durationTime = request.durationTime();
+        this.expense = request.expense();
+        this.memo = request.memo();
     }
 }

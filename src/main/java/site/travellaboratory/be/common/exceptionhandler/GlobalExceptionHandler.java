@@ -16,6 +16,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.common.response.ApiErrorResponse;
 
+//@Profile("prod")
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
