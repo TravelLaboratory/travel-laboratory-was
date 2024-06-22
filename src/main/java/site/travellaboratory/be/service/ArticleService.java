@@ -15,7 +15,6 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleResponseWithEditable;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
