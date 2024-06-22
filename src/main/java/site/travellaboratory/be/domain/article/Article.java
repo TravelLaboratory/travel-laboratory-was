@@ -98,7 +98,7 @@ public class Article extends BaseEntity {
                 articleRegisterRequest.endAt(),
                 articleRegisterRequest.expense(),
                 articleRegisterRequest.travelCompanion(),
-                articleRegisterRequest.travelStyle()
+                articleRegisterRequest.travelStyles()
         );
     }
 
