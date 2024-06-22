@@ -7,7 +7,8 @@ import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
 
-public record ArticleResponse(
+public record ArticleTotalResponse(
+        Long articleId,
         String title,
         List<Location> location,
         LocalDate startAt,
@@ -18,14 +19,26 @@ public record ArticleResponse(
         String name,
         Long bookmarkCount,
         Boolean isBookmarked
+//        int totalPages,
+//        Long totalElements,
+//        int pageNumber,
+//        Boolean last
 ) {
-
-    public static ArticleResponse of(final Article article, final Long bookmarkCount, final Boolean isBookmarked) {
+    public static ArticleTotalResponse of(
+            final Article article,
+            final Long bookmarkCount,
+            final Boolean isBookmarked
+//            final int totalPages,
+//            final long totalElements,
+//            final int pageNumber,
+//            final Boolean last
+    ) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
-        return new ArticleResponse(
+        return new ArticleTotalResponse(
+                article.getId(),
                 article.getTitle(),
                 article.getLocation(),
                 article.getStartAt(),
@@ -36,6 +49,10 @@ public record ArticleResponse(
                 article.getUser().getNickname(),
                 bookmarkCount,
                 isBookmarked
+//                totalPages,
+//                totalElements,
+//                pageNumber,
+//                last
         );
     }
 }

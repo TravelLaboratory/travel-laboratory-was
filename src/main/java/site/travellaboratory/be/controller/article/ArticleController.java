@@ -1,5 +1,6 @@
 package site.travellaboratory.be.controller.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleResponseWithEditable;
 import site.travellaboratory.be.controller.article.dto.ArticleSearchResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateResponse;
@@ -40,17 +42,18 @@ public class ArticleController {
         return ResponseEntity.ok(articleRegisterResponse);
     }
 
-//    @GetMapping("/articles/{userId}")
-//    public ResponseEntity<Page<ArticleResponse>> findArticles(
-//            @UserId final Long loginId,
-//            @PathVariable(name = "userId") final Long userId,
-//            @RequestParam(defaultValue = "0", value = "page") int page,
-//            @RequestParam(defaultValue = "10", value = "size") int size
-//    ) {
-//        final Page<ArticleResponse> articleResponse = articleService.findByUserArticles(loginId, userId,
-//                PageRequest.of(page, size));
-//        return ResponseEntity.ok(articleResponse);
-//    }
+    @GetMapping("/articles/{userId}")
+    @JsonIgnoreProperties(value = {"pageable"})
+    public ResponseEntity<Page<ArticleResponseWithEditable>> findArticles(
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size
+    ) {
+        final Page<ArticleResponseWithEditable> articleResponse = articleService.findByUserArticles(loginId, userId,
+                PageRequest.of(page, size));
+        return ResponseEntity.ok(articleResponse);
+    }
 
     @GetMapping("/article/{articleId}")
     public ResponseEntity<ArticleResponse> findArticle(

@@ -20,4 +20,9 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     @Query("SELECT COUNT(b) FROM Bookmark b WHERE b.article.id = :articleId AND b.status = :status")
     Long countByArticleIdAndStatus(@Param("articleId") Long articleId, @Param("status") BookmarkStatus status);
+
+    boolean existsByUserIdAndArticleIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
+
+//    @Query("SELECT t.comment.id, COUNT(t) FROM UserLikeComment t WHERE t.comment.id IN :commentIds AND t.status = :status GROUP BY t.comment.id")
+//    List<Object[]> countByCommentIdsAndStatusGroupByCommentId(@Param("commentIds") List<Long> commentIds, @Param("status") UserLikeCommentStatus status);
 }
