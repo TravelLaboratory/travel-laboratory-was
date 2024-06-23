@@ -1,6 +1,5 @@
 package site.travellaboratory.be.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -125,12 +124,6 @@ public class UserAuthService {
         final String accessToken,
         final String refreshToken) {
         return authTokenGenerator.reIssueAccessToken(accessToken, refreshToken);
-    }
-
-    public String test(Long userId) {
-        Optional<User> userEntity = userRepository.findById(userId);
-        System.out.println("userEntity.get().getId(); = " + userEntity.get().getId());
-        return "Service Ok";
     }
 
     public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {

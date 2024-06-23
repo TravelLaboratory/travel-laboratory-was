@@ -1,10 +1,7 @@
 package site.travellaboratory.be.controller.oauth;
 
-import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,17 +29,7 @@ public class OAuthController {
         response.setHeader("authorization-token", authTokenResponse.accessToken());
         response.setHeader("authorization-token-expired-at", authTokenResponse.expiredAt());
 
-        // RefreshToken - refresh-token 쿠키에 추가
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh-token", authTokenResponse.refreshToken())
-                .httpOnly(true)
-                .path("/api/v1/auth/reissue-token")
-                .maxAge(14 * 24 * 60 * 60) // 2주
-                .secure(true)
-                .sameSite(NONE.attributeValue())
-//            .sameSite(STRICT.attributeValue())
-//            .domain("travel-laboratory.site")
-                .build();
-        response.setHeader("Set-Cookie", refreshTokenCookie.toString()); // 일단 refresh-token만 헤더로 넣을 것이기에 setHeader로 설정
+        response.setHeader("refresh-token", authTokenResponse.refreshToken());
         return ResponseEntity.ok().build();
     }
 }
