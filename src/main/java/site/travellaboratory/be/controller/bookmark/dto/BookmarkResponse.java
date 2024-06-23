@@ -14,7 +14,7 @@ public record BookmarkResponse(
         LocalDate endAt,
         String expense,
         String profileImageUrl,
-        String articleImage,
+        String coverImage,
         String travelCompanion,
         List<String> travelStyles,
         String name,
@@ -34,11 +34,11 @@ public record BookmarkResponse(
                 bookmark.getArticle().getStartAt(),
                 bookmark.getArticle().getEndAt(),
                 bookmark.getArticle().getExpense(),
-                bookmark.getUser().getProfileImgUrl(),
+                bookmark.getArticle().getUser().getProfileImgUrl(),
                 bookmark.getArticle().getCoverImageUrl(),
                 bookmark.getArticle().getTravelCompanion().getName(),
                 travelStyleNames,
-                bookmark.getUser().getNickname(),
+                bookmark.getArticle().getNickname(),
                 bookmarkCount,
                 isBookmarked
         );

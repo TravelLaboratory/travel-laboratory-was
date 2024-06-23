@@ -34,11 +34,12 @@ public class BookmarkController {
 
     @GetMapping("/bookmarks/{userId}")
     public ResponseEntity<Page<BookmarkResponse>> findMyAllBookmark(
+            @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size
     ) {
-        final Page<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(userId,
+        final Page<BookmarkResponse> allBookmarkByUser = bookmarkService.findAllBookmarkByUser(loginId,userId,
                 PageRequest.of(page, size));
 
         return ResponseEntity.ok(allBookmarkByUser);
