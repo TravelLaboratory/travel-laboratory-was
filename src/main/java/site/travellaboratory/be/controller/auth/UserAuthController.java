@@ -1,20 +1,15 @@
 package site.travellaboratory.be.controller.auth;
 
-import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
-
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
@@ -70,6 +65,7 @@ public class UserAuthController {
         response.setHeader("authorization-token", authTokenResponse.accessToken());
         response.setHeader("authorization-token-expired-at", authTokenResponse.expiredAt());
 
+/*
         // RefreshToken - refresh-token 쿠키에 추가
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh-token", authTokenResponse.refreshToken())
             .httpOnly(true)
@@ -80,14 +76,18 @@ public class UserAuthController {
 //            .sameSite(STRICT.attributeValue())
 //            .domain("travel-laboratory.site")
             .build();
-        response.setHeader("Set-Cookie", refreshTokenCookie.toString()); // 일단 refresh-token만 헤더로 넣을 것이기에 setHeader로 설정
+        response.setHeader("Set-Cookie", refreshTokenCookie.toString()); // 일단 refresh-token만 헤더로 넣을 것이기에 setHeader로 설정*/
+
+        // todo: 추후 cookie 변경 시 제거
+        response.setHeader("refresh-token", authTokenResponse.refreshToken());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/reissue-token")
     public ResponseEntity<Void> refreshAccessToken(
         @RequestHeader("authorization-token") String accessToken,
-        @CookieValue(value = "refresh-token") String refreshToken,
+        @RequestHeader("refresh-token") String refreshToken,
+//        @CookieValue(value = "refresh-token") String refreshToken, // todo: 추후 cookie 변경시 주석 제거
         HttpServletResponse response
     ) {
         System.out.println("refreshToken = " + refreshToken);
@@ -122,15 +122,6 @@ public class UserAuthController {
     ) {
         userAuthService.pwInquiryRenewal(pwInquiryRenewalRequest);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/me")
-    public Long me(
-        @UserId Long userId
-    ) {
-        System.out.println("user.getId() = " + userId);
-        userAuthService.test(userId);
-        return userId;
     }
 }
 
