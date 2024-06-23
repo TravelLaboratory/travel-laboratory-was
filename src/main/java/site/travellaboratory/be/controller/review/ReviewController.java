@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.controller.review.dto.ProfileReviewPaginationResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewDeleteResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewReadDetailResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
@@ -54,7 +56,8 @@ public class ReviewController {
         @PathVariable(name = "reviewId") Long reviewId,
         @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
     ) {
-        ReviewUpdateResponse response = reviewService.updateReview(userId, reviewId, reviewUpdateRequest);
+        ReviewUpdateResponse response = reviewService.updateReview(userId, reviewId,
+            reviewUpdateRequest);
         return ResponseEntity.ok(response);
     }
 
@@ -74,6 +77,22 @@ public class ReviewController {
     ) {
         ReviewToggleLikeResponse response = reviewService.toggleLikeReview(userId,
             reviewId);
+        return ResponseEntity.ok(response);
+    }
+
+
+    /* /api/v1/users/{userId}/reviews
+     * 프로필 - 후기 전체 조회 [페이지네이션]
+     */
+    @GetMapping("/users/{userId}/reviews")
+    public ResponseEntity<ProfileReviewPaginationResponse> ReadProfileReviews(
+        @UserId Long tokenUserId,
+        @PathVariable(name = "userId") Long userId,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "int", defaultValue = "10") int size
+    ) {
+        ProfileReviewPaginationResponse response = reviewService.readProfileReviews(
+            tokenUserId, userId, page, size);
         return ResponseEntity.ok(response);
     }
 }
