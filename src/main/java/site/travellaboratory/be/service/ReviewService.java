@@ -1,12 +1,18 @@
 package site.travellaboratory.be.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.controller.review.dto.ProfileReviewLocation;
+import site.travellaboratory.be.controller.review.dto.ProfileReviewPaginationResponse;
+import site.travellaboratory.be.controller.review.dto.ProfileReviewResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewDeleteResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewReadDetailResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
@@ -20,7 +26,9 @@ import site.travellaboratory.be.domain.article.ArticleStatus;
 import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.ReviewRepository;
 import site.travellaboratory.be.domain.review.ReviewStatus;
+import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
+import site.travellaboratory.be.domain.user.entity.UserStatus;
 import site.travellaboratory.be.domain.userlikereview.UserLikeReview;
 import site.travellaboratory.be.domain.userlikereview.UserLikeReviewRepository;
 import site.travellaboratory.be.domain.userlikereview.UserLikeReviewStatus;
@@ -32,6 +40,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ArticleRepository articleRepository;
     private final UserLikeReviewRepository userLikeReviewRepository;
+    // todo: refactoring homeService, homeController 만들기.
+    private final UserRepository userRepository;
 
     public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 조회할 경우
@@ -68,7 +78,8 @@ public class ReviewService {
     @Transactional
     public ReviewSaveResponse saveReview(Long userId, ReviewSaveRequest request) {
         // 유효하지 않은 여행 계획에 대한 후기를 작성할 경우
-        Article article = articleRepository.findByIdAndStatusIn(request.articleId(), List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        Article article = articleRepository.findByIdAndStatusIn(request.articleId(),
+                List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
@@ -78,7 +89,8 @@ public class ReviewService {
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST,
                     HttpStatus.CONFLICT);
@@ -99,7 +111,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewUpdateResponse updateReview(Long userId, Long reviewId, ReviewUpdateRequest request) {
+    public ReviewUpdateResponse updateReview(Long userId, Long reviewId,
+        ReviewUpdateRequest request) {
         // 유효하지 않은 후기를 수정할 경우
         Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
@@ -108,17 +121,19 @@ public class ReviewService {
 
         // 유저가 작성한 후기가 아닌 경우
         if (!review.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER, HttpStatus.FORBIDDEN);
+            throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER,
+                HttpStatus.FORBIDDEN);
         }
 
         // 후기 업데이트
-        review.update(request.title(), request.representativeImgUrl(), request.description(), request.status());
+        review.update(request.title(), request.representativeImgUrl(), request.description(),
+            request.status());
         Review updateReview = reviewRepository.save(review);
         return ReviewUpdateResponse.from(updateReview.getId());
     }
 
     @Transactional
-    public ReviewDeleteResponse deleteReview(final Long userId,final Long reviewId) {
+    public ReviewDeleteResponse deleteReview(final Long userId, final Long reviewId) {
         // 유효하지 않은 후기를 삭제할 경우
         Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
@@ -127,7 +142,8 @@ public class ReviewService {
 
         // 유저가 작성한 후기가 아닌 경우
         if (!review.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
+            throw new BeApplicationException(ErrorCodes.REVIEW_DELETE_NOT_USER,
+                HttpStatus.FORBIDDEN);
         }
 
         // 후기 삭제
@@ -159,5 +175,43 @@ public class ReviewService {
 
         UserLikeReview saveLikeReview = userLikeReviewRepository.save(userLikeReview);
         return ReviewToggleLikeResponse.from(saveLikeReview.getStatus());
+    }
+
+
+    /*
+     * 프로필 - 후기 전체 조회  [페이지네이션]
+     * */
+    public ProfileReviewPaginationResponse readProfileReviews(
+        Long tokenUserId, Long userId, int page, int size) {
+        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.PROFILE_REVIEW_READ_USER_NOT_FOUND,
+                    HttpStatus.NOT_FOUND));
+
+        PageRequest pageable = PageRequest.of(page, size);
+
+        // (0) 변수 지정
+        Page<Review> reviewPage;
+        // (1) tokenUserId와 PathVariable UserId가 동일한 경우
+        if (tokenUserId.equals(userId)) {
+            reviewPage = reviewRepository.findByUserAndStatusInOrderByCreatedAtFetchJoin(user,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE), pageable);
+        } else { // (2) 다를 경우에는 PRIVATE 제외
+            reviewPage = reviewRepository.findByUserAndStatusInOrderByCreatedAtFetchJoin(user,
+                List.of(ReviewStatus.ACTIVE), pageable);
+        }
+
+        List<ProfileReviewResponse> reviews = reviewPage.stream()
+            .map(this::toProfileReviewResponse)
+            .toList();
+
+        return ProfileReviewPaginationResponse.from(reviews, reviewPage);
+    }
+
+    private ProfileReviewResponse toProfileReviewResponse(Review review) {
+        List<ProfileReviewLocation> locations = review.getArticle().getLocation().stream()
+            .map(ProfileReviewLocation::from)
+            .collect(Collectors.toList());
+        return ProfileReviewResponse.from(review, locations);
     }
 }
