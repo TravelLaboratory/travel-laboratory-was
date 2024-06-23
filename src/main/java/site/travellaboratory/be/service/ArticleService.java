@@ -250,5 +250,43 @@ public class ArticleService {
         articleRepository.save(article);
         return ArticleDeleteResponse.from(true);
     }
+
+    @Transactional
+    public List<ArticleTotalResponse> getBannerNotUserArticles() {
+        List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
+
+        return articles.stream()
+                .map(article -> {
+                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = false;
+                    boolean isEditable = false;
+
+                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
+                })
+                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
+                .limit(4) // 상위 4개 아티클만 가져옴
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
+        List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
+
+        return articles.stream()
+                .map(article -> {
+                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(userId,
+                            article.getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isEditable = userId.equals(article.getUser().getId());
+
+                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
+                })
+                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
+                .limit(4) // 상위 4개 아티클만 가져옴
+                .collect(Collectors.toList());
+    }
 }
 

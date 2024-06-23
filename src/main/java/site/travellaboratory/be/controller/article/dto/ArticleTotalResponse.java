@@ -23,20 +23,13 @@ public record ArticleTotalResponse(
         Long bookmarkCount,
         Boolean isBookmarked,
         Boolean isEditable
-//        int totalPages,
-//        Long totalElements,
-//        int pageNumber,
-//        Boolean last
+
 ) {
     public static ArticleTotalResponse of(
             final Article article,
             final Long bookmarkCount,
             final Boolean isBookmarked,
             final Boolean isEditable
-//            final int totalPages,
-//            final long totalElements,
-//            final int pageNumber,
-//            final Boolean last
     ) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
                 .map(TravelStyle::getName)
@@ -57,10 +50,6 @@ public record ArticleTotalResponse(
                 bookmarkCount,
                 isBookmarked,
                 isEditable
-//                totalPages,
-//                totalElements,
-//                pageNumber,
-//                last
         );
     }
 }
