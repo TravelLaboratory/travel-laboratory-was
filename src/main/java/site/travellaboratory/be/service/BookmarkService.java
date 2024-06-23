@@ -53,7 +53,11 @@ public class BookmarkService {
     }
 
     @Transactional
-    public Page<BookmarkResponse> findAllBookmarkByUser(final Long userId, Pageable pageable) {
+    public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
+        final User loginUser = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND));
+
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
@@ -67,7 +71,7 @@ public class BookmarkService {
                     final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(bookmark.getArticle().getId(),
                             BookmarkStatus.ACTIVE);
                     boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
-                            bookmark.getArticle().getUser().getId(), bookmark.getArticle().getId(),
+                            loginUser.getId(), bookmark.getArticle().getId(),
                             BookmarkStatus.ACTIVE);
 
                     return BookmarkResponse.of(
