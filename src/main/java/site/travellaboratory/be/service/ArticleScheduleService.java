@@ -1,5 +1,7 @@
 package site.travellaboratory.be.service;
 
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleReadPlacesResponse;
+import site.travellaboratory.be.controller.articleschedule.dto.PlaceName;
+import site.travellaboratory.be.controller.articleschedule.dto.SchedulePlace;
 import site.travellaboratory.be.controller.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.put.ArticleScheduleRequest;
@@ -178,14 +182,31 @@ public class ArticleScheduleService {
                 HttpStatus.NOT_FOUND);
         }
 
-        // grouping 방문날짜별로
-        Map<String, List<String>> placesByDate = schedules.stream()
+        // 1순위 방문날짜, 2순위 sortOrder로 정렬
+        List<ArticleSchedule> sortedSchedules = schedules.stream()
+            .sorted(Comparator.comparing(ArticleSchedule::getVisitedDate)
+                .thenComparing(ArticleSchedule::getSortOrder))
+            .toList();
+
+
+        // 방문날짜별 그룹화
+        Map<String, List<String>> placesByDate = sortedSchedules.stream()
             .collect(Collectors.groupingBy(
                 schedule -> schedule.getVisitedDate().toString(), // 방문날짜 기준으로 그룹화
-                Collectors.flatMapping(this::getPlaceNames, Collectors.toList()) // 각각의 일정에서 장소명 찾아서 리스트로 저장 (flatMapping 평탄화?한다고 해야하나)
+                LinkedHashMap::new, // 순서를 유지하기 위해 LinkedHashMap 사용
+                Collectors.flatMapping(this::getPlaceNames, Collectors.toList())
             ));
 
-        return ArticleScheduleReadPlacesResponse.from(articleId, placesByDate);
+        // Map -> List로
+        List<SchedulePlace> schedulePlaces = placesByDate.entrySet().stream()
+            .map(entry -> new SchedulePlace(
+                entry.getKey(),  // 방문날짜
+                entry.getValue().stream()
+                    .map(PlaceName::new)
+                    .collect(Collectors.toList())))
+            .toList();
+
+        return ArticleScheduleReadPlacesResponse.from(articleId, schedulePlaces);
     }
 
     private ArticleSchedule toArticleSchedule(Article article, ArticleScheduleRequest request) {
