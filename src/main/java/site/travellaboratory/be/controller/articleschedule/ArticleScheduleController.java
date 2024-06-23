@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.put.ArticleScheduleUpdateRequest;
@@ -23,6 +24,7 @@ public class ArticleScheduleController {
 
     private final ArticleScheduleService articleScheduleService;
 
+    // 일정 리스트 조회
     @GetMapping("/articles/{articleId}/schedules")
     public ResponseEntity<ArticleScheduleReadDetailResponse> readDetailSchedules(
         @UserId Long userId,
@@ -33,6 +35,7 @@ public class ArticleScheduleController {
         return ResponseEntity.ok(response);
     }
 
+    // 일정 리스트 전체 수정 - feat.(일정 [작성, 수정, 삭제])
     @PutMapping("/articles/{articleId}/schedules")
     public ResponseEntity<ArticleScheduleUpdateResponse> updateArticleSchedules(
         @UserId Long userId,
@@ -45,12 +48,24 @@ public class ArticleScheduleController {
         return ResponseEntity.ok(response);
     }
 
+    // 초기 여행 계획 + 일정 리스트 삭제
     @PatchMapping("/articles/{articleId}/status")
     public ResponseEntity<ArticleScheduleDeleteResponse> deleteArticleSchedules(
         @UserId Long userId,
         @PathVariable(name = "articleId") Long articleId
     ) {
         ArticleScheduleDeleteResponse response = articleScheduleService.deleteArticleSchedules(
+            userId, articleId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 후기 작성 전 조회 - 여행 일정별 장소 리스트
+    @GetMapping("/articles/{articleId}/schedules/places")
+    public ResponseEntity<ArticleScheduleReadPlacesResponse> readSchedulesPlaces(
+        @UserId Long userId,
+        @PathVariable(name = "articleId") Long articleId
+    ) {
+        ArticleScheduleReadPlacesResponse response = articleScheduleService.readSchedulesPlaces(
             userId, articleId);
         return ResponseEntity.ok(response);
     }

@@ -3,12 +3,14 @@ package site.travellaboratory.be.service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.put.ArticleScheduleRequest;
@@ -112,7 +114,6 @@ public class ArticleScheduleService {
         return ArticleScheduleUpdateResponse.from(article.getId());
     }
 
-    //
     @Transactional
     public ArticleScheduleDeleteResponse deleteArticleSchedules(Long userId, Long articleId) {
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
@@ -141,6 +142,51 @@ public class ArticleScheduleService {
         return ArticleScheduleDeleteResponse.from(true);
     }
 
+    /*
+    * GET - /api/v1/articles/{articleId}/schedules/places
+    * 후기 작성 전 조회 - 여행 일정별 장소 리스트
+    * */
+    @Transactional(readOnly = true)
+    public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
+        // 유효하지 않은 여행 계획을 조회할 경우
+        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_INVALID,
+                HttpStatus.NOT_FOUND));
+
+        // 유저가 작성한 article_id이 아닌 경우
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_USER,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // 이미 해당 여행 계획에 대한 후기가 있을 경우
+        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+            .ifPresent(it -> {
+                throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
+                    HttpStatus.CONFLICT);
+            });
+
+        // 일정 리스트 조회
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
+            article,
+            ArticleScheduleStatus.ACTIVE);
+
+        // 초기 여행 계획만 있어서, 상세 일정이 빈 리스트인 경우
+        if (schedules.isEmpty()) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_EXIST_SCHEDULES,
+                HttpStatus.NOT_FOUND);
+        }
+
+        // grouping 방문날짜별로
+        Map<String, List<String>> placesByDate = schedules.stream()
+            .collect(Collectors.groupingBy(
+                schedule -> schedule.getVisitedDate().toString(), // 방문날짜 기준으로 그룹화
+                Collectors.flatMapping(this::getPlaceNames, Collectors.toList()) // 각각의 일정에서 장소명 찾아서 리스트로 저장 (flatMapping 평탄화?한다고 해야하나)
+            ));
+
+        return ArticleScheduleReadPlacesResponse.from(articleId, placesByDate);
+    }
 
     private ArticleSchedule toArticleSchedule(Article article, ArticleScheduleRequest request) {
         switch (request.dtype()) {
@@ -211,5 +257,21 @@ public class ArticleScheduleService {
             ((ScheduleEtc) existingSchedule).update(request.scheduleEtc());
         }
         existingSchedule.update(request);
+    }
+
+    // GENERAL, ETC - 장소명만 존재
+    // TRANSPORT - 출발지명, 도착지명이 존재
+    private Stream<String> getPlaceNames(ArticleSchedule schedule) {
+        if (schedule instanceof ScheduleGeneral) {
+            return Stream.of(((ScheduleGeneral) schedule).getPlaceName());
+        } else if (schedule instanceof ScheduleTransport) {
+            return Stream.of(
+                ((ScheduleTransport) schedule).getStartPlaceName(),
+                ((ScheduleTransport) schedule).getEndPlaceName()
+            );
+        } else if (schedule instanceof ScheduleEtc) {
+            return Stream.of(((ScheduleEtc) schedule).getPlaceName());
+        }
+        return Stream.empty();
     }
 }

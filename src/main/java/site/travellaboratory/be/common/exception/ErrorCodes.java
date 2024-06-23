@@ -52,6 +52,12 @@ public enum ErrorCodes {
     // 후기 상세 조회
     REVIEW_READ_DETAIL_INVALID("[후기 상세 조회] - 유효하지 않은 후기 ID", 4040L),
     REVIEW_READ_DETAIL_NOT_AUTHORIZATION("[후기 상세 조회] - 해당 후기에 접근 권한 없음", 4041L),
+    // 후기 작성 전 조회
+    REVIEW_BEFORE_POST_INVALID("[후기 작성 전 조회] - 유효하지 않은 여행 계획 ID", 4050L),
+    REVIEW_BEFORE_POST_NOT_USER("[후기 작성 전 조회] - 여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4051L),
+    REVIEW_BEFORE_POST_EXIST("[후기 작성 전 조회] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4052L),
+    REVIEW_BEFORE_POST_NOT_EXIST_SCHEDULES("[후기 작성 전 조회] - 상세 일정 작성 후 후기 작성이 가능합니다.", 4053L),
+
 
 
     // 댓글
