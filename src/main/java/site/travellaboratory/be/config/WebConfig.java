@@ -17,16 +17,17 @@ public class WebConfig implements WebMvcConfigurer {
     private final AuthenticatedUserIdResolver authenticatedUserIdResolver;
 
     private final List<String> PASS_URL = List.of(
-        "/api/*/auth/login",
-        "/api/*/auth/join",
-        "/api/*/auth/nickname",
-        "/api/*/auth/username",
-        "/api/*/auth/reissue-token",
-        "/api/*/auth/pw-inquiry/email",
+        "/api/v1/auth/login",
+        "/api/v1/auth/join",
+        "/api/v1auth/nickname",
+        "/api/v1/auth/username",
+        "/api/v1/reissue-token",
+        "/api/v1/auth/pw-inquiry/email",
         "/api/v1/auth/pw-inquiry/verification",
+        "/api/v1/auth/pw-inquiry/renewal",
         "/api/v1/oauth/login",
         "/api/v1/banner/articles",
-        "/api/v1/auth/pw-inquiry/renewal"
+        "/api/v1/banner/reviews"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(

@@ -2,7 +2,6 @@ package site.travellaboratory.be.controller.review.dto;
 
 import java.util.List;
 import org.springframework.data.domain.Page;
-import site.travellaboratory.be.domain.review.Review;
 
 public record ProfileReviewPaginationResponse(
     List<ProfileReviewResponse> reviews,
@@ -13,7 +12,7 @@ public record ProfileReviewPaginationResponse(
 ) {
     public static ProfileReviewPaginationResponse from(
         List<ProfileReviewResponse> reviews,
-        Page<Review> reviewPage
+        Page<Long> reviewPage
     ) {
         return new ProfileReviewPaginationResponse(
             reviews,

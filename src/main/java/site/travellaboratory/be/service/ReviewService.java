@@ -19,6 +19,9 @@ import site.travellaboratory.be.controller.review.dto.ReviewSaveRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewSaveResponse;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateRequest;
 import site.travellaboratory.be.controller.review.dto.ReviewUpdateResponse;
+import site.travellaboratory.be.controller.review.dto.home.BannerReviewLocation;
+import site.travellaboratory.be.controller.review.dto.home.ReviewBannerListResponse;
+import site.travellaboratory.be.controller.review.dto.home.ReviewBannerResponse;
 import site.travellaboratory.be.controller.review.dto.userlikereview.ReviewToggleLikeResponse;
 import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.ArticleRepository;
@@ -190,22 +193,45 @@ public class ReviewService {
 
         PageRequest pageable = PageRequest.of(page, size);
 
-        // (0) 변수 지정
-        Page<Review> reviewPage;
-        // (1) tokenUserId와 PathVariable UserId가 동일한 경우
+        Page<Long> reviewIdsPage;
+        // (1) 페이징 적용을 위한 Review Id 목록 가져와서
         if (tokenUserId.equals(userId)) {
-            reviewPage = reviewRepository.findByUserAndStatusInOrderByCreatedAtFetchJoin(user,
+            reviewIdsPage = reviewRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(user,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE), pageable);
         } else { // (2) 다를 경우에는 PRIVATE 제외
-            reviewPage = reviewRepository.findByUserAndStatusInOrderByCreatedAtFetchJoin(user,
+            reviewIdsPage = reviewRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(user,
                 List.of(ReviewStatus.ACTIVE), pageable);
         }
 
-        List<ProfileReviewResponse> reviews = reviewPage.stream()
+        // (2) id 목록으로 연관 엔티티 포함한 리뷰 목록 가져오기
+        List<Review> reviews = reviewRepository.findReviewsWithArticlesAndLocationsByIds(
+            reviewIdsPage.getContent());
+
+        List<ProfileReviewResponse> reviewPage = reviews.stream()
             .map(this::toProfileReviewResponse)
             .toList();
 
-        return ProfileReviewPaginationResponse.from(reviews, reviewPage);
+        return ProfileReviewPaginationResponse.from(reviewPage, reviewIdsPage);
+    }
+
+    /*
+     * 홈(배너) 최신 여행 후기 - 조회 리스트 8개 [feat. 비회원, 회원 공통 항상]
+     * */
+    @Transactional(readOnly = true)
+    public ReviewBannerListResponse readBannerReviews() {
+        PageRequest pageable = PageRequest.of(0, 8);
+
+        //(1) limit이 없기에 페이징을 적용해서 리뷰 id 목록 가져오기
+        Page<Long> reviewIdsPage = reviewRepository.findReviewIdsByStatusOrderByCreatedAt(pageable);
+
+        System.out.println("reviewIdsPage = " + reviewIdsPage);
+        List<Review> reviews = reviewRepository.findReviewsWithArticlesAndLocationsByIdsAndUserStatus(reviewIdsPage.getContent());
+
+        List<ReviewBannerResponse> list = reviews.stream()
+            .map(this::toReviewBannerResponse)
+            .toList();
+
+        return ReviewBannerListResponse.from(list);
     }
 
     private ProfileReviewResponse toProfileReviewResponse(Review review) {
@@ -213,5 +239,12 @@ public class ReviewService {
             .map(ProfileReviewLocation::from)
             .collect(Collectors.toList());
         return ProfileReviewResponse.from(review, locations);
+    }
+
+    private ReviewBannerResponse toReviewBannerResponse(Review review) {
+        List<BannerReviewLocation> locations = review.getArticle().getLocation().stream()
+            .map(BannerReviewLocation::from)
+            .collect(Collectors.toList());
+        return ReviewBannerResponse.from(review, locations);
     }
 }
