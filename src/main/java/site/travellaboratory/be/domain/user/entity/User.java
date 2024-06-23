@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.BaseEntity;
+import site.travellaboratory.be.domain.article.ArticleStatus;
 
 @Entity
 @Getter
@@ -119,4 +120,7 @@ public class User extends BaseEntity {
         return new User(userId);
     }
 
+    public void delete() {
+        this.status = UserStatus.INACTIVE;
+    }
 }

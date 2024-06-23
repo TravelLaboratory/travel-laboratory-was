@@ -2,6 +2,9 @@ package site.travellaboratory.be.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,23 +53,31 @@ public class BookmarkService {
     }
 
     @Transactional
-    public List<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId) {
+    public Page<BookmarkResponse> findAllBookmarkByUser(final Long userId, Pageable pageable) {
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final boolean isEditable = user.getId().equals(loginId);
+        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserAndStatusIn(user,
+                        List.of(BookmarkStatus.ACTIVE), pageable)
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (isEditable) {
-            final List<Bookmark> myBookmarks = bookmarkRepository.findByUserAndStatusIn(user,
-                            List.of(BookmarkStatus.ACTIVE, BookmarkStatus.PRIVATE))
-                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
-            return BookmarkResponse.from(myBookmarks);
-        } else {
-            final List<Bookmark> anotherBookmarks = bookmarkRepository.findByUserAndStatusIn(user,
-                            List.of(BookmarkStatus.ACTIVE))
-                    .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
-            return BookmarkResponse.from(anotherBookmarks);
-        }
+        List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
+                .map(bookmark -> {
+                    final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(bookmark.getArticle().getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
+                            bookmark.getArticle().getUser().getId(), bookmark.getArticle().getId(),
+                            BookmarkStatus.ACTIVE);
+
+                    return BookmarkResponse.of(
+                            bookmark,
+                            bookmarkCount,
+                            isBookmarked
+                    );
+                })
+                .toList();
+        return new PageImpl<>(bookmarkResponses, pageable, bookmarks.getTotalElements());
     }
 }
+

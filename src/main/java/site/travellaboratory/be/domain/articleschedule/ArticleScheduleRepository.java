@@ -9,5 +9,6 @@ public interface ArticleScheduleRepository extends JpaRepository<ArticleSchedule
     // 상세 일정 리스트 조회 (Article 기준, 삭제된 건 제외, sortOrder 오름차순 정렬)
     List<ArticleSchedule> findByArticleAndStatusOrderBySortOrderAsc(Article article, ArticleScheduleStatus status);
 
+    // 일정 상세 리스트 - 삭제를 위한 비교 데이터
     List<ArticleSchedule> findByArticleAndStatusOrderByIdDesc(Article article, ArticleScheduleStatus status);
 }
