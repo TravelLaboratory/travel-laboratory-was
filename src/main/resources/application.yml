@@ -5,6 +5,11 @@ spring:
   application:
     name: be
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${url}
@@ -32,7 +37,6 @@ cloud:
 
     region:
       static: ${s3-region-static}
-
 ---
 spring:
   config:
