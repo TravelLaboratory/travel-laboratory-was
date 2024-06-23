@@ -91,11 +91,12 @@ public enum ErrorCodes {
     // 일정 상세 - 삭제
     ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 초기 여행 계획 - ID", 10020L),
     ARTICLE_SCHEDULE_DELETE_NOT_USER("[일정 상세 - 삭제] - 본인의 초기 여행 계획이 아닙니다.", 10021L),
-    // 일정 상세 - 좋아요
-    ARTICLE_SCHEDULE_LIKE_INVALID("[일정 상세 - 좋아요] - 유효하지 않은 초기 여행 계획 - ID", 10030L),
+    // 일정 상세 - 비공개 여부
+    ARTICLE_SCHEDULE_PRIVACY_INVALID("[일정 상세 - 비공개 여부] - 유효하지 않은 초기 여행 계획 - ID", 10030L),
+    ARTICLE_SCHEDULE_PRIVACY_NOT_USER("[일정 상세 - 비공개 여부] - 본인의 초기 여행 계획이 아닙니다.", 10031L),
     // 일정 상세 - 전체 조회
-    ARTICLE_SCHEDULE_READ_DETAIL_INVALID("[일정 상세 - 전체 조회] - 유효하지 않은 초기 여행 계획 - ID", 10040L),
-    ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER("[일정 상세 - 전체 조회] - 해당 여행 계획에 접근 권한 없음", 10041L),
+    ARTICLE_SCHEDULE_READ_DETAIL_INVALID("[일정 상세 - 리스트 조회] - 유효하지 않은 초기 여행 계획 - ID", 10040L),
+    ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER("[일정 상세 - 리스트 조회] - 해당 여행 계획에 접근 권한 없음", 10041L),
 
 
     // 아티클 관련

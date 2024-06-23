@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleReadPlacesResponse;
+import site.travellaboratory.be.controller.articleschedule.dto.ArticleScheduleUpdatePrivacyResponse;
 import site.travellaboratory.be.controller.articleschedule.dto.PlaceName;
 import site.travellaboratory.be.controller.articleschedule.dto.SchedulePlace;
 import site.travellaboratory.be.controller.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
@@ -45,11 +46,13 @@ public class ArticleScheduleService {
         // 유효하지 않은 여행 계획을 조회할 경우
         Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
-                HttpStatus.NOT_FOUND));
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
+                    HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUser().getId().equals(userId)) {
+        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUser().getId()
+            .equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
@@ -75,8 +78,9 @@ public class ArticleScheduleService {
         // 유효하지 않은 여행 계획에 대한 상세 일정을 수정할 경우
         Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
-                HttpStatus.NOT_FOUND));
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
+                    HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획이 아닌 경우
         if (!article.getUser().getId().equals(userId)) {
@@ -111,7 +115,8 @@ public class ArticleScheduleService {
             // id o -> 기존 일정 수정 [UPDATE]
             else {
                 // 유효하지 않은 일정을 수정하려고 하는 경우
-                ArticleSchedule existingSchedule = findScheduleById(existingSchedules, request.scheduleId());
+                ArticleSchedule existingSchedule = findScheduleById(existingSchedules,
+                    request.scheduleId());
                 updateExistingSchedule(existingSchedule, request);
             }
         }
@@ -123,9 +128,9 @@ public class ArticleScheduleService {
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
         Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_INVALID,
-                HttpStatus.NOT_FOUND));
-
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_INVALID,
+                    HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
         if (!article.getUser().getId().equals(userId)) {
@@ -146,10 +151,34 @@ public class ArticleScheduleService {
         return ArticleScheduleDeleteResponse.from(true);
     }
 
+    @Transactional
+    public ArticleScheduleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
+        // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
+        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
+                    HttpStatus.NOT_FOUND));
+
+        // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // 초기 여행 계획 비공개 여부 수정
+        article.togglePrivacyStatus();
+
+        // 비공개 true, 공개 false
+        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
+
+        return ArticleScheduleUpdatePrivacyResponse.from(isPrivate);
+    }
+
     /*
-    * GET - /api/v1/articles/{articleId}/schedules/places
-    * 후기 작성 전 조회 - 여행 일정별 장소 리스트
-    * */
+     * GET - /api/v1/articles/{articleId}/schedules/places
+     * 후기 작성 전 조회 - 여행 일정별 장소 리스트
+     * */
     @Transactional(readOnly = true)
     public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
@@ -165,7 +194,8 @@ public class ArticleScheduleService {
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article,
+                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
                     HttpStatus.CONFLICT);
@@ -187,7 +217,6 @@ public class ArticleScheduleService {
             .sorted(Comparator.comparing(ArticleSchedule::getVisitedDate)
                 .thenComparing(ArticleSchedule::getSortOrder))
             .toList();
-
 
         // 방문날짜별 그룹화
         Map<String, List<String>> placesByDate = sortedSchedules.stream()
@@ -266,10 +295,12 @@ public class ArticleScheduleService {
         return schedules.stream()
             .filter(schedule -> schedule.getId().equals(id))
             .findFirst()
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new BeApplicationException(
+                ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, HttpStatus.NOT_FOUND));
     }
 
-    private void updateExistingSchedule(ArticleSchedule existingSchedule, ArticleScheduleRequest request) {
+    private void updateExistingSchedule(ArticleSchedule existingSchedule,
+        ArticleScheduleRequest request) {
         if (existingSchedule instanceof ScheduleGeneral) {
             ((ScheduleGeneral) existingSchedule).update(request.scheduleGeneral());
         } else if (existingSchedule instanceof ScheduleTransport) {
