@@ -118,6 +118,10 @@ public class Article extends BaseEntity {
         this.status = ArticleStatus.INACTIVE;
     }
 
+    public void updateStatus(ArticleStatus status) {
+        this.status = status;
+    }
+
     public String getNickname() {
         return user.getNickname();
     }

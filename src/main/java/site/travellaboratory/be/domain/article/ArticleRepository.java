@@ -15,9 +15,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Optional<Article> findByIdAndStatusIn(final Long articleId, List<ArticleStatus> Status);
 
-//    Optional<List<Article>> findByArticleAndStatus(final Article article, ArticleStatus Status);\
 
     List<Article> findAllByStatus(ArticleStatus status);
+
+    Optional<List<Article>> findByUserAndStatusIn(User user, List<ArticleStatus> status);
 
     Optional<Page<Article>> findByUserAndStatusIn(User user, List<ArticleStatus> status, Pageable pageable);
 

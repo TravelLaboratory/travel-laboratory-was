@@ -237,7 +237,7 @@ public class ArticleService {
 
     // 아티클 삭제
     @Transactional
-    public ArticleDeleteResponse deleteReview(final Long userId, final Long articleId) {
+    public ArticleDeleteResponse deleteArticle(final Long userId, final Long articleId) {
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -271,6 +271,10 @@ public class ArticleService {
 
     @Transactional
     public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
+        userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+
         List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
 
         return articles.stream()

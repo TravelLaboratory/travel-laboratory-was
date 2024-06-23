@@ -76,7 +76,6 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(articleUpdateCoverImageResponse);
     }
 
-
     @PutMapping("/article/{articleId}")
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
             @RequestBody final ArticleUpdateRequest articleUpdateRequest,
@@ -106,7 +105,7 @@ public class ArticleController {
             @UserId final Long userId,
             @PathVariable(name = "articleId") final Long articleId
     ) {
-        ArticleDeleteResponse articleDeleteResponse = articleService.deleteReview(userId, articleId);
+        ArticleDeleteResponse articleDeleteResponse = articleService.deleteArticle(userId, articleId);
         return ResponseEntity.ok(articleDeleteResponse);
     }
 
