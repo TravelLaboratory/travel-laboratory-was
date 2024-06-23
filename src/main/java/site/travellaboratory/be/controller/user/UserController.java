@@ -34,7 +34,7 @@ public class UserController {
 
     @PutMapping("/profile")
     public ResponseEntity<UserProfileUpdateResponse> updateMyProfile(
-            @RequestPart("file") final MultipartFile file,
+            @RequestPart(value = "file", required = false) final MultipartFile file,
             @RequestPart("profile") final UserProfileUpdateRequest userProfileUpdateRequest,
             @UserId final Long userId) {
         final UserProfileUpdateResponse userProfileUpdateResponse = userService.updateProfile(file,

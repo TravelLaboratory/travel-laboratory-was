@@ -50,7 +50,11 @@ public class UserService {
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final String url = uploadFiles(file);
+        String url = user.getProfileImgUrl();
+
+        if (file != null && !file.isEmpty()) {
+            url = uploadFiles(file);
+        }
 
         user.update(userProfileUpdateRequest.nickname(),
                 url, userProfileUpdateRequest.introduce());
