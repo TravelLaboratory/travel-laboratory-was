@@ -56,4 +56,8 @@ public class Bookmark extends BaseEntity {
             this.status = BookmarkStatus.ACTIVE;
         }
     }
+
+    public void updateStatus(final BookmarkStatus status) {
+        this.status = status;
+    }
 }

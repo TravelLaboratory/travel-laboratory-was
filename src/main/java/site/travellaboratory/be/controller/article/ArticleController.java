@@ -1,5 +1,6 @@
 package site.travellaboratory.be.controller.article;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,10 +71,10 @@ public class ArticleController {
             @RequestPart("coverImage") final MultipartFile coverImage,
             @PathVariable(name = "articleId") final Long articleId
     ) {
-        final ArticleUpdateCoverImageResponse articleUpdateCoverImageResponse = articleService.updateCoverImage(coverImage, articleId);
+        final ArticleUpdateCoverImageResponse articleUpdateCoverImageResponse = articleService.updateCoverImage(
+                coverImage, articleId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(articleUpdateCoverImageResponse);
     }
-
 
     @PutMapping("/article/{articleId}")
     public ResponseEntity<ArticleUpdateResponse> updateArticle(
@@ -104,7 +105,19 @@ public class ArticleController {
             @UserId final Long userId,
             @PathVariable(name = "articleId") final Long articleId
     ) {
-        ArticleDeleteResponse articleDeleteResponse = articleService.deleteReview(userId, articleId);
+        ArticleDeleteResponse articleDeleteResponse = articleService.deleteArticle(userId, articleId);
         return ResponseEntity.ok(articleDeleteResponse);
+    }
+
+    @GetMapping("/banner/articles")
+    public ResponseEntity<List<ArticleTotalResponse>> getBannerNotUserArticles() {
+        List<ArticleTotalResponse> articles = articleService.getBannerNotUserArticles();
+        return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/auth/banner/articles")
+    public ResponseEntity<List<ArticleTotalResponse>> getBannerUserArticles(@UserId final Long userId) {
+        List<ArticleTotalResponse> articles = articleService.getBannerUserArticles(userId);
+        return ResponseEntity.ok(articles);
     }
 }

@@ -1,28 +1,46 @@
 package site.travellaboratory.be.controller.bookmark.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import site.travellaboratory.be.domain.article.Location;
+import site.travellaboratory.be.domain.article.TravelStyle;
 import site.travellaboratory.be.domain.bookmark.Bookmark;
 
 public record BookmarkResponse(
-        String profileImg,
+        Long articleId,
         String title,
-        String username,
+        List<Location> location,
         LocalDate startAt,
         LocalDate endAt,
-        String expense
+        String expense,
+        String profileImageUrl,
+        String articleImage,
+        String travelCompanion,
+        List<String> travelStyles,
+        String name,
+        Long bookmarkCount,
+        Boolean isBookmarked
 ) {
 
-    public static BookmarkResponse from(Bookmark bookmark) {
-        return new BookmarkResponse(bookmark.getUser().getProfileImgUrl(), bookmark.getArticle().getTitle(),
-                bookmark.getUser().getUsername(), bookmark.getArticle().getStartAt(), bookmark.getArticle().getEndAt(),
-                bookmark.getArticle().getExpense());
-    }
-
-    public static List<BookmarkResponse> from(List<Bookmark> bookmarks) {
-        return bookmarks.stream()
-                .map(BookmarkResponse::from)
+    public static BookmarkResponse of(final Bookmark bookmark, final Long bookmarkCount, final Boolean isBookmarked) {
+        List<String> travelStyleNames = bookmark.getArticle().getTravelStyles().stream()
+                .map(TravelStyle::getName)
                 .toList();
+
+        return new BookmarkResponse(
+                bookmark.getArticle().getId(),
+                bookmark.getArticle().getTitle(),
+                bookmark.getArticle().getLocation(),
+                bookmark.getArticle().getStartAt(),
+                bookmark.getArticle().getEndAt(),
+                bookmark.getArticle().getExpense(),
+                bookmark.getUser().getProfileImgUrl(),
+                bookmark.getArticle().getCoverImageUrl(),
+                bookmark.getArticle().getTravelCompanion().getName(),
+                travelStyleNames,
+                bookmark.getUser().getNickname(),
+                bookmarkCount,
+                isBookmarked
+        );
     }
 }

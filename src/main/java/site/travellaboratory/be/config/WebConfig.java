@@ -25,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
         "/api/*/auth/pw-inquiry/email",
         "/api/v1/auth/pw-inquiry/verification",
         "/api/v1/oauth/login",
+        "/api/v1/banner/articles",
         "/api/v1/auth/pw-inquiry/renewal"
     );
 
