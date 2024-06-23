@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import site.travellaboratory.be.domain.article.Article;
+import site.travellaboratory.be.domain.article.ArticleStatus;
 import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
 
@@ -18,10 +19,16 @@ public record ArticleResponse(
         List<String> travelStyles,
         String name,
         Long bookmarkCount,
-        Boolean isBookmarked
+        Boolean isBookmarked,
+        Boolean isPrivate
 ) {
 
-    public static ArticleResponse of(final Article article, final Long bookmarkCount, final Boolean isBookmarked) {
+    public static ArticleResponse of(
+            final Article article,
+            final Long bookmarkCount,
+            final Boolean isBookmarked,
+            final Boolean isPrivate
+    ) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
@@ -37,7 +44,8 @@ public record ArticleResponse(
                 travelStyleNames,
                 article.getUser().getNickname(),
                 bookmarkCount,
-                isBookmarked
+                isBookmarked,
+                isPrivate
         );
     }
 }

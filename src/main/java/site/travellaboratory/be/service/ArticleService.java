@@ -109,11 +109,13 @@ public class ArticleService {
         boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(loginId, articleId,
                 BookmarkStatus.ACTIVE);
 
-//        if (!article.getUser().getId().equals(loginId)) {
-//            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION, HttpStatus.UNAUTHORIZED);
-//        }
+        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
 
-        return ArticleResponse.of(article, bookmarkCount, isBookmarked);
+        if (!article.getUser().getId().equals(loginId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION, HttpStatus.UNAUTHORIZED);
+        }
+
+        return ArticleResponse.of(article, bookmarkCount, isBookmarked, isPrivate);
     }
 
     public ArticleUpdateCoverImageResponse updateCoverImage(
