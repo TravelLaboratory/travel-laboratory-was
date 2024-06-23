@@ -118,6 +118,7 @@ public class ArticleService {
         return ArticleResponse.of(article, bookmarkCount, isBookmarked, isPrivate);
     }
 
+    @Transactional
     public ArticleUpdateCoverImageResponse updateCoverImage(
             final MultipartFile coverImage,
             final Long articleId) {
