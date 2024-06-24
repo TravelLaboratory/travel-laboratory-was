@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final List<String> PASS_URL = List.of(
         "/api/v1/auth/login",
         "/api/v1/auth/join",
-        "/api/v1auth/nickname",
+        "/api/v1/auth/nickname",
         "/api/v1/auth/username",
         "/api/v1/reissue-token",
         "/api/v1/auth/pw-inquiry/email",
