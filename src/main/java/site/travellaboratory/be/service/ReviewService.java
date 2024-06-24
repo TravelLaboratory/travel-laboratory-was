@@ -224,7 +224,6 @@ public class ReviewService {
         //(1) limit이 없기에 페이징을 적용해서 리뷰 id 목록 가져오기
         Page<Long> reviewIdsPage = reviewRepository.findReviewIdsByStatusOrderByCreatedAt(pageable);
 
-        System.out.println("reviewIdsPage = " + reviewIdsPage);
         List<Review> reviews = reviewRepository.findReviewsWithArticlesAndLocationsByIdsAndUserStatus(reviewIdsPage.getContent());
 
         List<ReviewBannerResponse> list = reviews.stream()

@@ -6,6 +6,7 @@ import site.travellaboratory.be.domain.review.Review;
 
 public record ProfileReviewResponse(
     Long reviewId,
+    String title,
     String representativeImgUrl,
     List<ProfileReviewLocation> location,
     LocalDate startAt,
@@ -14,6 +15,7 @@ public record ProfileReviewResponse(
     public static ProfileReviewResponse from(Review review, List<ProfileReviewLocation> locations) {
         return new ProfileReviewResponse(
             review.getId(),
+            review.getTitle(),
             review.getRepresentativeImgUrl(),
             locations,
             review.getArticle().getStartAt(),
