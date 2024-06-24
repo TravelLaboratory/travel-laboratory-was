@@ -19,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleOneResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
@@ -98,7 +98,7 @@ public class ArticleService {
 
     // 초기 여행 계획 한개 조회
     @Transactional
-    public ArticleResponse findByArticle(final Long loginId, final Long articleId) {
+    public ArticleOneResponse findByArticle(final Long loginId, final Long articleId) {
         // 유효하지 않은 아티클 조회 할 경우
         final Article article = articleRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
@@ -111,11 +111,9 @@ public class ArticleService {
 
         boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
 
-        if (!article.getUser().getId().equals(loginId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_READ_DETAIL_NOT_AUTHORIZATION, HttpStatus.UNAUTHORIZED);
-        }
+        boolean isEditable = article.getUser().getId().equals(loginId);
 
-        return ArticleResponse.of(article, bookmarkCount, isBookmarked, isPrivate);
+        return ArticleOneResponse.of(article, bookmarkCount, isBookmarked, isPrivate, isEditable);
     }
 
     @Transactional
@@ -276,7 +274,6 @@ public class ArticleService {
     public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
         userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-
 
         List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
 

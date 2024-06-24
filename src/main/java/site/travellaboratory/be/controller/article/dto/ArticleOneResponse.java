@@ -7,7 +7,7 @@ import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.article.Location;
 import site.travellaboratory.be.domain.article.TravelStyle;
 
-public record ArticleResponse(
+public record ArticleOneResponse(
         String title,
         List<Location> location,
         LocalDate startAt,
@@ -19,20 +19,22 @@ public record ArticleResponse(
         String name,
         Long bookmarkCount,
         Boolean isBookmarked,
-        Boolean isPrivate
+        Boolean isPrivate,
+        Boolean isEditable
 ) {
 
-    public static ArticleResponse of(
+    public static ArticleOneResponse of(
             final Article article,
             final Long bookmarkCount,
             final Boolean isBookmarked,
-            final Boolean isPrivate
+            final Boolean isPrivate,
+            final Boolean isEditable
     ) {
         List<String> travelStyleNames = article.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
-        return new ArticleResponse(
+        return new ArticleOneResponse(
                 article.getTitle(),
                 article.getLocation(),
                 article.getStartAt(),
@@ -44,7 +46,8 @@ public record ArticleResponse(
                 article.getUser().getNickname(),
                 bookmarkCount,
                 isBookmarked,
-                isPrivate
+                isPrivate,
+                isEditable
         );
     }
 }
