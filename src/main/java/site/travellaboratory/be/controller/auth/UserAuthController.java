@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.controller.auth.dto.UserInfoResponse;
 import site.travellaboratory.be.controller.auth.dto.UserJoinRequest;
 import site.travellaboratory.be.controller.auth.dto.UserJoinResponse;
 import site.travellaboratory.be.controller.auth.dto.UserLoginRequest;
+import site.travellaboratory.be.controller.auth.dto.UserLoginResponse;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameRequest;
 import site.travellaboratory.be.controller.auth.dto.UserNicknameResponse;
 import site.travellaboratory.be.controller.auth.dto.UsernameRequest;
@@ -23,7 +25,6 @@ import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryRenewalRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationRequest;
 import site.travellaboratory.be.controller.auth.dto.pw.PwInquiryVerificationResponse;
 import site.travellaboratory.be.controller.jwt.dto.AccessTokenResponse;
-import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.service.UserAuthService;
 
 @RestController
@@ -55,15 +56,15 @@ public class UserAuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
+    public ResponseEntity<UserInfoResponse> login(
         @RequestBody UserLoginRequest userLoginRequest,
         HttpServletResponse response
     ) {
-        AuthTokenResponse authTokenResponse = userAuthService.login(userLoginRequest);
+        UserLoginResponse userLoginResponse = userAuthService.login(userLoginRequest);
 
         // AccessToken - authorization-token 헤더에 추가 (+만료기간까지)
-        response.setHeader("authorization-token", authTokenResponse.accessToken());
-        response.setHeader("authorization-token-expired-at", authTokenResponse.expiredAt());
+        response.setHeader("authorization-token", userLoginResponse.authTokenResponse().accessToken());
+        response.setHeader("authorization-token-expired-at", userLoginResponse.authTokenResponse().expiredAt());
 
 /*
         // RefreshToken - refresh-token 쿠키에 추가
@@ -79,8 +80,8 @@ public class UserAuthController {
         response.setHeader("Set-Cookie", refreshTokenCookie.toString()); // 일단 refresh-token만 헤더로 넣을 것이기에 setHeader로 설정*/
 
         // todo: 추후 cookie 변경 시 제거
-        response.setHeader("refresh-token", authTokenResponse.refreshToken());
-        return ResponseEntity.ok().build();
+        response.setHeader("refresh-token", userLoginResponse.authTokenResponse().refreshToken());
+        return ResponseEntity.ok(userLoginResponse.userInfoResponse());
     }
 
     @GetMapping("/reissue-token")
