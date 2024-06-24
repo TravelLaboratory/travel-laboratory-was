@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.controller.article.dto.ArticleDeleteResponse;
+import site.travellaboratory.be.controller.article.dto.ArticleOneResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterRequest;
 import site.travellaboratory.be.controller.article.dto.ArticleRegisterResponse;
-import site.travellaboratory.be.controller.article.dto.ArticleResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.controller.article.dto.ArticleUpdateRequest;
@@ -58,11 +58,11 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{articleId}")
-    public ResponseEntity<ArticleResponse> findArticle(
+    public ResponseEntity<ArticleOneResponse> findArticle(
             @UserId final Long loginId,
             @PathVariable(name = "articleId") final Long articleId
     ) {
-        final ArticleResponse articleResponse = articleService.findByArticle(loginId, articleId);
+        final ArticleOneResponse articleResponse = articleService.findByArticle(loginId, articleId);
         return ResponseEntity.ok(articleResponse);
     }
 
