@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.controller.jwt.dto.AuthTokenResponse;
+import site.travellaboratory.be.controller.auth.dto.UserInfoResponse;
+import site.travellaboratory.be.controller.auth.dto.UserLoginResponse;
 import site.travellaboratory.be.controller.oauth.dto.OAuthJoinRequest;
 import site.travellaboratory.be.service.OAuthService;
 
@@ -19,17 +20,17 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> join(
+    public ResponseEntity<UserInfoResponse> join(
             @RequestBody OAuthJoinRequest oAuthJoinRequest,
             HttpServletResponse response
     ) {
-        AuthTokenResponse authTokenResponse = oAuthService.login(oAuthJoinRequest);
+        UserLoginResponse userLoginResponse = oAuthService.login(oAuthJoinRequest);
 
         // AccessToken - authorization-token 헤더에 추가 (+만료기간까지)
-        response.setHeader("authorization-token", authTokenResponse.accessToken());
-        response.setHeader("authorization-token-expired-at", authTokenResponse.expiredAt());
+        response.setHeader("authorization-token", userLoginResponse.authTokenResponse().accessToken());
+        response.setHeader("authorization-token-expired-at", userLoginResponse.authTokenResponse().expiredAt());
 
-        response.setHeader("refresh-token", authTokenResponse.refreshToken());
-        return ResponseEntity.ok().build();
+        response.setHeader("refresh-token", userLoginResponse.authTokenResponse().refreshToken());
+        return ResponseEntity.ok(userLoginResponse.userInfoResponse());
     }
 }
