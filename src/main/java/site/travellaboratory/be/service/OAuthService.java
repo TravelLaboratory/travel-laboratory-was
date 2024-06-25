@@ -24,11 +24,11 @@ public class OAuthService {
         User user = userRepository.findByUsernameAndStatusOrderByIdDesc(
                 oAuthJoinRequest.accountEmail(),
                 UserStatus.ACTIVE)
-            .orElse(
-                userRepository.save(
+            .orElseGet(() -> {
+                return userRepository.save(
                     User.socialOf(oAuthJoinRequest.accountEmail(), oAuthJoinRequest.profileImage(),
-                        oAuthJoinRequest.profileNickname(), oAuthJoinRequest.isAgreement()))
-            );
+                        oAuthJoinRequest.profileNickname(), oAuthJoinRequest.isAgreement()));
+                });
 
         Long userId = user.getId();
 
