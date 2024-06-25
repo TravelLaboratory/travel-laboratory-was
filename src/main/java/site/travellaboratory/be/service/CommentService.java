@@ -26,7 +26,9 @@ import site.travellaboratory.be.domain.comment.CommentStatus;
 import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.ReviewRepository;
 import site.travellaboratory.be.domain.review.ReviewStatus;
+import site.travellaboratory.be.domain.user.UserRepository;
 import site.travellaboratory.be.domain.user.entity.User;
+import site.travellaboratory.be.domain.user.entity.UserStatus;
 import site.travellaboratory.be.domain.userlikecomment.UserLikeComment;
 import site.travellaboratory.be.domain.userlikecomment.UserLikeCommentRepository;
 import site.travellaboratory.be.domain.userlikecomment.UserLikeCommentStatus;
@@ -38,6 +40,7 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
     private final CommentRepository commentRepository;
     private final UserLikeCommentRepository userLikeCommentRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public CommentReadPaginationResponse readAllCommentPagination(
@@ -129,10 +132,15 @@ public class CommentService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
+        // 댓글 쓰는 유저 찾기
+        User commentUser = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
         // 댓글 작성
         Comment saveComment = commentRepository.save(
             Comment.of(
-                review.getUser(),
+                commentUser,
                 review,
                 request.replyComment()
             )
