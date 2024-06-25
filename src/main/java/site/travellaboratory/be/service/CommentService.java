@@ -121,7 +121,13 @@ public class CommentService {
                 );
             }
         ).toList();
-        return CommentReadPaginationResponse.from(comments, commentPage);
+
+        // (댓글을 쓰는 유저 조회) todo: refactoring
+        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        return CommentReadPaginationResponse.from(user.getProfileImgUrl(), comments, commentPage);
     }
 
     @Transactional
