@@ -199,7 +199,7 @@ public class ArticleService {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
                     boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
-                            article.getUser().getId(), article.getId(), BookmarkStatus.ACTIVE);
+                            loginId, article.getId(), BookmarkStatus.ACTIVE);
 
                     return ArticleTotalResponse.of(
                             article,
