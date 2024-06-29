@@ -175,25 +175,24 @@ public class ArticleService {
             final Long loginId,
             final String sort
     ) {
-        Page<Article> articles;
+        List<Article> articles;
+        Page<Article> newArticles;
 
         if (sort.equals("popularity")) {
-            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, Pageable.unpaged(),
-                    ArticleStatus.ACTIVE);
+            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, ArticleStatus.ACTIVE);
             articles = sortByBookmarkCount(articles);
-
-            articles = slicePage(pageable, articles);
+            newArticles = slicePage(pageable, articles);
         } else {
             String[] sortParams = sort.split(",");
             Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
             Sort sortOrder = Sort.by(direction, sortParams[0]);
 
             Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
-            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, sortedPageable,
+            newArticles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, sortedPageable,
                     ArticleStatus.ACTIVE);
         }
 
-        List<ArticleTotalResponse> articleResponses = articles.getContent().stream()
+        List<ArticleTotalResponse> articleResponses = newArticles.getContent().stream()
                 .map(article -> {
                     boolean isEditable = article.getUser().getId().equals(loginId);
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
@@ -208,32 +207,29 @@ public class ArticleService {
                             isEditable
                     );
                 })
-                .toList();
+                .collect(Collectors.toList());
 
-        return new PageImpl<>(articleResponses, pageable, articles.getTotalElements());
+        return new PageImpl<>(articleResponses, pageable, newArticles.getTotalElements());
     }
 
-    private Page<Article> slicePage(Pageable pageable, Page<Article> articles) {
+    private Page<Article> slicePage(Pageable pageable, List<Article> articles) {
         int pageSize = pageable.getPageSize();
         int pageNumber = pageable.getPageNumber();
         int fromIndex = pageNumber * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, articles.getContent().size());
+        int toIndex = Math.min(fromIndex + pageSize, articles.size());
 
-        List<Article> pagedArticles = articles.getContent().subList(fromIndex, toIndex);
-        articles = new PageImpl<>(pagedArticles, pageable, articles.getTotalElements());
-        return articles;
+        List<Article> pagedArticles = articles.subList(fromIndex, toIndex);
+        return new PageImpl<>(pagedArticles, pageable, articles.size());
     }
 
-    private Page<Article> sortByBookmarkCount(Page<Article> articles) {
-        List<Article> sortedArticles = articles.stream()
+    private List<Article> sortByBookmarkCount(List<Article> articles) {
+        return articles.stream()
                 .sorted((a1, a2) -> {
                     Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
                     Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
                     return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
                 })
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(sortedArticles, articles.getPageable(), articles.getTotalElements());
     }
 
     // 아티클 삭제
