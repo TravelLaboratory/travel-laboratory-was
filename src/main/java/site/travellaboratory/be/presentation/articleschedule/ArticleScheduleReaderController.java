@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.application.travelplanelement.ArticleScheduleReaderService;
+import site.travellaboratory.be.application.articleschedule.ArticleScheduleReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.presentation.articleschedule.dto.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
