@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.comment.dto.userlikecomment;
+package site.travellaboratory.be.presentation.comment.dto.like;
 
 import site.travellaboratory.be.infrastructure.userlikecomment.enums.UserLikeCommentStatus;
 

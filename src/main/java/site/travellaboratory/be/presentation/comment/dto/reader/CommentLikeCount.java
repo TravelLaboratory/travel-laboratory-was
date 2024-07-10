@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.comment.dto;
+package site.travellaboratory.be.presentation.comment.dto.reader;
 
 public record CommentLikeCount(
     long commentId,

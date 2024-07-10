@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.comment.dto;
+package site.travellaboratory.be.presentation.comment.dto.reader;
 
 import java.time.format.DateTimeFormatter;
 import site.travellaboratory.be.infrastructure.comment.entity.Comment;

@@ -1,4 +1,4 @@
-package site.travellaboratory.be.application;
+package site.travellaboratory.be.application.comment;
 
 import java.util.List;
 import java.util.Map;
@@ -11,31 +11,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.presentation.comment.dto.CommentDeleteResponse;
-import site.travellaboratory.be.presentation.comment.dto.CommentLikeCount;
-import site.travellaboratory.be.presentation.comment.dto.CommentReadPaginationResponse;
-import site.travellaboratory.be.presentation.comment.dto.CommentReadResponse;
-import site.travellaboratory.be.presentation.comment.dto.CommentSaveRequest;
-import site.travellaboratory.be.presentation.comment.dto.CommentSaveResponse;
-import site.travellaboratory.be.presentation.comment.dto.userlikecomment.CommentToggleLikeResponse;
-import site.travellaboratory.be.presentation.comment.dto.CommentUpdateRequest;
-import site.travellaboratory.be.presentation.comment.dto.CommentUpdateResponse;
-import site.travellaboratory.be.infrastructure.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.comment.CommentRepository;
+import site.travellaboratory.be.infrastructure.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.comment.enums.CommentStatus;
-import site.travellaboratory.be.infrastructure.review.entity.Review;
 import site.travellaboratory.be.infrastructure.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.review.entity.Review;
 import site.travellaboratory.be.infrastructure.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.user.UserRepository;
 import site.travellaboratory.be.infrastructure.user.entity.User;
 import site.travellaboratory.be.infrastructure.user.enums.UserStatus;
-import site.travellaboratory.be.infrastructure.userlikecomment.entity.UserLikeComment;
 import site.travellaboratory.be.infrastructure.userlikecomment.UserLikeCommentRepository;
+import site.travellaboratory.be.infrastructure.userlikecomment.entity.UserLikeComment;
 import site.travellaboratory.be.infrastructure.userlikecomment.enums.UserLikeCommentStatus;
+import site.travellaboratory.be.presentation.comment.dto.reader.CommentLikeCount;
+import site.travellaboratory.be.presentation.comment.dto.reader.CommentReadPaginationResponse;
+import site.travellaboratory.be.presentation.comment.dto.reader.CommentReadResponse;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentReaderService {
 
     private final ReviewRepository reviewRepository;
     private final CommentRepository commentRepository;
@@ -43,7 +37,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public CommentReadPaginationResponse readAllCommentPagination(
+    public CommentReadPaginationResponse readCommentsPagination(
         Long userId, Long reviewId, int page, int size
     ) {
         // 유효하지 않은 후기를 조회할 경우
@@ -128,95 +122,5 @@ public class CommentService {
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         return CommentReadPaginationResponse.from(user.getProfileImgUrl(), comments, commentPage);
-    }
-
-    @Transactional
-    public CommentSaveResponse saveComment(Long userId, CommentSaveRequest request) {
-        // 유효하지 않은 후기에 대한 댓글을 작성할 경우
-        Review review = reviewRepository.findByIdAndStatusIn(request.reviewId(),
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_POST_INVALID,
-                HttpStatus.NOT_FOUND));
-
-        // 댓글 쓰는 유저 찾기
-        User commentUser = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-            .orElseThrow(
-                () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        // 댓글 작성
-        Comment saveComment = commentRepository.save(
-            Comment.of(
-                commentUser,
-                review,
-                request.replyComment()
-            )
-        );
-        return CommentSaveResponse.from(saveComment.getId());
-    }
-
-    @Transactional
-    public CommentUpdateResponse updateComment(Long userId, Long commentId,
-        CommentUpdateRequest request) {
-        // 유효하지 않은 댓글를 수정할 경우
-        Comment comment = commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_UPDATE_INVALID,
-                HttpStatus.NOT_FOUND));
-
-        // 유저가 작성한 댓글이 아닌 경우
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.COMMENT_UPDATE_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
-
-        // 댓글 업데이트
-        comment.update(request.replyComment());
-        Comment updateComment = commentRepository.save(comment);
-        return CommentUpdateResponse.from(updateComment.getId());
-    }
-
-    @Transactional
-    public CommentDeleteResponse deleteComment(final Long userId, final Long commentId) {
-        // 유효하지 않은 댓글을 삭제할 경우
-        Comment comment = commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_DELETE_INVALID,
-                HttpStatus.NOT_FOUND));
-
-        // 유저가 작성한 댓글이 아닌 경우
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.COMMENT_DELETE_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
-
-        // 댓글 삭제
-        comment.delete();
-        commentRepository.save(comment);
-        return CommentDeleteResponse.from(true);
-    }
-
-    @Transactional
-    public CommentToggleLikeResponse toggleLikeComment(Long userId, Long commentId) {
-        // 유효하지 않은 댓글에 좋아요하려고 할 경우
-        Comment comment = commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID,
-                HttpStatus.NOT_FOUND));
-
-        UserLikeComment userLikeComment = userLikeCommentRepository.findByUserIdAndCommentId(userId,
-                commentId)
-            .orElse(null);
-
-        // 댓글에 처음 좋아요를 누른 게 아닌 경우
-        if (userLikeComment != null) {
-            userLikeComment.toggleStatus();
-        } else {
-            // 댓글에 처음 좋아요를 누른 경우 - 새로 생성
-            User user = User.of(userId);
-            userLikeComment = UserLikeComment.of(user, comment);
-        }
-
-        UserLikeComment saveLikeComment = userLikeCommentRepository.save(userLikeComment);
-        return CommentToggleLikeResponse.from(saveLikeComment.getStatus());
     }
 }
