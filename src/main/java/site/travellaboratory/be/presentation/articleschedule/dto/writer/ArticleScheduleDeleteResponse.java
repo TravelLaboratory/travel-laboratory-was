@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.articleschedule.dto.delete;
+package site.travellaboratory.be.presentation.articleschedule.dto.writer;
 
 public record ArticleScheduleDeleteResponse(
     Boolean isDelete

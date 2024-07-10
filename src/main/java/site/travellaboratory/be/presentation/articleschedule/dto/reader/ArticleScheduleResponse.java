@@ -1,8 +1,9 @@
-package site.travellaboratory.be.presentation.articleschedule.dto.get;
+package site.travellaboratory.be.presentation.articleschedule.dto.reader;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
+// todo : jpa entity 이름 수정 후엔 response 제거
 public record ArticleScheduleResponse(
 
     Long scheduleId,

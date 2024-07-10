@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleRequest;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 import site.travellaboratory.be.infrastructure.BaseEntity;
 import site.travellaboratory.be.infrastructure.article.entity.Article;
 

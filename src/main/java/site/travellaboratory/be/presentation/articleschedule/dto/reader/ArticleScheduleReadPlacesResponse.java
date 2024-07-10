@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.articleschedule.dto;
+package site.travellaboratory.be.presentation.articleschedule.dto.reader;
 
 import java.util.List;
 

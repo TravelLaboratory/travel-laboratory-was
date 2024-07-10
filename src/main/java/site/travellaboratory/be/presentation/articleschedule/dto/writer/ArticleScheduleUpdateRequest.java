@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.articleschedule.dto.put;
+package site.travellaboratory.be.presentation.articleschedule.dto.writer;
 
 import java.util.List;
 

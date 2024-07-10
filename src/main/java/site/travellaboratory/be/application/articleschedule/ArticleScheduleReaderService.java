@@ -24,10 +24,10 @@ import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleTra
 import site.travellaboratory.be.infrastructure.review.ReviewRepository;
 import site.travellaboratory.be.infrastructure.review.entity.Review;
 import site.travellaboratory.be.infrastructure.review.enums.ReviewStatus;
-import site.travellaboratory.be.presentation.articleschedule.dto.ArticleScheduleReadPlacesResponse;
-import site.travellaboratory.be.presentation.articleschedule.dto.PlaceName;
-import site.travellaboratory.be.presentation.articleschedule.dto.SchedulePlace;
-import site.travellaboratory.be.presentation.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.PlaceName;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.SchedulePlace;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadDetailResponse;
 
 @Service
 @RequiredArgsConstructor

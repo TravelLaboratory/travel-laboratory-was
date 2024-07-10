@@ -18,9 +18,9 @@ import site.travellaboratory.be.infrastructure.articleschedule.ArticleScheduleSt
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleTransport;
-import site.travellaboratory.be.presentation.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
-import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleRequest;
-import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleDeleteResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleUpdateResponse;
 
 @Service
 @RequiredArgsConstructor

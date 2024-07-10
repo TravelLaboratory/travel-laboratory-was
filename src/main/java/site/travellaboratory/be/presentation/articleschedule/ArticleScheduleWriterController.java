@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.articleschedule.ArticleScheduleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
-import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateRequest;
-import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleDeleteResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleUpdateRequest;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleUpdateResponse;
 
 @RestController
 @RequestMapping("/api/v1/")

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.articleschedule.ArticleScheduleReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.articleschedule.dto.ArticleScheduleReadPlacesResponse;
-import site.travellaboratory.be.presentation.articleschedule.dto.get.ArticleScheduleReadDetailResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
+import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadDetailResponse;
 
 @RestController
 @RequestMapping("/api/v1/")
