@@ -34,6 +34,7 @@ import site.travellaboratory.be.infrastructure.bookmark.enums.BookmarkStatus;
 import site.travellaboratory.be.infrastructure.user.UserRepository;
 import site.travellaboratory.be.infrastructure.user.entity.User;
 import site.travellaboratory.be.infrastructure.user.enums.UserStatus;
+import site.travellaboratory.be.presentation.article.dto.ArticleUpdatePrivacyResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -287,6 +288,31 @@ public class ArticleService {
                 .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
                 .limit(4) // 상위 4개 아티클만 가져옴
                 .collect(Collectors.toList());
+    }
+
+    // articleService_에 가는 게 맞는 로직
+    @Transactional
+    public ArticleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
+        // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
+        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
+                    HttpStatus.NOT_FOUND));
+
+        // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
+        if (!article.getUser().getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
+                HttpStatus.FORBIDDEN);
+        }
+
+        // 초기 여행 계획 비공개 여부 수정
+        article.togglePrivacyStatus();
+
+        // 비공개 true, 공개 false
+        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
+
+        return ArticleUpdatePrivacyResponse.from(isPrivate);
     }
 }
 

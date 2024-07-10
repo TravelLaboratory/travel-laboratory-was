@@ -18,7 +18,6 @@ import site.travellaboratory.be.infrastructure.articleschedule.ArticleScheduleSt
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.articleschedule.dtype.ScheduleTransport;
-import site.travellaboratory.be.presentation.articleschedule.dto.ArticleScheduleUpdatePrivacyResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleRequest;
 import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateResponse;
@@ -108,32 +107,6 @@ public class ArticleScheduleWriterService {
 
         return ArticleScheduleDeleteResponse.from(true);
     }
-
-    @Transactional
-    public ArticleScheduleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
-        // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
-                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(
-                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
-                    HttpStatus.NOT_FOUND));
-
-        // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
-
-        // 초기 여행 계획 비공개 여부 수정
-        article.togglePrivacyStatus();
-
-        // 비공개 true, 공개 false
-        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
-
-        return ArticleScheduleUpdatePrivacyResponse.from(isPrivate);
-    }
-
-
 
     private ArticleSchedule toArticleSchedule(Article article, ArticleScheduleRequest request) {
         switch (request.dtype()) {

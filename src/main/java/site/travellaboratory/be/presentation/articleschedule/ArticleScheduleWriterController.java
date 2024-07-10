@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.travelplanelement.ArticleScheduleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.articleschedule.dto.ArticleScheduleUpdatePrivacyResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.delete.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateRequest;
 import site.travellaboratory.be.presentation.articleschedule.dto.put.ArticleScheduleUpdateResponse;
@@ -42,17 +41,6 @@ public class ArticleScheduleWriterController {
         @PathVariable(name = "articleId") Long articleId
     ) {
         ArticleScheduleDeleteResponse response = articleScheduleWriterService.deleteArticleSchedules(
-            userId, articleId);
-        return ResponseEntity.ok(response);
-    }
-
-    //
-    @PatchMapping("/articles/{articleId}/privacy")
-    public ResponseEntity<ArticleScheduleUpdatePrivacyResponse> updateArticlePrivacy(
-        @UserId Long userId,
-        @PathVariable(name = "articleId") Long articleId
-    ) {
-        ArticleScheduleUpdatePrivacyResponse response = articleScheduleWriterService.updateArticlePrivacy(
             userId, articleId);
         return ResponseEntity.ok(response);
     }

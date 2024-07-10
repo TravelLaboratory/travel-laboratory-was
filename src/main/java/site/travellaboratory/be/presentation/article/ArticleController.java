@@ -27,6 +27,7 @@ import site.travellaboratory.be.presentation.article.dto.ArticleUpdateCoverImage
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdateResponse;
 import site.travellaboratory.be.application.ArticleService;
+import site.travellaboratory.be.presentation.article.dto.ArticleUpdatePrivacyResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -119,5 +120,16 @@ public class ArticleController {
     public ResponseEntity<List<ArticleTotalResponse>> getBannerUserArticles(@UserId final Long userId) {
         List<ArticleTotalResponse> articles = articleService.getBannerUserArticles(userId);
         return ResponseEntity.ok(articles);
+    }
+
+    // articleService_에 가는 게 맞는 로직 - 상권 (여행 계획 - 공개, 비공개 설정)
+    @PatchMapping("/articles/{articleId}/privacy")
+    public ResponseEntity<ArticleUpdatePrivacyResponse> updateArticlePrivacy(
+        @UserId Long userId,
+        @PathVariable(name = "articleId") Long articleId
+    ) {
+        ArticleUpdatePrivacyResponse response = articleService.updateArticlePrivacy(
+            userId, articleId);
+        return ResponseEntity.ok(response);
     }
 }
