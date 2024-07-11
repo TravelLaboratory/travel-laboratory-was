@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import site.travellaboratory.be.common.infrastructure.auth.AuthorizationInterceptor;
-import site.travellaboratory.be.presentation.resolver.AuthenticatedUserIdResolver;
+import site.travellaboratory.be.presentation.auth.resolver.AuthenticatedUserIdResolver;
 
 @Configuration
 @RequiredArgsConstructor

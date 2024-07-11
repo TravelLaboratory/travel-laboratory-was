@@ -1,19 +1,18 @@
-package site.travellaboratory.be.presentation.auth.dto;
+package site.travellaboratory.be.presentation.auth.dto.userauthentication;
 
 import site.travellaboratory.be.infrastructure.user.entity.User;
 import site.travellaboratory.be.infrastructure.user.enums.UserRole;
 
-public record UserJoinResponse(
-    Long id,
-    String username,
+public record UserInfoResponse(
+    Long userId,
     UserRole role,
     String nickname,
     String profileImgUrl
-) {
-    public static UserJoinResponse from(User user) {
-        return new UserJoinResponse(
+)
+{
+    public static UserInfoResponse from(User user) {
+        return new UserInfoResponse(
             user.getId(),
-            user.getUsername(),
             user.getRole(),
             user.getNickname(),
             user.getProfileImgUrl()

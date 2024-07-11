@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.resolver;
+package site.travellaboratory.be.presentation.auth.resolver;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;

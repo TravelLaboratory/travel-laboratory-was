@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.auth.dto;
+package site.travellaboratory.be.presentation.auth.dto.userauthentication;
 
 import site.travellaboratory.be.presentation.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.infrastructure.user.entity.User;

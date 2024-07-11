@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.auth.dto.pw;
+package site.travellaboratory.be.presentation.auth.dto.pwinquiry;
 
 import site.travellaboratory.be.infrastructure.auth.pwanswer.entity.PwAnswer;
 import site.travellaboratory.be.infrastructure.user.entity.User;

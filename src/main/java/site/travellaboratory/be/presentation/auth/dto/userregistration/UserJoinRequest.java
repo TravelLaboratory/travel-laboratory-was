@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.auth.dto;
+package site.travellaboratory.be.presentation.auth.dto.userregistration;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

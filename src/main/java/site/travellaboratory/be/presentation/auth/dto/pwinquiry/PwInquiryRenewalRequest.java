@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.auth.dto.pw;
+package site.travellaboratory.be.presentation.auth.dto.pwinquiry;
 
 public record PwInquiryRenewalRequest(
     String username,

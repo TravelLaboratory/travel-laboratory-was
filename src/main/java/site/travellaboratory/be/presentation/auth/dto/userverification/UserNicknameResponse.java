@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.auth.dto;
+package site.travellaboratory.be.presentation.auth.dto.userverification;
 
 public record UserNicknameResponse(
     Boolean available

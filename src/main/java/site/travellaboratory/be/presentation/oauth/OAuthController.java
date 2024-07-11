@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.presentation.auth.dto.UserInfoResponse;
-import site.travellaboratory.be.presentation.auth.dto.UserLoginResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserInfoResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
 import site.travellaboratory.be.presentation.oauth.dto.OAuthJoinRequest;
-import site.travellaboratory.be.application.OAuthService;
+import site.travellaboratory.be.application.auth.OAuthService;
 
 @RestController
 @RequestMapping("/api/v1/oauth")

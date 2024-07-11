@@ -1,11 +1,11 @@
-package site.travellaboratory.be.application;
+package site.travellaboratory.be.application.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.presentation.auth.dto.UserLoginResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
 import site.travellaboratory.be.presentation.jwt.dto.AuthTokenResponse;
 import site.travellaboratory.be.common.infrastructure.auth.jwt.AuthTokenGenerator;
 import site.travellaboratory.be.presentation.oauth.dto.OAuthJoinRequest;
