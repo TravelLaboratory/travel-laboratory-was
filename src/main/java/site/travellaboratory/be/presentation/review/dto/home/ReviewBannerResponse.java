@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.review.dto.home;
 
 import java.util.List;
-import site.travellaboratory.be.infrastructure.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
 
 public record ReviewBannerResponse(
     Long reviewId,

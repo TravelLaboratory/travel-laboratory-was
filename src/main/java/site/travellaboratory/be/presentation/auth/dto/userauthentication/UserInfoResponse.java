@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.auth.dto.userauthentication;
 
-import site.travellaboratory.be.infrastructure.user.entity.User;
-import site.travellaboratory.be.infrastructure.user.enums.UserRole;
+import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.enums.UserRole;
 
 public record UserInfoResponse(
     Long userId,

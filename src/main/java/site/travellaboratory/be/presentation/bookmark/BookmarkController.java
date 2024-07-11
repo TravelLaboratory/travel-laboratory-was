@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.presentation.bookmark.dto.BookmarkResponse;
 import site.travellaboratory.be.presentation.bookmark.dto.BookmarkSaveResponse;
-import site.travellaboratory.be.application.BookmarkService;
+import site.travellaboratory.be.application.article.BookmarkService;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package site.travellaboratory.be.presentation.user.dto;
 
-import site.travellaboratory.be.infrastructure.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 
 public record UserProfileResponse(
         String profileImgUrl,

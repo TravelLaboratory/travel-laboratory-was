@@ -13,7 +13,7 @@ import site.travellaboratory.be.application.auth.UserAuthenticationService;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserInfoResponse;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginRequest;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
-import site.travellaboratory.be.presentation.jwt.dto.AccessTokenResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.AccessTokenResponse;
 
 @RestController
 @RequestMapping("/api/v1")

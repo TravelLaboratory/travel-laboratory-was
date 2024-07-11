@@ -1,6 +1,6 @@
 package site.travellaboratory.be.presentation.review.dto;
 
-import site.travellaboratory.be.infrastructure.article.entity.Location;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
 
 public record ProfileReviewLocation(
     String placeId,

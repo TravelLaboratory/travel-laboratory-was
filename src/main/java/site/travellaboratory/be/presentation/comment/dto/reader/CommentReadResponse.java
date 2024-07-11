@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.comment.dto.reader;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.infrastructure.comment.entity.Comment;
+import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 
 public record CommentReadResponse(
     Long userId,

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.common.infrastructure.auth.jwt.AuthTokenGenerator;
-import site.travellaboratory.be.infrastructure.user.UserRepository;
-import site.travellaboratory.be.infrastructure.user.entity.User;
-import site.travellaboratory.be.infrastructure.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
+import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginRequest;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
-import site.travellaboratory.be.presentation.jwt.dto.AccessTokenResponse;
-import site.travellaboratory.be.presentation.jwt.dto.AuthTokenResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.AccessTokenResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.AuthTokenResponse;
 
 @Service
 @RequiredArgsConstructor

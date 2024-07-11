@@ -3,9 +3,9 @@ package site.travellaboratory.be.presentation.article.dto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import site.travellaboratory.be.infrastructure.article.entity.Article;
-import site.travellaboratory.be.infrastructure.article.entity.Location;
-import site.travellaboratory.be.infrastructure.article.enums.TravelStyle;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
+import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
 
 public record ArticleOneResponse(
         String title,

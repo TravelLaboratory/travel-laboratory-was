@@ -26,7 +26,7 @@ import site.travellaboratory.be.presentation.article.dto.ArticleTotalResponse;
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdateRequest;
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdateResponse;
-import site.travellaboratory.be.application.ArticleService;
+import site.travellaboratory.be.application.article.ArticleService;
 import site.travellaboratory.be.presentation.article.dto.ArticleUpdatePrivacyResponse;
 
 @RestController

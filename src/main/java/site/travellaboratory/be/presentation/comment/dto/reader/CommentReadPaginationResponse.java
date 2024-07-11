@@ -2,7 +2,7 @@ package site.travellaboratory.be.presentation.comment.dto.reader;
 
 import java.util.List;
 import org.springframework.data.domain.Page;
-import site.travellaboratory.be.infrastructure.comment.entity.Comment;
+import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 
 public record CommentReadPaginationResponse(
     String profileImgUrl,

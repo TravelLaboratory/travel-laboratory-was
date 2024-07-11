@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.review.dto;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.infrastructure.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
 
 public record ReviewReadDetailResponse(
     Long userId,

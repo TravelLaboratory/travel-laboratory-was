@@ -2,7 +2,7 @@ package site.travellaboratory.be.presentation.article.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-import site.travellaboratory.be.infrastructure.article.entity.Location;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
 
 public record ArticleRegisterRequest(
         String title,

@@ -2,9 +2,9 @@ package site.travellaboratory.be.presentation.bookmark.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-import site.travellaboratory.be.infrastructure.article.entity.Location;
-import site.travellaboratory.be.infrastructure.article.enums.TravelStyle;
-import site.travellaboratory.be.infrastructure.bookmark.entity.Bookmark;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
+import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
+import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 
 public record BookmarkResponse(
         Long articleId,

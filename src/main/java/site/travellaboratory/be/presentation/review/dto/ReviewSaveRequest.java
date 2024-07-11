@@ -2,7 +2,7 @@ package site.travellaboratory.be.presentation.review.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import site.travellaboratory.be.infrastructure.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
 
 public record ReviewSaveRequest(
     @NotNull

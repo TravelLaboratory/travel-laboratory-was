@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.review.entity.Review;
-import site.travellaboratory.be.infrastructure.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.user.entity.User;
-import site.travellaboratory.be.infrastructure.userlikereview.UserLikeReviewRepository;
-import site.travellaboratory.be.infrastructure.userlikereview.entity.UserLikeReview;
+import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
 import site.travellaboratory.be.presentation.review.dto.userlikereview.ReviewToggleLikeResponse;
 
 @Service
