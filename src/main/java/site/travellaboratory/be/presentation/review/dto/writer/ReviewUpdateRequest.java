@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review.dto;
+package site.travellaboratory.be.presentation.review.dto.writer;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

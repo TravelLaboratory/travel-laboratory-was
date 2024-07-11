@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.articleschedule;
+package site.travellaboratory.be.presentation.articleschedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

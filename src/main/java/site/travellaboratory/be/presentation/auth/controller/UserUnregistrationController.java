@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.auth.UserUnregistrationService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.user.dto.UserUnregisterResponse;
+import site.travellaboratory.be.presentation.auth.dto.userunregistration.UserUnregisterResponse;
 
 @RestController
 @RequestMapping("/api/v1")

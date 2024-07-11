@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review.dto;
+package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.util.List;
 import org.springframework.data.domain.Page;

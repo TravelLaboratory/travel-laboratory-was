@@ -11,28 +11,16 @@ import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
-import site.travellaboratory.be.presentation.user.dto.UserProfileResponse;
-import site.travellaboratory.be.presentation.user.dto.UserProfileUpdateRequest;
-import site.travellaboratory.be.presentation.user.dto.UserProfileUpdateResponse;
+import site.travellaboratory.be.presentation.user.dto.writer.UserProfileUpdateRequest;
+import site.travellaboratory.be.presentation.user.dto.writer.UserProfileUpdateResponse;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserProfileService {
+public class UserProfileWriterService {
 
     private final UserRepository userRepository;
     private final S3FileUploader s3FileUploader;
-
-    public UserProfileResponse findByUserProfile(final Long userId, final Long id) {
-        final User user = userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
-                        HttpStatus.BAD_REQUEST)
-                );
-
-        final boolean isEditable = user.getId().equals(userId);
-
-        return UserProfileResponse.from(user, isEditable);
-    }
 
     public UserProfileUpdateResponse updateProfile(
             final MultipartFile file,
@@ -49,8 +37,7 @@ public class UserProfileService {
             url = s3FileUploader.uploadFiles(file);
         }
 
-        user.update(userProfileUpdateRequest.nickname(),
-                url, userProfileUpdateRequest.introduce());
+        user.update(userProfileUpdateRequest.nickname(), url, userProfileUpdateRequest.introduce());
 
         return new UserProfileUpdateResponse(user.getNickname(),
                 user.getProfileImgUrl(),

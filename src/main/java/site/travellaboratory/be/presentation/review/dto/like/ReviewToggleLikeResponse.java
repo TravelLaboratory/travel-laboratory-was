@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review.dto.userlikereview;
+package site.travellaboratory.be.presentation.review.dto.like;
 
 import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
 

@@ -13,11 +13,11 @@ import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStat
 import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
 import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
-import site.travellaboratory.be.presentation.review.dto.ReviewDeleteResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewSaveRequest;
-import site.travellaboratory.be.presentation.review.dto.ReviewSaveResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewUpdateRequest;
-import site.travellaboratory.be.presentation.review.dto.ReviewUpdateResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewDeleteResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateRequest;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateResponse;
 
 @Service
 @RequiredArgsConstructor

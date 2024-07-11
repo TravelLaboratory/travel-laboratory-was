@@ -13,7 +13,7 @@ import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
-import site.travellaboratory.be.presentation.review.dto.userlikereview.ReviewToggleLikeResponse;
+import site.travellaboratory.be.presentation.review.dto.like.ReviewToggleLikeResponse;
 
 @Service
 @RequiredArgsConstructor

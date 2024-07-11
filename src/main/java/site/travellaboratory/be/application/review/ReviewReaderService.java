@@ -19,13 +19,13 @@ import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
-import site.travellaboratory.be.presentation.review.dto.ProfileReviewLocation;
-import site.travellaboratory.be.presentation.review.dto.ProfileReviewPaginationResponse;
-import site.travellaboratory.be.presentation.review.dto.ProfileReviewResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewReadDetailResponse;
-import site.travellaboratory.be.presentation.review.dto.home.BannerReviewLocation;
-import site.travellaboratory.be.presentation.review.dto.home.ReviewBannerListResponse;
-import site.travellaboratory.be.presentation.review.dto.home.ReviewBannerResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewLocation;
+import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewPaginationResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ReviewReadDetailResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.BannerReviewLocation;
+import site.travellaboratory.be.presentation.review.dto.reader.ReviewBannerListResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ReviewBannerResponse;
 
 @Service
 @RequiredArgsConstructor

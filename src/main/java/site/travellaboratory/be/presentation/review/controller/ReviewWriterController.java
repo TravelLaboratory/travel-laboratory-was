@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review;
+package site.travellaboratory.be.presentation.review.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.review.ReviewWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.review.dto.ReviewDeleteResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewSaveRequest;
-import site.travellaboratory.be.presentation.review.dto.ReviewSaveResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewUpdateRequest;
-import site.travellaboratory.be.presentation.review.dto.ReviewUpdateResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewDeleteResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveResponse;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateRequest;
+import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateResponse;
 
 @RestController
 @RequestMapping("/api/v1")

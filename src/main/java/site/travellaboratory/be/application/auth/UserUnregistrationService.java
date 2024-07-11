@@ -16,7 +16,7 @@ import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkSt
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
-import site.travellaboratory.be.presentation.user.dto.UserUnregisterResponse;
+import site.travellaboratory.be.presentation.auth.dto.userunregistration.UserUnregisterResponse;
 
 @Service
 @RequiredArgsConstructor

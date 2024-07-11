@@ -1,14 +1,14 @@
-package site.travellaboratory.be.presentation.review.dto.home;
+package site.travellaboratory.be.presentation.review.dto.reader;
 
 import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
 
-public record BannerReviewLocation(
+public record ProfileReviewLocation(
     String placeId,
     String address,
     String city
 ) {
-    public static BannerReviewLocation from(Location location) {
-        return new BannerReviewLocation(
+    public static ProfileReviewLocation from(Location location) {
+        return new ProfileReviewLocation(
             location.getPlaceId(),
             location.getAddress(),
             location.getCity()

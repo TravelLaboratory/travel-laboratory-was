@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review.dto;
+package site.travellaboratory.be.presentation.review.dto.writer;
 
 public record ReviewUpdateResponse(
     Long reviewId

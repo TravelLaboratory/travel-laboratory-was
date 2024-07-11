@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review;
+package site.travellaboratory.be.presentation.review.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.review.ReviewReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.presentation.review.dto.ProfileReviewPaginationResponse;
-import site.travellaboratory.be.presentation.review.dto.ReviewReadDetailResponse;
-import site.travellaboratory.be.presentation.review.dto.home.ReviewBannerListResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewPaginationResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ReviewReadDetailResponse;
+import site.travellaboratory.be.presentation.review.dto.reader.ReviewBannerListResponse;
 
 @RestController
 @RequestMapping("/api/v1")

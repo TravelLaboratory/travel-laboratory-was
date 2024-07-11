@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.user.dto;
+package site.travellaboratory.be.presentation.auth.dto.userunregistration;
 
 public record UserUnregisterResponse(
         Boolean isDelete

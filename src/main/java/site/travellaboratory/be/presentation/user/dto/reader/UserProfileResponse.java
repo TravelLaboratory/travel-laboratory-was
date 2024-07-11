@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.user.dto;
+package site.travellaboratory.be.presentation.user.dto.reader;
 
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 

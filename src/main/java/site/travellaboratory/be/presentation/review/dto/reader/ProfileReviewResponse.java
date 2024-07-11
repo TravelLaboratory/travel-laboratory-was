@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.review.dto;
+package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.time.LocalDate;
 import java.util.List;
