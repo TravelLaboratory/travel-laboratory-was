@@ -1,12 +1,8 @@
 package site.travellaboratory.be.application.article;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,50 +11,28 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.presentation.article.dto.ArticleDeleteResponse;
-import site.travellaboratory.be.presentation.article.dto.ArticleOneResponse;
-import site.travellaboratory.be.presentation.article.dto.ArticleRegisterRequest;
-import site.travellaboratory.be.presentation.article.dto.ArticleRegisterResponse;
-import site.travellaboratory.be.presentation.article.dto.ArticleTotalResponse;
-import site.travellaboratory.be.presentation.article.dto.ArticleUpdateCoverImageResponse;
-import site.travellaboratory.be.presentation.article.dto.ArticleUpdateRequest;
-import site.travellaboratory.be.presentation.article.dto.ArticleUpdateResponse;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
+import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
+import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
-import site.travellaboratory.be.presentation.article.dto.ArticleUpdatePrivacyResponse;
+import site.travellaboratory.be.presentation.article.dto.reader.ArticleOneResponse;
+import site.travellaboratory.be.presentation.article.dto.reader.ArticleTotalResponse;
+import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleService {
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+public class ArticleReaderService {
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final AmazonS3Client amazonS3Client;
-
-    //내 초기 여행 계획 저장
-    @Transactional
-    public ArticleRegisterResponse saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                        HttpStatus.NOT_FOUND));
-
-        final Article article = Article.of(user, articleRegisterRequest);
-        articleRepository.save(article);
-        return ArticleRegisterResponse.from(article.getId());
-    }
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
@@ -117,57 +91,6 @@ public class ArticleService {
         return ArticleOneResponse.of(article, bookmarkCount, isBookmarked, isPrivate, isEditable);
     }
 
-    @Transactional
-    public ArticleUpdateCoverImageResponse updateCoverImage(
-            final MultipartFile coverImage,
-            final Long articleId) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        final String url = uploadFiles(coverImage);
-
-        article.updateCoverImage(url);
-
-        return new ArticleUpdateCoverImageResponse(url);
-    }
-
-    private String uploadFiles(final MultipartFile file) {
-        try {
-            String fileName = file.getOriginalFilename();
-            String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
-
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
-
-            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-            return fileUrl;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("File upload failed", e);
-        }
-    }
-
-    // 내 초기 여행 계획 수정
-    @Transactional
-    public ArticleUpdateResponse updateArticle(
-            final ArticleUpdateRequest articleUpdateRequest,
-            final Long userId,
-            final Long articleId
-    ) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        if (!article.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_UPDATE_NOT_USER, HttpStatus.UNAUTHORIZED);
-        }
-
-        article.update(articleUpdateRequest);
-        return ArticleUpdateResponse.from(article);
-    }
-
     // 아티클 검색
     @Transactional
     public Page<ArticleTotalResponse> searchArticlesByKeyWord(
@@ -213,42 +136,6 @@ public class ArticleService {
         return new PageImpl<>(articleResponses, pageable, newArticles.getTotalElements());
     }
 
-    private Page<Article> slicePage(Pageable pageable, List<Article> articles) {
-        int pageSize = pageable.getPageSize();
-        int pageNumber = pageable.getPageNumber();
-        int fromIndex = pageNumber * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, articles.size());
-
-        List<Article> pagedArticles = articles.subList(fromIndex, toIndex);
-        return new PageImpl<>(pagedArticles, pageable, articles.size());
-    }
-
-    private List<Article> sortByBookmarkCount(List<Article> articles) {
-        return articles.stream()
-                .sorted((a1, a2) -> {
-                    Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
-                    Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
-                    return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
-                })
-                .collect(Collectors.toList());
-    }
-
-    // 아티클 삭제
-    @Transactional
-    public ArticleDeleteResponse deleteArticle(final Long userId, final Long articleId) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        if (!article.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
-        }
-
-        article.delete();
-        articleRepository.save(article);
-        return ArticleDeleteResponse.from(true);
-    }
-
     @Transactional
     public List<ArticleTotalResponse> getBannerNotUserArticles() {
         List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
@@ -290,29 +177,57 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
-    // articleService_에 가는 게 맞는 로직
+
     @Transactional
-    public ArticleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
-        // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
-                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(
-                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
-                    HttpStatus.NOT_FOUND));
+    public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
+        final User loginUser = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                HttpStatus.NOT_FOUND));
 
-        // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
+        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                HttpStatus.NOT_FOUND));
 
-        // 초기 여행 계획 비공개 여부 수정
-        article.togglePrivacyStatus();
+        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserAndStatusIn(user,
+                List.of(BookmarkStatus.ACTIVE), pageable)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        // 비공개 true, 공개 false
-        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
+        List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
+            .map(bookmark -> {
+                final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(bookmark.getArticle().getId(),
+                    BookmarkStatus.ACTIVE);
+                boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
+                    loginUser.getId(), bookmark.getArticle().getId(),
+                    BookmarkStatus.ACTIVE);
 
-        return ArticleUpdatePrivacyResponse.from(isPrivate);
+                return BookmarkResponse.of(
+                    bookmark,
+                    bookmarkCount,
+                    isBookmarked
+                );
+            })
+            .toList();
+        return new PageImpl<>(bookmarkResponses, pageable, bookmarks.getTotalElements());
+    }
+
+    private Page<Article> slicePage(Pageable pageable, List<Article> articles) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        int fromIndex = pageNumber * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, articles.size());
+
+        List<Article> pagedArticles = articles.subList(fromIndex, toIndex);
+        return new PageImpl<>(pagedArticles, pageable, articles.size());
+    }
+
+    private List<Article> sortByBookmarkCount(List<Article> articles) {
+        return articles.stream()
+            .sorted((a1, a2) -> {
+                Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
+                Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
+                return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
+            })
+            .collect(Collectors.toList());
     }
 }
 

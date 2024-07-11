@@ -24,8 +24,8 @@ import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStat
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelCompanion;
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.presentation.article.dto.ArticleRegisterRequest;
-import site.travellaboratory.be.presentation.article.dto.ArticleUpdateRequest;
+import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
+import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRequest;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 
 @Entity

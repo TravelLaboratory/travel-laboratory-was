@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.article.dto;
+package site.travellaboratory.be.presentation.article.dto.writer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,44 +7,30 @@ import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
 
-public record ArticleResponse(
+public record ArticleUpdateResponse(
         String title,
         List<Location> location,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
-        String coverImage,
         String travelCompanion,
-        List<String> travelStyles,
-        String name,
-        Long bookmarkCount,
-        Boolean isBookmarked,
-        Boolean isPrivate
-) {
+        List<String> travelStyles
 
-    public static ArticleResponse of(
-            final Article article,
-            final Long bookmarkCount,
-            final Boolean isBookmarked,
-            final Boolean isPrivate
-    ) {
-        List<String> travelStyleNames = article.getTravelStyles().stream()
+) {
+    public static ArticleUpdateResponse from(final Article article) {
+        List<String> travelStyleNames = article.getTravelStyles()
+                .stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
-        return new ArticleResponse(
+        return new ArticleUpdateResponse(
                 article.getTitle(),
                 article.getLocation(),
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
-                article.getCoverImageUrl(),
                 article.getTravelCompanion().getName(),
-                travelStyleNames,
-                article.getUser().getNickname(),
-                bookmarkCount,
-                isBookmarked,
-                isPrivate
+                travelStyleNames
         );
     }
 }

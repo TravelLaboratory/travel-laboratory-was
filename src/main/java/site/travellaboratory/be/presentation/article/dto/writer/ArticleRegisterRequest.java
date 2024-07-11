@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.article.dto;
+package site.travellaboratory.be.presentation.article.dto.writer;
 
 import java.time.LocalDate;
 import java.util.List;
