@@ -8,7 +8,7 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.AuthTokenResponse;
 import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
-import site.travellaboratory.be.presentation.oauth.dto.OAuthJoinRequest;
+import site.travellaboratory.be.presentation.auth.dto.oauth.OAuthJoinRequest;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;

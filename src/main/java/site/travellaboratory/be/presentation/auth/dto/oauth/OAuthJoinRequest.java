@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.oauth.dto;
+package site.travellaboratory.be.presentation.auth.dto.oauth;
 
 public record OAuthJoinRequest (
         String profileNickname,

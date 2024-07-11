@@ -1,4 +1,4 @@
-package site.travellaboratory.be.presentation.oauth;
+package site.travellaboratory.be.presentation.auth.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserInfoResponse;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
-import site.travellaboratory.be.presentation.oauth.dto.OAuthJoinRequest;
+import site.travellaboratory.be.presentation.auth.dto.oauth.OAuthJoinRequest;
 import site.travellaboratory.be.application.auth.OAuthService;
 
 @RestController
