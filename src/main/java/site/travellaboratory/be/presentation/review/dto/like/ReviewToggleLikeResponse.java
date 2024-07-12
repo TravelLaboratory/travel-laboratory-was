@@ -1,11 +1,11 @@
 package site.travellaboratory.be.presentation.review.dto.like;
 
-import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
+import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 public record ReviewToggleLikeResponse(
-    UserLikeReviewStatus status
+    ReviewLikeStatus status
 ) {
-    public static ReviewToggleLikeResponse from(UserLikeReviewStatus status) {
+    public static ReviewToggleLikeResponse from(ReviewLikeStatus status) {
         return new ReviewToggleLikeResponse(status);
     }
 }

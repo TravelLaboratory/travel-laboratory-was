@@ -10,17 +10,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.domain.review.ReviewLike;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
+import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 @Entity
+@Table(name = "review_like")
 @Getter
-@NoArgsConstructor
-public class UserLikeReview extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ReviewLikeJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,23 +40,23 @@ public class UserLikeReview extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserLikeReviewStatus status;
+    private ReviewLikeStatus status;
 
-    public static UserLikeReview of(User user, ReviewJpaEntity reviewJpaEntity) {
-        return new UserLikeReview(user, reviewJpaEntity);
+    public static ReviewLikeJpaEntity from(ReviewLike reviewLike) {
+        ReviewLikeJpaEntity result = new ReviewLikeJpaEntity();
+        result.id = reviewLike.getId();
+        result.user = reviewLike.getUser();
+        result.reviewJpaEntity = ReviewJpaEntity.from(reviewLike.getReview());
+        result.status = reviewLike.getStatus();
+        return result;
     }
 
-    private UserLikeReview(User user, ReviewJpaEntity reviewJpaEntity) {
-        this.user = user;
-        this.reviewJpaEntity = reviewJpaEntity;
-        this.status = UserLikeReviewStatus.ACTIVE;
-    }
-
-    public void toggleStatus() {
-        if (this.status == UserLikeReviewStatus.ACTIVE) {
-            this.status = UserLikeReviewStatus.INACTIVE;
-        } else {
-            this.status = UserLikeReviewStatus.ACTIVE;
-        }
+    public ReviewLike toModel() {
+        return ReviewLike.builder()
+            .id(this.getId())
+            .user(this.getUser())
+            .review(this.getReviewJpaEntity().toModel())
+            .status(this.getStatus())
+            .build();
     }
 }

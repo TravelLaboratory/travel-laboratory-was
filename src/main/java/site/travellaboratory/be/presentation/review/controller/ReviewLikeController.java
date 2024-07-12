@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.review.ReviewLikeService;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.presentation.review.dto.like.ReviewToggleLikeResponse;
 
 @RestController
@@ -22,8 +23,10 @@ public class ReviewLikeController {
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
-        ReviewToggleLikeResponse response = reviewLikeService.toggleLikeReview(userId,
+        ReviewLikeStatus result = reviewLikeService.toggleLikeReview(userId,
             reviewId);
+
+        ReviewToggleLikeResponse response = ReviewToggleLikeResponse.from(result);
         return ResponseEntity.ok(response);
     }
 }

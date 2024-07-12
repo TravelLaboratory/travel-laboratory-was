@@ -16,9 +16,9 @@ import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.ReviewLikeRepository;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.ReviewLikeJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewLocation;
 import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewPaginationResponse;
 import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewResponse;
@@ -32,7 +32,7 @@ import site.travellaboratory.be.presentation.review.dto.reader.ReviewBannerRespo
 public class ReviewReaderService {
 
     private final ReviewRepository reviewRepository;
-    private final UserLikeReviewRepository userLikeReviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
 
     public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
@@ -54,13 +54,13 @@ public class ReviewReaderService {
         boolean isEditable = reviewJpaEntity.getUser().getId().equals(userId);
 
         // (2) 좋아요
-        boolean isLike = userLikeReviewRepository.findByUserIdAndReviewId(userId, reviewId)
-            .map(UserLikeReview::getStatus)
-            .orElse(UserLikeReviewStatus.INACTIVE) == UserLikeReviewStatus.ACTIVE;
+        boolean isLike = reviewLikeRepository.findByUserIdAndReviewId(userId, reviewId)
+            .map(ReviewLikeJpaEntity::getStatus)
+            .orElse(ReviewLikeStatus.INACTIVE) == ReviewLikeStatus.ACTIVE;
 
         // (3) 좋아요 개수
-        long likeCount = userLikeReviewRepository.countByReviewJpaEntityIdAndStatus(reviewId,
-            UserLikeReviewStatus.ACTIVE);
+        long likeCount = reviewLikeRepository.countByReviewJpaEntityIdAndStatus(reviewId,
+            ReviewLikeStatus.ACTIVE);
 
         return ReviewReadDetailResponse.from(
             reviewJpaEntity, isEditable, isLike, likeCount

@@ -7,43 +7,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.Review;
+import site.travellaboratory.be.domain.review.ReviewLike;
+import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
-import site.travellaboratory.be.presentation.review.dto.like.ReviewToggleLikeResponse;
+import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.ReviewLikeRepository;
+import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.ReviewLikeJpaEntity;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewLikeService {
 
     private final ReviewRepository reviewRepository;
-    private final UserLikeReviewRepository userLikeReviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     @Transactional
-    public ReviewToggleLikeResponse toggleLikeReview(Long userId, Long reviewId) {
+    public ReviewLikeStatus toggleLikeReview(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 좋아요 할 경우
-        ReviewJpaEntity reviewJpaEntity = reviewRepository.findByIdAndStatusIn(reviewId,
+        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
-                HttpStatus.NOT_FOUND));
+                HttpStatus.NOT_FOUND)).toModel();
 
-        UserLikeReview userLikeReview = userLikeReviewRepository.findByUserIdAndReviewId(userId,
+        ReviewLikeJpaEntity reviewLikeJpaEntity = reviewLikeRepository.findByUserIdAndReviewId(userId,
                 reviewId)
             .orElse(null);
 
-        // 처음 좋아요를 누른 게 아닌 경우
-        if (userLikeReview != null) {
-            userLikeReview.toggleStatus();
+        ReviewLike reviewLike;
+        if (reviewLikeJpaEntity != null) {
+            reviewLike = reviewLikeJpaEntity.toModel().withToggleStatus();
         } else {
-            // 처음 좋아요를 누른 경우 - 새로 생성
-            User user = User.of(userId);
-            userLikeReview = UserLikeReview.of(user, reviewJpaEntity);
+            reviewLike = ReviewLike.create(review.getUser(), review);
         }
 
-        UserLikeReview saveLikeReview = userLikeReviewRepository.save(userLikeReview);
-        return ReviewToggleLikeResponse.from(saveLikeReview.getStatus());
+        ReviewLikeJpaEntity saveReviewLike = reviewLikeRepository.save(ReviewLikeJpaEntity.from(reviewLike));
+        return saveReviewLike.getStatus();
     }
 }
