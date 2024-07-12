@@ -12,7 +12,7 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 
-public interface ReviewRepository extends JpaRepository<ReviewJpaEntity, Long> {
+public interface ReviewJpaRepository extends JpaRepository<ReviewJpaEntity, Long> {
 
     Optional<ReviewJpaEntity> findByArticleAndStatusInOrderByArticleDesc(Article article,
         List<ReviewStatus> status);

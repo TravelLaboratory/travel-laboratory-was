@@ -21,7 +21,7 @@ import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSc
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
-import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
@@ -35,7 +35,7 @@ public class ArticleScheduleReaderService
 {
     private final ArticleRepository articleRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
-    private final ReviewRepository reviewRepository;
+    private final ReviewJpaRepository reviewJpaRepository;
 
     /*
     * GET - /api/v1/articles/{articleId}/schedules
@@ -58,7 +58,7 @@ public class ArticleScheduleReaderService
         }
 
         // reviewId 찾아오기 없다면 null
-        Long reviewId = reviewRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
+        Long reviewId = reviewJpaRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
             .map(ReviewJpaEntity::getId)
             .orElse(null);
 
@@ -91,7 +91,7 @@ public class ArticleScheduleReaderService
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article,
+        reviewJpaRepository.findByArticleAndStatusInOrderByArticleDesc(article,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,

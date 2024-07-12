@@ -10,18 +10,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.comment.enums.CommentStatus;
+import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 
 @Entity
+@Table(name = "comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseEntity {
+public class CommentJpaEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,7 +43,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private CommentStatus status;
 
-    private Comment(
+    private CommentJpaEntity(
         User user,
         ReviewJpaEntity reviewJpaEntity,
         String replyContent
@@ -52,12 +54,12 @@ public class Comment extends BaseEntity {
         this.status = CommentStatus.ACTIVE;
     }
 
-    public static Comment of(
+    public static CommentJpaEntity of(
         User user,
         ReviewJpaEntity reviewJpaEntity,
         String replyContent
     ) {
-        return new Comment(user, reviewJpaEntity, replyContent);
+        return new CommentJpaEntity(user, reviewJpaEntity, replyContent);
     }
 
     public void update(String replyContent) {

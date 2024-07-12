@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
-public interface ReviewLikeRepository extends JpaRepository<ReviewLikeJpaEntity, Long> {
+public interface ReviewLikeJpaRepository extends JpaRepository<ReviewLikeJpaEntity, Long> {
 
     @Query("SELECT t FROM ReviewLikeJpaEntity t WHERE t.user.id = :userId AND t.reviewJpaEntity.id = :reviewJpaEntityId")
     Optional<ReviewLikeJpaEntity> findByUserIdAndReviewId(@Param("userId") Long userId, @Param("reviewJpaEntityId") Long reviewJpaEntityId);

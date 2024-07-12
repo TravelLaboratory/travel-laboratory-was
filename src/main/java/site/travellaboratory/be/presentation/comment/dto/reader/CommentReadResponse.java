@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.comment.dto.reader;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
+import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentJpaEntity;
 
 public record CommentReadResponse(
     Long userId,
@@ -15,16 +15,16 @@ public record CommentReadResponse(
     long likeCount
 ) {
     public static CommentReadResponse from(
-        Comment comment, boolean isEditable, boolean isLike, long likeCount
+        CommentJpaEntity commentJpaEntity, boolean isEditable, boolean isLike, long likeCount
     ) {
         return new CommentReadResponse(
-            comment.getUser().getId(),
-            comment.getUser().getProfileImgUrl(),
-            comment.getUser().getNickname(),
+            commentJpaEntity.getUser().getId(),
+            commentJpaEntity.getUser().getProfileImgUrl(),
+            commentJpaEntity.getUser().getNickname(),
             isEditable,
-            comment.getId(),
-            comment.getReplyContent(),
-            comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            commentJpaEntity.getId(),
+            commentJpaEntity.getReplyContent(),
+            commentJpaEntity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             isLike,
             likeCount
         );

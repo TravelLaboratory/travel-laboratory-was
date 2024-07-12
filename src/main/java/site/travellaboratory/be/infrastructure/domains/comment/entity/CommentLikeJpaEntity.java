@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.userlikecomment.entity;
+package site.travellaboratory.be.infrastructure.domains.comment.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,17 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.userlikecomment.enums.UserLikeCommentStatus;
 
 @Entity
+@Table(name = "comment_like")
 @Getter
 @NoArgsConstructor
-public class UserLikeComment extends BaseEntity {
+public class CommentLikeJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,20 +33,20 @@ public class UserLikeComment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    private Comment comment;
+    private CommentJpaEntity commentJpaEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserLikeCommentStatus status;
 
-    private UserLikeComment(User user, Comment comment) {
+    private CommentLikeJpaEntity(User user, CommentJpaEntity commentJpaEntity) {
         this.user = user;
-        this.comment = comment;
+        this.commentJpaEntity = commentJpaEntity;
         this.status = UserLikeCommentStatus.ACTIVE;
     }
 
-    public static UserLikeComment of(User user, Comment comment) {
-        return new UserLikeComment(user, comment);
+    public static CommentLikeJpaEntity of(User user, CommentJpaEntity commentJpaEntity) {
+        return new CommentLikeJpaEntity(user, commentJpaEntity);
     }
 
     public void toggleStatus() {
