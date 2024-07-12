@@ -1,4 +1,4 @@
-package site.travellaboratory.be.domain.user;
+package site.travellaboratory.be.domain.user.auth;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.domain.user.enums.UserRole;
+import site.travellaboratory.be.domain.user.auth.enums.UserRole;
 
 @Builder
 @Getter

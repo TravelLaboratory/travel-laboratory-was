@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRepository;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswer;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.enums.PwAnswerStatus;
+import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswerJpaEntity;
+import site.travellaboratory.be.domain.user.pw.enums.PwAnswerStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
@@ -33,10 +33,10 @@ public class PwInquiryService {
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         // 기획상 Optional 일 수 없다.
-        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(userJpaEntity.getId(),
+        PwAnswerJpaEntity pwAnswerJpaEntity = pwAnswerRepository.findByUserIdAndStatus(userJpaEntity.getId(),
             PwAnswerStatus.ACTIVE);
 
-        return PwInquiryEmailResponse.from(userJpaEntity, pwAnswer);
+        return PwInquiryEmailResponse.from(userJpaEntity, pwAnswerJpaEntity);
     }
 
     public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
@@ -46,14 +46,14 @@ public class PwInquiryService {
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         // 답변이 일치한지 판단
-        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+        PwAnswerJpaEntity pwAnswerJpaEntity = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
                 userJpaEntity.getId(),
                 request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED));
 
-        return PwInquiryVerificationResponse.from(userJpaEntity, pwAnswer);
+        return PwInquiryVerificationResponse.from(userJpaEntity, pwAnswerJpaEntity);
     }
 
     @Transactional

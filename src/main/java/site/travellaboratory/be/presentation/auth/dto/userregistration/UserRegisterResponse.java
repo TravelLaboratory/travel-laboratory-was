@@ -1,6 +1,6 @@
 package site.travellaboratory.be.presentation.auth.dto.userregistration;
 
-import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.user.User;
 
 public record UserRegisterResponse(
     Long id,

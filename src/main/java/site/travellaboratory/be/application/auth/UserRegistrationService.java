@@ -7,16 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.domain.user.User;
-import site.travellaboratory.be.domain.user.UserAuth;
+import site.travellaboratory.be.domain.user.auth.UserAuth;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
+import site.travellaboratory.be.domain.user.pw.PwAnswer;
+import site.travellaboratory.be.domain.user.pw.PwQuestion;
+import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
+import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRepository;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswer;
+import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswerJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionRepository;
-import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.entity.PwQuestion;
-import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.enums.PwQuestionStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
-import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userregistration.UserJoinRequest;
 
 @Service
@@ -47,21 +48,20 @@ public class UserRegistrationService {
                     HttpStatus.CONFLICT);
         });
 
-        User user = User.create(request.nickname());
-
         // 새로운 유저 생성
+        User user = User.create(request.nickname());
         User savedUser = userRepository.save(UserJpaEntity.from(user, userAuth)).toModel();
 
         //비번 질문 조회
-        PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(request.pwQuestionId(),
+        PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(
+                request.pwQuestionId(),
                 PwQuestionStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.PASSWORD_INVALID_QUESTION,
-                HttpStatus.BAD_REQUEST));
+                HttpStatus.BAD_REQUEST)).toModel();
 
         // 비번 답변 저장
-        PwAnswer pwAnswer = PwAnswer.of(savedUser.getId(), pwQuestion, request.pwAnswer());
-        pwAnswerRepository.save(pwAnswer);
-
+        PwAnswer pwAnswer = PwAnswer.create(savedUser, pwQuestion, request.pwAnswer());
+        pwAnswerRepository.save(PwAnswerJpaEntity.from(pwAnswer));
         return savedUser;
     }
 }

@@ -1,4 +1,4 @@
-package site.travellaboratory.be.domain.user;
+package site.travellaboratory.be.domain.user.user;
 
 import lombok.Builder;
 import lombok.Getter;

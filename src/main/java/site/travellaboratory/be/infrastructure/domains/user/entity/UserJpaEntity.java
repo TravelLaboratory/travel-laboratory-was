@@ -11,10 +11,10 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.domain.user.User;
-import site.travellaboratory.be.domain.user.UserAuth;
+import site.travellaboratory.be.domain.user.user.User;
+import site.travellaboratory.be.domain.user.auth.UserAuth;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.domain.user.enums.UserRole;
+import site.travellaboratory.be.domain.user.auth.enums.UserRole;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 
 @Entity

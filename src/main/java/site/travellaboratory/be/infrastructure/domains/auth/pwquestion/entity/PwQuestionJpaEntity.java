@@ -10,13 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.domain.user.pw.PwQuestion;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.enums.PwQuestionStatus;
+import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class PwQuestion extends BaseEntity {
+public class PwQuestionJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +35,17 @@ public class PwQuestion extends BaseEntity {
         this.status = PwQuestionStatus.ACTIVE;
     }
 
-    public PwQuestion(String question) {
-        this.question = question;
-        this.status = PwQuestionStatus.ACTIVE;
+    public static PwQuestionJpaEntity from(PwQuestion pwQuestion) {
+        PwQuestionJpaEntity result = new PwQuestionJpaEntity();
+        result.question = pwQuestion.getQuestion();
+        return result;
     }
 
+    public PwQuestion toModel() {
+        return PwQuestion.builder()
+            .id(this.id)
+            .question(this.question)
+            .status(this.status)
+            .build();
+    }
 }
