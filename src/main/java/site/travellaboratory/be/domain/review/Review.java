@@ -23,10 +23,10 @@ public class Review {
     private final String description;
     private final ReviewStatus status;
 
-    public static Review create(User user, Article article, String title,
+    public static Review create(Long userId, User user, Article article, String title,
         String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 article_id이 아닌 경우
-        article.verifyOwner(user.getId());
+        article.verifyOwner(userId);
 
         return Review.builder()
             .user(user)

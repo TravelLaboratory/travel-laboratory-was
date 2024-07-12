@@ -41,7 +41,7 @@ public class ReviewWriterService {
             });
 
         // Review 클래스에서 검증하고 생성
-        Review review = Review.create(article.getUser(), article, request.title(),
+        Review review = Review.create(userId, article.getUser(), article, request.title(),
             request.representativeImgUrl(),
             request.description(), request.status());
 
