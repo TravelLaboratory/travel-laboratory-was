@@ -7,20 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.domain.comment.Comment;
+import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentJpaEntity;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
-import site.travellaboratory.be.presentation.comment.dto.writer.CommentDeleteResponse;
 import site.travellaboratory.be.presentation.comment.dto.writer.CommentSaveRequest;
-import site.travellaboratory.be.presentation.comment.dto.writer.CommentSaveResponse;
 import site.travellaboratory.be.presentation.comment.dto.writer.CommentUpdateRequest;
-import site.travellaboratory.be.presentation.comment.dto.writer.CommentUpdateResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -31,67 +29,60 @@ public class CommentWriterService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentSaveResponse saveComment(Long userId, CommentSaveRequest request) {
+    public Long saveComment(Long userId, CommentSaveRequest request) {
         // 유효하지 않은 후기에 대한 댓글을 작성할 경우
-        ReviewJpaEntity reviewJpaEntity = reviewJpaRepository.findByIdAndStatusIn(request.reviewId(),
+        Review review = reviewJpaRepository.findByIdAndStatusIn(request.reviewId(),
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_POST_INVALID,
-                HttpStatus.NOT_FOUND));
+                HttpStatus.NOT_FOUND)).toModel();
 
+        // todo : user 분리 시 확인!!
         // 댓글 쓰는 유저 찾기
-        User commentUser = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 댓글 작성
-        CommentJpaEntity saveCommentJpaEntity = commentJpaRepository.save(
-            CommentJpaEntity.of(
-                commentUser,
-                reviewJpaEntity,
-                request.replyComment()
-            )
-        );
-        return CommentSaveResponse.from(saveCommentJpaEntity.getId());
+        Comment saveComment = Comment.create(user, review, request.replyComment());
+        CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(saveComment));
+        return savedEntity.getId();
     }
 
     @Transactional
-    public CommentUpdateResponse updateComment(Long userId, Long commentId,
+    public Long updateComment(Long userId, Long commentId,
         CommentUpdateRequest request) {
         // 유효하지 않은 댓글를 수정할 경우
-        CommentJpaEntity commentJpaEntity = commentJpaRepository.findByIdAndStatusIn(commentId,
+        Comment comment = commentJpaRepository.findByIdAndStatusIn(commentId,
                 List.of(CommentStatus.ACTIVE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_UPDATE_INVALID,
-                HttpStatus.NOT_FOUND));
+                HttpStatus.NOT_FOUND)).toModel();
 
-        // 유저가 작성한 댓글이 아닌 경우
-        if (!commentJpaEntity.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.COMMENT_UPDATE_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
+        // 댓글을 수정하려는 유저 찾기
+        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        // 댓글 업데이트
-        commentJpaEntity.update(request.replyComment());
-        CommentJpaEntity updateCommentJpaEntity = commentJpaRepository.save(commentJpaEntity);
-        return CommentUpdateResponse.from(updateCommentJpaEntity.getId());
+        Comment updateComment = comment.withUpdatedReplyContent(user, request.replyComment());
+        CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(updateComment));
+        return savedEntity.getId();
     }
 
     @Transactional
-    public CommentDeleteResponse deleteComment(final Long userId, final Long commentId) {
+    public boolean deleteComment(final Long userId, final Long commentId) {
         // 유효하지 않은 댓글을 삭제할 경우
-        CommentJpaEntity commentJpaEntity = commentJpaRepository.findByIdAndStatusIn(commentId,
+        Comment comment = commentJpaRepository.findByIdAndStatusIn(commentId,
                 List.of(CommentStatus.ACTIVE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_DELETE_INVALID,
-                HttpStatus.NOT_FOUND));
+                HttpStatus.NOT_FOUND)).toModel();
 
-        // 유저가 작성한 댓글이 아닌 경우
-        if (!commentJpaEntity.getUser().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.COMMENT_DELETE_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
+        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        Comment deletedComment = comment.withInactiveStatus(user);
 
         // 댓글 삭제
-        commentJpaEntity.delete();
-        commentJpaRepository.save(commentJpaEntity);
-        return CommentDeleteResponse.from(true);
+        CommentJpaEntity result = commentJpaRepository.save(CommentJpaEntity.from(deletedComment));
+        return result.getStatus() == CommentStatus.ACTIVE;
     }
 }

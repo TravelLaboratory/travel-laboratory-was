@@ -14,10 +14,11 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.common.BaseEntity;
+import site.travellaboratory.be.domain.comment.Comment;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 
 @Entity
 @Table(name = "comment")
@@ -43,30 +44,21 @@ public class CommentJpaEntity extends BaseEntity {
     @Column(nullable = false)
     private CommentStatus status;
 
-    private CommentJpaEntity(
-        User user,
-        ReviewJpaEntity reviewJpaEntity,
-        String replyContent
-    ) {
-        this.user = user;
-        this.reviewJpaEntity = reviewJpaEntity;
-        this.replyContent = replyContent;
-        this.status = CommentStatus.ACTIVE;
+    public static CommentJpaEntity from(Comment comment) {
+        CommentJpaEntity result = new CommentJpaEntity();
+        result.user = comment.getUser();
+        result.reviewJpaEntity = ReviewJpaEntity.from(comment.getReview());
+        result.replyContent = comment.getReplyContent();
+        result.status = comment.getStatus();
+        return result;
     }
 
-    public static CommentJpaEntity of(
-        User user,
-        ReviewJpaEntity reviewJpaEntity,
-        String replyContent
-    ) {
-        return new CommentJpaEntity(user, reviewJpaEntity, replyContent);
-    }
-
-    public void update(String replyContent) {
-        this.replyContent = replyContent;
-    }
-
-    public void delete() {
-        this.status = CommentStatus.INACTIVE;
+    public Comment toModel() {
+        return Comment.builder()
+            .id(this.id)
+            .user(this.user)
+            .review(this.reviewJpaEntity.toModel())
+            .replyContent(this.replyContent)
+            .build();
     }
 }
