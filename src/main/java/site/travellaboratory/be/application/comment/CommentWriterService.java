@@ -14,7 +14,7 @@ import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentJpa
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.comment.dto.writer.CommentSaveRequest;
@@ -26,7 +26,7 @@ public class CommentWriterService {
 
     private final ReviewJpaRepository reviewJpaRepository;
     private final CommentJpaRepository commentJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional
     public Long saveComment(Long userId, CommentSaveRequest request) {
@@ -38,7 +38,7 @@ public class CommentWriterService {
 
         // todo : user 분리 시 확인!!
         // 댓글 쓰는 유저 찾기
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -58,7 +58,7 @@ public class CommentWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 댓글을 수정하려는 유저 찾기
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -75,7 +75,7 @@ public class CommentWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_DELETE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

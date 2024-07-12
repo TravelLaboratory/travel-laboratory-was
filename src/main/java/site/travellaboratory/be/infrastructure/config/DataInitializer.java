@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import site.travellaboratory.be.domain.user.pw.PwQuestion;
 import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
-import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionRepository;
+import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.entity.PwQuestionJpaEntity;
 
 @Profile("!test") // 혹시 몰라서 Profile test 는 실행되지 않게끔 설정
@@ -18,7 +18,7 @@ public class DataInitializer {
 
     @Bean
     @ConditionalOnProperty(name = "spring.jpa.hibernate.ddl-auto", havingValue = "create")
-    CommandLineRunner initDatabasePwQuestion(PwQuestionRepository pwQuestionRepository) {
+    CommandLineRunner initDatabasePwQuestion(PwQuestionJpaRepository pwQuestionJpaRepository) {
         return args -> {
             List<PwQuestionJpaEntity> questions = Arrays.asList(
                 PwQuestionJpaEntity.from(new PwQuestion(null, "가장 기억에 남는 반려동물의 이름은 무엇인가요?", PwQuestionStatus.ACTIVE)),
@@ -30,7 +30,7 @@ public class DataInitializer {
                 PwQuestionJpaEntity.from(new PwQuestion(null,"유년 시절의 별명은 무엇인가요?", PwQuestionStatus.ACTIVE)),
                 PwQuestionJpaEntity.from(new PwQuestion(null,"다니던 초등학교의 이름은 무엇인가요?", PwQuestionStatus.ACTIVE))
             );
-            pwQuestionRepository.saveAll(questions);
+            pwQuestionJpaRepository.saveAll(questions);
         };
     }
 }

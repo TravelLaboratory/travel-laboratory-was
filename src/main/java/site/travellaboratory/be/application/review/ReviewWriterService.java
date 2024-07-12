@@ -14,7 +14,7 @@ import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
@@ -25,7 +25,7 @@ import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateReque
 public class ReviewWriterService {
 
     private final ReviewJpaRepository reviewJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final ArticleRepository articleRepository;
 
 
@@ -45,7 +45,7 @@ public class ReviewWriterService {
                     HttpStatus.CONFLICT);
             });
 
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -67,7 +67,7 @@ public class ReviewWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_UPDATE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -87,7 +87,7 @@ public class ReviewWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_DELETE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

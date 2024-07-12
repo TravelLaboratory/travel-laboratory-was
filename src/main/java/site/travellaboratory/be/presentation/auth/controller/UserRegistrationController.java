@@ -20,7 +20,7 @@ public class UserRegistrationController {
     private final UserRegistrationService userRegistrationService;
 
     @PostMapping("/auth/join")
-    public ResponseEntity<UserRegisterResponse> join(
+    public ResponseEntity<UserRegisterResponse> register(
         @Valid @RequestBody UserJoinRequest userJoinRequest
     ) {
         User result = userRegistrationService.register(userJoinRequest);

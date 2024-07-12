@@ -7,7 +7,7 @@ import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserJpaEntity, Long> {
+public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
     // todo: 수정 요망
 //    default User getById(final Long id) {

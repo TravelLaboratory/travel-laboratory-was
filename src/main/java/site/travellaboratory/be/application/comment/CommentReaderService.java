@@ -17,7 +17,7 @@ import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
@@ -34,7 +34,7 @@ public class CommentReaderService {
     private final ReviewJpaRepository reviewJpaRepository;
     private final CommentJpaRepository commentJpaRepository;
     private final CommentLikeJpaRepository commentLikeJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional(readOnly = true)
     public CommentReadPaginationResponse readCommentsPagination(
@@ -117,7 +117,7 @@ public class CommentReaderService {
         ).toList();
 
         // (댓글을 쓰는 유저 조회) todo: refactoring
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

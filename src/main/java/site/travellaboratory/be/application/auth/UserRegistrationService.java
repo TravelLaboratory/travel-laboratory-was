@@ -13,10 +13,10 @@ import site.travellaboratory.be.domain.user.pw.PwAnswer;
 import site.travellaboratory.be.domain.user.pw.PwQuestion;
 import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
 import site.travellaboratory.be.domain.user.user.User;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRepository;
+import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswerJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionRepository;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.presentation.auth.dto.userregistration.UserJoinRequest;
 
@@ -25,9 +25,9 @@ import site.travellaboratory.be.presentation.auth.dto.userregistration.UserJoinR
 public class UserRegistrationService {
 
     private final BCryptPasswordEncoder encoder;
-    private final UserRepository userRepository;
-    private final PwQuestionRepository pwQuestionRepository;
-    private final PwAnswerRepository pwAnswerRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final PwQuestionJpaRepository pwQuestionJpaRepository;
+    private final PwAnswerJpaRepository pwAnswerJpaRepository;
 
     @Transactional
     public User register(UserJoinRequest request) {
@@ -36,13 +36,13 @@ public class UserRegistrationService {
             request.password()), request.isAgreement());
 
         // 닉네임 중복 체크
-        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
+        userJpaRepository.findByNickname(request.nickname()).ifPresent(it -> {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME,
                 HttpStatus.CONFLICT);
         });
 
         // 이미 가입한 유저인지 체크
-        userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
                     HttpStatus.CONFLICT);
@@ -50,10 +50,10 @@ public class UserRegistrationService {
 
         // 새로운 유저 생성
         User user = User.create(request.nickname());
-        User savedUser = userRepository.save(UserJpaEntity.from(user, userAuth)).toModel();
+        User savedUser = userJpaRepository.save(UserJpaEntity.from(user, userAuth)).toModel();
 
         //비번 질문 조회
-        PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(
+        PwQuestion pwQuestion = pwQuestionJpaRepository.findByIdAndStatus(
                 request.pwQuestionId(),
                 PwQuestionStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.PASSWORD_INVALID_QUESTION,
@@ -61,7 +61,7 @@ public class UserRegistrationService {
 
         // 비번 답변 저장
         PwAnswer pwAnswer = PwAnswer.create(savedUser.getId(), pwQuestion.getId(), request.pwAnswer());
-        pwAnswerRepository.save(PwAnswerJpaEntity.from(pwAnswer));
+        pwAnswerJpaRepository.save(PwAnswerJpaEntity.from(pwAnswer));
         return savedUser;
     }
 }

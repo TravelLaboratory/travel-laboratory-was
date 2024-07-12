@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.user.dto.writer.UserProfileUpdateRequest;
@@ -19,7 +19,7 @@ import site.travellaboratory.be.presentation.user.dto.writer.UserProfileUpdateRe
 @Transactional
 public class UserProfileWriterService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final S3FileUploader s3FileUploader;
 
     public UserProfileUpdateResponse updateProfile(
@@ -27,7 +27,7 @@ public class UserProfileWriterService {
             final UserProfileUpdateRequest userProfileUpdateRequest,
             final Long userId
     ) {
-        final UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 

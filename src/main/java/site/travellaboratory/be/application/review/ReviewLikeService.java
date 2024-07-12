@@ -14,7 +14,7 @@ import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 
@@ -24,7 +24,7 @@ public class ReviewLikeService {
 
     private final ReviewJpaRepository reviewJpaRepository;
     private final ReviewLikeJpaRepository reviewLikeJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional
     public ReviewLikeStatus toggleLikeReview(Long userId, Long reviewId) {
@@ -39,7 +39,7 @@ public class ReviewLikeService {
             .orElse(null);
 
         // 좋아요 누른 유저 가져오기
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

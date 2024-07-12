@@ -12,7 +12,7 @@ import site.travellaboratory.be.domain.comment.CommentLike;
 import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentJpaRepository;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeJpaEntity;
@@ -24,7 +24,7 @@ public class CommentLikeService {
 
     private final CommentJpaRepository commentJpaRepository;
     private final CommentLikeJpaRepository commentLikeJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional
     public CommentLikeStatus toggleLikeComment(Long userId, Long commentId) {
@@ -39,7 +39,7 @@ public class CommentLikeService {
             .orElse(null);
 
         // 좋아요 누른 유저 가져오기
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

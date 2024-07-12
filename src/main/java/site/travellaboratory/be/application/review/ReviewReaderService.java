@@ -13,7 +13,7 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeJpaRepository;
@@ -33,7 +33,7 @@ public class ReviewReaderService {
 
     private final ReviewJpaRepository reviewJpaRepository;
     private final ReviewLikeJpaRepository reviewLikeJpaRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 조회할 경우
@@ -72,7 +72,7 @@ public class ReviewReaderService {
      * */
     public ProfileReviewPaginationResponse readProfileReviews(
         Long tokenUserId, Long userId, int page, int size) {
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PROFILE_REVIEW_READ_USER_NOT_FOUND,
                     HttpStatus.NOT_FOUND));

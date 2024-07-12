@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginRequest;
@@ -22,12 +22,12 @@ public class UserAuthenticationService {
 
     private final BCryptPasswordEncoder encoder;
     private final AuthTokenGenerator authTokenGenerator;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional
     public UserLoginResponse login(UserLoginRequest request) {
         // 회원가입 여부 체크
-        UserJpaEntity userJpaEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(
+        UserJpaEntity userJpaEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
                 request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -43,7 +43,7 @@ public class UserAuthenticationService {
 
         // profile_img_url 전송
         // 여기서 orElseThrow 에 갈일은 위에서 회원가입 여부를 체크하기 없음
-        UserJpaEntity user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity user = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

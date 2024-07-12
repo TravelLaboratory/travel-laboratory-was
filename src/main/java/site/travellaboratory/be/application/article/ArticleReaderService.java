@@ -19,7 +19,7 @@ import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStat
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleOneResponse;
@@ -31,14 +31,14 @@ import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 public class ArticleReaderService {
 
     private final ArticleRepository articleRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final BookmarkRepository bookmarkRepository;
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
     public Page<ArticleTotalResponse> findByUserArticles(final Long loginId, final Long userId, Pageable pageable) {
         // 사용자 조회
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 로그인한 사용자가 이 아티클을 작성하였는지 (수정 가능한 지) 확인
@@ -156,7 +156,7 @@ public class ArticleReaderService {
 
     @Transactional
     public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
-        userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
@@ -180,11 +180,11 @@ public class ArticleReaderService {
 
     @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
-        final UserJpaEntity loginUserJpaEntity = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
+        final UserJpaEntity loginUserJpaEntity = userJpaRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 

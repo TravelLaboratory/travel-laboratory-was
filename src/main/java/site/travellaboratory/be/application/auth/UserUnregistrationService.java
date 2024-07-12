@@ -13,7 +13,7 @@ import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStat
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userunregistration.UserUnregisterResponse;
@@ -23,13 +23,13 @@ import site.travellaboratory.be.presentation.auth.dto.userunregistration.UserUnr
 public class UserUnregistrationService {
 
     // todo: 회원이 작성했던 여행 계획, 리뷰 등등 다 비활성화처리필요함
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final ArticleRepository articleRepository;
     private final BookmarkRepository bookmarkRepository;
 
     @Transactional
     public UserUnregisterResponse unregister(final Long userId) {
-        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<Article> articles = articleRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
@@ -48,7 +48,7 @@ public class UserUnregistrationService {
 
         // 사용자 삭제 처리
         userJpaEntity.delete();
-        userRepository.save(userJpaEntity);
+        userJpaRepository.save(userJpaEntity);
 
         return UserUnregisterResponse.from(true);
     }

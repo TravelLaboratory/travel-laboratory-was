@@ -12,7 +12,7 @@ import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleDeleteResponse;
@@ -28,13 +28,13 @@ import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRes
 public class ArticleWriterService {
 
     private final ArticleRepository articleRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final S3FileUploader s3FileUploader;
 
     //내 초기 여행 계획 저장
     @Transactional
     public ArticleRegisterResponse saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
-        final UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
