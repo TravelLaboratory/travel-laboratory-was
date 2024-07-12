@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.auth.dto.userauthentication;
 
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserRole;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserRole;
 
 public record UserInfoResponse(
     Long userId,
@@ -10,12 +10,12 @@ public record UserInfoResponse(
     String profileImgUrl
 )
 {
-    public static UserInfoResponse from(User user) {
+    public static UserInfoResponse from(UserJpaEntity userJpaEntity) {
         return new UserInfoResponse(
-            user.getId(),
-            user.getRole(),
-            user.getNickname(),
-            user.getProfileImgUrl()
+            userJpaEntity.getId(),
+            userJpaEntity.getRole(),
+            userJpaEntity.getNickname(),
+            userJpaEntity.getProfileImgUrl()
         );
     }
 }

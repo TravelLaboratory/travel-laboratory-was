@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
@@ -19,9 +19,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByStatus(ArticleStatus status);
 
-    Optional<List<Article>> findByUserAndStatusIn(User user, List<ArticleStatus> status);
+    Optional<List<Article>> findByUserJpaEntityAndStatusIn(UserJpaEntity userJpaEntity, List<ArticleStatus> status);
 
-    Optional<Page<Article>> findByUserAndStatusIn(User user, List<ArticleStatus> status, Pageable pageable);
+    Optional<Page<Article>> findByUserJpaEntityAndStatusIn(UserJpaEntity userJpaEntity, List<ArticleStatus> status, Pageable pageable);
 
     @Query("SELECT a FROM Article a JOIN a.location l WHERE l.city LIKE %:keyword% AND a.status = :status")
     List<Article> findByLocationCityContainingAndStatusActive(

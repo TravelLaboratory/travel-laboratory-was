@@ -18,7 +18,7 @@ import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.common.BaseJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Entity
 @Table(name = "review")
@@ -32,7 +32,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
@@ -55,7 +55,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     public static ReviewJpaEntity from(Review review) {
         ReviewJpaEntity result = new ReviewJpaEntity();
         result.id = review.getId();
-        result.user = review.getUser();
+        result.userJpaEntity = review.getUserJpaEntity();
         result.article = review.getArticle();
         result.title = review.getTitle();
         result.representativeImgUrl = review.getRepresentativeImgUrl();
@@ -66,7 +66,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
 
     public Review toModel() {
         return Review.builder()
-            .user(this.user)
+            .userJpaEntity(this.userJpaEntity)
             .article(this.article)
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)

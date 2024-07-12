@@ -12,7 +12,7 @@ import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLik
 public interface CommentLikeJpaRepository extends JpaRepository<CommentLikeJpaEntity, Long> {
 
     // 댓글 좋아요
-    @Query("SELECT t FROM CommentLikeJpaEntity t WHERE t.user.id = :userId AND t.commentJpaEntity.id = :commentId")
+    @Query("SELECT t FROM CommentLikeJpaEntity t WHERE t.userJpaEntity.id = :userId AND t.commentJpaEntity.id = :commentId")
     Optional<CommentLikeJpaEntity> findByUserIdAndCommentId(@Param("userId") Long userId, @Param("commentId") Long commentId);
 
     // 댓글 전체 조회 (페이지네이션)
@@ -25,11 +25,11 @@ public interface CommentLikeJpaRepository extends JpaRepository<CommentLikeJpaEn
     // userId와 commentIds 리스트 (getComment 하기에 FETCH JOIN 사용
 
     // before
-    @Query("SELECT t FROM CommentLikeJpaEntity t WHERE t.user.id = :userId AND t.commentJpaEntity.id IN :commentIds AND t.status = :status")
+    @Query("SELECT t FROM CommentLikeJpaEntity t WHERE t.userJpaEntity.id = :userId AND t.commentJpaEntity.id IN :commentIds AND t.status = :status")
     List<CommentLikeJpaEntity> findAllByUserIdAndCommentIdInAndStatus(Long userId,
         Collection<Long> commentIds, CommentLikeStatus status);
 
     // after
-    @Query("SELECT t FROM CommentLikeJpaEntity t LEFT JOIN FETCH t.commentJpaEntity WHERE t.user.id = :userId AND t.commentJpaEntity.id IN :commentIds AND t.status = :status")
+    @Query("SELECT t FROM CommentLikeJpaEntity t LEFT JOIN FETCH t.commentJpaEntity WHERE t.userJpaEntity.id = :userId AND t.commentJpaEntity.id IN :commentIds AND t.status = :status")
     List<CommentLikeJpaEntity> findAllByUserIdAndCommentIdInAndStatusFetchJoinComment(@Param("userId") Long userId, @Param("commentIds") Collection<Long> commentIds, @Param("status") CommentLikeStatus status);
 }

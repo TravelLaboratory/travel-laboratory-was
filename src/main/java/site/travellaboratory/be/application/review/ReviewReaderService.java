@@ -14,8 +14,8 @@ import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJ
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
@@ -43,7 +43,7 @@ public class ReviewReaderService {
                 HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUser().getId()
+        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUserJpaEntity().getId()
             .equals(userId))) {
             throw new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_NOT_AUTHORIZATION,
                 HttpStatus.FORBIDDEN);
@@ -51,7 +51,7 @@ public class ReviewReaderService {
 
         // 후기 조회
         // (1) 수정, 삭제 권한
-        boolean isEditable = reviewJpaEntity.getUser().getId().equals(userId);
+        boolean isEditable = reviewJpaEntity.getUserJpaEntity().getId().equals(userId);
 
         // (2) 좋아요
         boolean isLike = reviewLikeJpaRepository.findByUserIdAndReviewId(userId, reviewId)
@@ -72,7 +72,7 @@ public class ReviewReaderService {
      * */
     public ProfileReviewPaginationResponse readProfileReviews(
         Long tokenUserId, Long userId, int page, int size) {
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PROFILE_REVIEW_READ_USER_NOT_FOUND,
                     HttpStatus.NOT_FOUND));
@@ -82,10 +82,12 @@ public class ReviewReaderService {
         Page<Long> reviewIdsPage;
         // (1) 페이징 적용을 위한 Review Id 목록 가져와서
         if (tokenUserId.equals(userId)) {
-            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(user,
+            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
+                userJpaEntity,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE), pageable);
         } else { // (2) 다를 경우에는 PRIVATE 제외
-            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(user,
+            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
+                userJpaEntity,
                 List.of(ReviewStatus.ACTIVE), pageable);
         }
 

@@ -15,8 +15,8 @@ import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStat
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateRequest;
 
@@ -45,12 +45,12 @@ public class ReviewWriterService {
                     HttpStatus.CONFLICT);
             });
 
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // Review 클래스에서 검증하고 생성
-        Review review = Review.create(user, article,
+        Review review = Review.create(userJpaEntity, article,
             request.title(), request.representativeImgUrl(),
             request.description(), request.status());
 
@@ -67,11 +67,11 @@ public class ReviewWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_UPDATE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Review updatedReview = review.withUpdatedContent(user, request.title(),
+        Review updatedReview = review.withUpdatedContent(userJpaEntity, request.title(),
             request.representativeImgUrl(),
             request.description(), request.status());
 
@@ -87,12 +87,12 @@ public class ReviewWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_DELETE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 삭제
-        Review deletedReview = review.withInactiveStatus(user);
+        Review deletedReview = review.withInactiveStatus(userJpaEntity);
         Review result = reviewJpaRepository.save(ReviewJpaEntity.from(deletedReview)).toModel();
         return result.getStatus() == ReviewStatus.INACTIVE;
     }

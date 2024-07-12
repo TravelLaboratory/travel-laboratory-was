@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userverification.UserNicknameRequest;
 import site.travellaboratory.be.presentation.auth.dto.userverification.UserNicknameResponse;
 import site.travellaboratory.be.presentation.auth.dto.userverification.UsernameRequest;

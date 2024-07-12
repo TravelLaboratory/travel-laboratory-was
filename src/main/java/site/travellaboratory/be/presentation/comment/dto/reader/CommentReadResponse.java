@@ -18,9 +18,9 @@ public record CommentReadResponse(
         CommentJpaEntity commentJpaEntity, boolean isEditable, boolean isLike, long likeCount
     ) {
         return new CommentReadResponse(
-            commentJpaEntity.getUser().getId(),
-            commentJpaEntity.getUser().getProfileImgUrl(),
-            commentJpaEntity.getUser().getNickname(),
+            commentJpaEntity.getUserJpaEntity().getId(),
+            commentJpaEntity.getUserJpaEntity().getProfileImgUrl(),
+            commentJpaEntity.getUserJpaEntity().getNickname(),
             isEditable,
             commentJpaEntity.getId(),
             commentJpaEntity.getReplyContent(),

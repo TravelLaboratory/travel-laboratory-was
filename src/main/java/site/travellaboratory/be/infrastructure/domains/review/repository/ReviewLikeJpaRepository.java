@@ -9,7 +9,7 @@ import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 public interface ReviewLikeJpaRepository extends JpaRepository<ReviewLikeJpaEntity, Long> {
 
-    @Query("SELECT t FROM ReviewLikeJpaEntity t WHERE t.user.id = :userId AND t.reviewJpaEntity.id = :reviewJpaEntityId")
+    @Query("SELECT t FROM ReviewLikeJpaEntity t WHERE t.userJpaEntity.id = :userId AND t.reviewJpaEntity.id = :reviewJpaEntityId")
     Optional<ReviewLikeJpaEntity> findByUserIdAndReviewId(@Param("userId") Long userId, @Param("reviewJpaEntityId") Long reviewJpaEntityId);
 
     // 후기 상세 조회 - 좋아요 개수

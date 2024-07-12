@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Getter
 @Builder
@@ -12,13 +12,13 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 public class ReviewLike {
 
     private final Long id;
-    private final User user;
+    private final UserJpaEntity userJpaEntity;
     private final Review review;
     private final ReviewLikeStatus status;
 
-    public static ReviewLike create(User user, Review review) {
+    public static ReviewLike create(UserJpaEntity userJpaEntity, Review review) {
         return ReviewLike.builder()
-            .user(user)
+            .userJpaEntity(userJpaEntity)
             .review(review)
             .status(ReviewLikeStatus.ACTIVE)
             .build();
@@ -27,7 +27,7 @@ public class ReviewLike {
     public ReviewLike withToggleStatus() {
         return ReviewLike.builder()
             .id(this.getId())
-            .user(this.getUser())
+            .userJpaEntity(this.getUserJpaEntity())
             .review(this.getReview())
             .status((this.status == ReviewLikeStatus.ACTIVE) ? ReviewLikeStatus.INACTIVE
                 : ReviewLikeStatus.ACTIVE)

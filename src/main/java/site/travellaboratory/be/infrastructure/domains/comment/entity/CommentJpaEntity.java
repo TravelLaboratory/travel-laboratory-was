@@ -18,7 +18,7 @@ import site.travellaboratory.be.domain.comment.Comment;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Entity
 @Table(name = "comment")
@@ -31,7 +31,7 @@ public class CommentJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
@@ -46,7 +46,7 @@ public class CommentJpaEntity extends BaseEntity {
 
     public static CommentJpaEntity from(Comment comment) {
         CommentJpaEntity result = new CommentJpaEntity();
-        result.user = comment.getUser();
+        result.userJpaEntity = comment.getUserJpaEntity();
         result.reviewJpaEntity = ReviewJpaEntity.from(comment.getReview());
         result.replyContent = comment.getReplyContent();
         result.status = comment.getStatus();
@@ -56,7 +56,7 @@ public class CommentJpaEntity extends BaseEntity {
     public Comment toModel() {
         return Comment.builder()
             .id(this.id)
-            .user(this.user)
+            .userJpaEntity(this.userJpaEntity)
             .review(this.reviewJpaEntity.toModel())
             .replyContent(this.replyContent)
             .build();

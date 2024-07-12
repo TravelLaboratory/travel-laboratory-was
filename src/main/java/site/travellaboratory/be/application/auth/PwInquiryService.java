@@ -11,8 +11,8 @@ import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRep
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswer;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.enums.PwAnswerStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryEmailRequest;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryEmailResponse;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryRenewalRequest;
@@ -28,51 +28,51 @@ public class PwInquiryService {
     private final PwAnswerRepository pwAnswerRepository;
 
     public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         // 기획상 Optional 일 수 없다.
-        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(user.getId(),
+        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(userJpaEntity.getId(),
             PwAnswerStatus.ACTIVE);
 
-        return PwInquiryEmailResponse.from(user, pwAnswer);
+        return PwInquiryEmailResponse.from(userJpaEntity, pwAnswer);
     }
 
     public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
         // 해당 이메일의 유저가 존재하는지
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         // 답변이 일치한지 판단
         PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                user.getId(),
+                userJpaEntity.getId(),
                 request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED));
 
-        return PwInquiryVerificationResponse.from(user, pwAnswer);
+        return PwInquiryVerificationResponse.from(userJpaEntity, pwAnswer);
     }
 
     @Transactional
     public void pwInquiryRenewal(final PwInquiryRenewalRequest request) {
         // 해당 이메일의 유저가 존재하는지
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         // 답변이 일치한지 판단
         pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+                userJpaEntity.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED));
 
         // 비밀번호 암호화 및 업데이트 - 저장
         String encodedPassword = encoder.encode(request.password());
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
+        userJpaEntity.setPassword(encodedPassword);
+        userRepository.save(userJpaEntity);
     }
 }

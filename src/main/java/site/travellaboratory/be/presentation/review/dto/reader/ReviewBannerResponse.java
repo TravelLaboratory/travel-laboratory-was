@@ -17,8 +17,8 @@ public record ReviewBannerResponse(
             reviewJpaEntity.getTitle(),
             reviewJpaEntity.getRepresentativeImgUrl(),
             locations,
-            reviewJpaEntity.getUser().getNickname(),
-            reviewJpaEntity.getUser().getProfileImgUrl()
+            reviewJpaEntity.getUserJpaEntity().getNickname(),
+            reviewJpaEntity.getUserJpaEntity().getProfileImgUrl()
         );
     }
 }

@@ -51,7 +51,7 @@ public class ArticleScheduleReaderService
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUser().getId()
+        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUserJpaEntity().getId()
             .equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
                 HttpStatus.FORBIDDEN);
@@ -62,7 +62,7 @@ public class ArticleScheduleReaderService
             .map(ReviewJpaEntity::getId)
             .orElse(null);
 
-        boolean isEditable = article.getUser().getId().equals(userId);
+        boolean isEditable = article.getUserJpaEntity().getId().equals(userId);
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
@@ -85,7 +85,7 @@ public class ArticleScheduleReaderService
                 HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 article_id이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

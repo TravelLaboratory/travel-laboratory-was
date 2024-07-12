@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 
@@ -29,8 +29,8 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewJpaEntity, Long
 //    Page<Review> findByUserAndStatusInOrderByCreatedAtFetchJoin(@Param("user") User user, @Param("status") List<ReviewStatus> status, Pageable pageable);
 
     // todo: after(1)
-    @Query("SELECT t.id FROM ReviewJpaEntity t WHERE t.user = :user AND t.status IN :status ORDER BY t.createdAt DESC")
-    Page<Long> findReviewIdsByUserAndStatusInOrderByCreatedAt(@Param("user") User user,
+    @Query("SELECT t.id FROM ReviewJpaEntity t WHERE t.userJpaEntity = :user AND t.status IN :status ORDER BY t.createdAt DESC")
+    Page<Long> findReviewIdsByUserAndStatusInOrderByCreatedAt(@Param("user") UserJpaEntity userJpaEntity,
         @Param("status") List<ReviewStatus> status, Pageable pageable);
 
     // todo: after(2)
@@ -42,6 +42,6 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewJpaEntity, Long
     @Query("SELECT t.id FROM ReviewJpaEntity t WHERE t.status = 'ACTIVE' ORDER BY t.createdAt DESC")
     Page<Long> findReviewIdsByStatusOrderByCreatedAt(Pageable pageable);
 
-    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.article a JOIN FETCH a.location l JOIN FETCH t.user u WHERE t.id IN :ids ORDER BY t.createdAt DESC")
+    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.article a JOIN FETCH a.location l JOIN FETCH t.userJpaEntity u WHERE t.id IN :ids ORDER BY t.createdAt DESC")
     List<ReviewJpaEntity> findReviewsWithArticlesAndLocationsByIdsAndUserStatus(@Param("ids") List<Long> ids);
 }

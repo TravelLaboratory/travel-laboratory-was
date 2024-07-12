@@ -7,16 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.domain.user.User;
+import site.travellaboratory.be.domain.user.UserAuth;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRepository;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswer;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionRepository;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.entity.PwQuestion;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.enums.PwQuestionStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userregistration.UserJoinRequest;
-import site.travellaboratory.be.presentation.auth.dto.userregistration.UserRegisterResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -28,19 +29,10 @@ public class UserRegistrationService {
     private final PwAnswerRepository pwAnswerRepository;
 
     @Transactional
-    public UserRegisterResponse register(UserJoinRequest request) {
-        // 개인정보 동의 유무
-        if (!request.isAgreement()) {
-            throw new BeApplicationException(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT,
-                HttpStatus.BAD_REQUEST);
-        }
+    public User register(UserJoinRequest request) {
 
-        // 이미 가입한 유저인지 체크
-        userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
-            .ifPresent(it -> {
-                throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
-                    HttpStatus.CONFLICT);
-            });
+        UserAuth userAuth = UserAuth.create(request.username(), encoder.encode(
+            request.password()), request.isAgreement());
 
         // 닉네임 중복 체크
         userRepository.findByNickname(request.nickname()).ifPresent(it -> {
@@ -48,10 +40,17 @@ public class UserRegistrationService {
                 HttpStatus.CONFLICT);
         });
 
+        // 이미 가입한 유저인지 체크
+        userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+            .ifPresent(it -> {
+                throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
+                    HttpStatus.CONFLICT);
+        });
+
+        User user = User.create(request.nickname());
+
         // 새로운 유저 생성
-        User user = userRepository.save(
-            User.of(request.username(), encoder.encode(
-                request.password()), request.nickname(), true));
+        User savedUser = userRepository.save(UserJpaEntity.from(user, userAuth)).toModel();
 
         //비번 질문 조회
         PwQuestion pwQuestion = pwQuestionRepository.findByIdAndStatus(request.pwQuestionId(),
@@ -60,9 +59,9 @@ public class UserRegistrationService {
                 HttpStatus.BAD_REQUEST));
 
         // 비번 답변 저장
-        PwAnswer pwAnswer = PwAnswer.of(user, pwQuestion, request.pwAnswer());
+        PwAnswer pwAnswer = PwAnswer.of(savedUser.getId(), pwQuestion, request.pwAnswer());
         pwAnswerRepository.save(pwAnswer);
 
-        return UserRegisterResponse.from(user);
+        return savedUser;
     }
 }

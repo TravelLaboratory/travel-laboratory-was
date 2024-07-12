@@ -11,21 +11,21 @@ import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
-    Optional<Bookmark> findByArticleAndUser(final Article article, final User user);
+    Optional<Bookmark> findByArticleAndUserJpaEntity(final Article article, final UserJpaEntity userJpaEntity);
 
-    Optional<List<Bookmark>> findByUserAndStatusIn(final User user, final List<BookmarkStatus> Status);
+    Optional<List<Bookmark>> findByUserJpaEntityAndStatusIn(final UserJpaEntity userJpaEntity, final List<BookmarkStatus> Status);
 
 //    List<Bookmark> findByUserAndStatus(final User user, final BookmarkStatus status);
 
-    Optional<Page<Bookmark>> findByUserAndStatusIn(final User user, final List<BookmarkStatus> Status, Pageable pageable);
+    Optional<Page<Bookmark>> findByUserJpaEntityAndStatusIn(final UserJpaEntity userJpaEntity, final List<BookmarkStatus> Status, Pageable pageable);
 
     @Query("SELECT COUNT(b) FROM Bookmark b WHERE b.article.id = :articleId AND b.status = :status")
     Long countByArticleIdAndStatus(@Param("articleId") Long articleId, @Param("status") BookmarkStatus status);
 
-    boolean existsByUserIdAndArticleIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
+    boolean existsByUserJpaEntityIdAndArticleIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
 }

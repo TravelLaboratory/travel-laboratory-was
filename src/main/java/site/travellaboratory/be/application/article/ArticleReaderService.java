@@ -20,8 +20,8 @@ import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkReposito
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleOneResponse;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleTotalResponse;
 import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
@@ -38,20 +38,20 @@ public class ArticleReaderService {
     @Transactional
     public Page<ArticleTotalResponse> findByUserArticles(final Long loginId, final Long userId, Pageable pageable) {
         // 사용자 조회
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 로그인한 사용자가 이 아티클을 작성하였는지 (수정 가능한 지) 확인
-        boolean isEditable = user.getId().equals(loginId);
+        boolean isEditable = userJpaEntity.getId().equals(loginId);
 
         // 사용자가 작성한 아티클 또는 다른 사용자의 공개된 아티클 목록 조회
         Page<Article> articlesPage;
         if (isEditable) {
-            articlesPage = articleRepository.findByUserAndStatusIn(user,
+            articlesPage = articleRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
                             List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         } else {
-            articlesPage = articleRepository.findByUserAndStatusIn(user,
+            articlesPage = articleRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
                             List.of(ArticleStatus.ACTIVE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         }
@@ -61,7 +61,7 @@ public class ArticleReaderService {
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(loginId,
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(loginId,
                             article.getId(), BookmarkStatus.ACTIVE);
                     return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
                 })
@@ -81,12 +81,12 @@ public class ArticleReaderService {
 
         final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(articleId, BookmarkStatus.ACTIVE);
 
-        boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(loginId, articleId,
+        boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(loginId, articleId,
                 BookmarkStatus.ACTIVE);
 
         boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
 
-        boolean isEditable = article.getUser().getId().equals(loginId);
+        boolean isEditable = article.getUserJpaEntity().getId().equals(loginId);
 
         return ArticleOneResponse.of(article, bookmarkCount, isBookmarked, isPrivate, isEditable);
     }
@@ -118,10 +118,10 @@ public class ArticleReaderService {
 
         List<ArticleTotalResponse> articleResponses = newArticles.getContent().stream()
                 .map(article -> {
-                    boolean isEditable = article.getUser().getId().equals(loginId);
+                    boolean isEditable = article.getUserJpaEntity().getId().equals(loginId);
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(
                             loginId, article.getId(), BookmarkStatus.ACTIVE);
 
                     return ArticleTotalResponse.of(
@@ -165,10 +165,10 @@ public class ArticleReaderService {
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(userId,
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(userId,
                             article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isEditable = userId.equals(article.getUser().getId());
+                    boolean isEditable = userId.equals(article.getUserJpaEntity().getId());
 
                     return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
                 })
@@ -180,15 +180,15 @@ public class ArticleReaderService {
 
     @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
-        final User loginUser = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
+        final UserJpaEntity loginUserJpaEntity = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserAndStatusIn(user,
+        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
                 List.of(BookmarkStatus.ACTIVE), pageable)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -196,8 +196,8 @@ public class ArticleReaderService {
             .map(bookmark -> {
                 final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(bookmark.getArticle().getId(),
                     BookmarkStatus.ACTIVE);
-                boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
-                    loginUser.getId(), bookmark.getArticle().getId(),
+                boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(
+                    loginUserJpaEntity.getId(), bookmark.getArticle().getId(),
                     BookmarkStatus.ACTIVE);
 
                 return BookmarkResponse.of(

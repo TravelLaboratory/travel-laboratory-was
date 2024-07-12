@@ -18,8 +18,8 @@ import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJ
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeJpaEntity;
 import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
@@ -49,7 +49,7 @@ public class CommentReaderService {
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUser().getId()
+        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUserJpaEntity().getId()
             .equals(userId))) {
             throw new BeApplicationException(ErrorCodes.COMMENT_READ_ALL_PAGINATION_NOT_USER,
                 HttpStatus.FORBIDDEN);
@@ -109,7 +109,7 @@ public class CommentReaderService {
                 long likeCount = likeCounts.getOrDefault(comment.getId(), 0L);
                 return CommentReadResponse.from(
                     comment,
-                    comment.getUser().getId().equals(userId), // isEditable
+                    comment.getUserJpaEntity().getId().equals(userId), // isEditable
                     isLike, // 좋아요 여부
                     likeCount // 좋아요 수
                 );
@@ -117,10 +117,10 @@ public class CommentReaderService {
         ).toList();
 
         // (댓글을 쓰는 유저 조회) todo: refactoring
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        return CommentReadPaginationResponse.from(user.getProfileImgUrl(), comments, commentPage);
+        return CommentReadPaginationResponse.from(userJpaEntity.getProfileImgUrl(), comments, commentPage);
     }
 }

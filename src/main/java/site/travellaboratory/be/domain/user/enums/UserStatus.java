@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.user.enums;
+package site.travellaboratory.be.domain.user.enums;
 
 public enum UserStatus {
     ACTIVE, // 활성

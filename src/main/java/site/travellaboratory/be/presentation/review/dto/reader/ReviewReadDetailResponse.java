@@ -21,9 +21,9 @@ public record ReviewReadDetailResponse(
         boolean isEditable,boolean isLike,long likeCount
         ) {
         return new ReviewReadDetailResponse(
-            reviewJpaEntity.getUser().getId(),
-            reviewJpaEntity.getUser().getProfileImgUrl(),
-            reviewJpaEntity.getUser().getNickname(),
+            reviewJpaEntity.getUserJpaEntity().getId(),
+            reviewJpaEntity.getUserJpaEntity().getProfileImgUrl(),
+            reviewJpaEntity.getUserJpaEntity().getNickname(),
             isEditable,
             reviewJpaEntity.getArticle().getId(),
             reviewJpaEntity.getId(),

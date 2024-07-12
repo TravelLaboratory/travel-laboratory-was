@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.review.ReviewLike;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 @Entity
@@ -31,7 +31,7 @@ public class ReviewLikeJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
@@ -44,7 +44,7 @@ public class ReviewLikeJpaEntity extends BaseEntity {
     public static ReviewLikeJpaEntity from(ReviewLike reviewLike) {
         ReviewLikeJpaEntity result = new ReviewLikeJpaEntity();
         result.id = reviewLike.getId();
-        result.user = reviewLike.getUser();
+        result.userJpaEntity = reviewLike.getUserJpaEntity();
         result.reviewJpaEntity = ReviewJpaEntity.from(reviewLike.getReview());
         result.status = reviewLike.getStatus();
         return result;
@@ -53,7 +53,7 @@ public class ReviewLikeJpaEntity extends BaseEntity {
     public ReviewLike toModel() {
         return ReviewLike.builder()
             .id(this.getId())
-            .user(this.getUser())
+            .userJpaEntity(this.getUserJpaEntity())
             .review(this.getReviewJpaEntity().toModel())
             .status(this.getStatus())
             .build();

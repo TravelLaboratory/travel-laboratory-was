@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.comment.CommentLike;
 import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Entity
 @Table(name = "comment_like")
@@ -30,7 +30,7 @@ public class CommentLikeJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
@@ -43,7 +43,7 @@ public class CommentLikeJpaEntity extends BaseEntity {
     public static CommentLikeJpaEntity from(CommentLike commentLike) {
         CommentLikeJpaEntity result = new CommentLikeJpaEntity();
         result.id = commentLike.getId();
-        result.user = commentLike.getUser();
+        result.userJpaEntity = commentLike.getUserJpaEntity();
         result.commentJpaEntity = CommentJpaEntity.from(commentLike.getComment());
         result.status = commentLike.getStatus();
         return result;
@@ -52,7 +52,7 @@ public class CommentLikeJpaEntity extends BaseEntity {
     public CommentLike toModel() {
         return CommentLike.builder()
             .id(this.getId())
-            .user(this.getUser())
+            .userJpaEntity(this.getUserJpaEntity())
             .comment(this.getCommentJpaEntity().toModel())
             .status(this.getStatus())
             .build();

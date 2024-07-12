@@ -41,11 +41,11 @@ public record ArticleTotalResponse(
                 article.getStartAt(),
                 article.getEndAt(),
                 article.getExpense(),
-                article.getUser().getProfileImgUrl(),
+                article.getUserJpaEntity().getProfileImgUrl(),
                 article.getCoverImageUrl(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
-                article.getUser().getNickname(),
+                article.getUserJpaEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
                 isEditable

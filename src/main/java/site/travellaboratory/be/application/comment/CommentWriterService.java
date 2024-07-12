@@ -15,8 +15,8 @@ import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.comment.dto.writer.CommentSaveRequest;
 import site.travellaboratory.be.presentation.comment.dto.writer.CommentUpdateRequest;
 
@@ -38,12 +38,12 @@ public class CommentWriterService {
 
         // todo : user 분리 시 확인!!
         // 댓글 쓰는 유저 찾기
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 댓글 작성
-        Comment saveComment = Comment.create(user, review, request.replyComment());
+        Comment saveComment = Comment.create(userJpaEntity, review, request.replyComment());
         CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(saveComment));
         return savedEntity.getId();
     }
@@ -58,11 +58,11 @@ public class CommentWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 댓글을 수정하려는 유저 찾기
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Comment updateComment = comment.withUpdatedReplyContent(user, request.replyComment());
+        Comment updateComment = comment.withUpdatedReplyContent(userJpaEntity, request.replyComment());
         CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(updateComment));
         return savedEntity.getId();
     }
@@ -75,11 +75,11 @@ public class CommentWriterService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_DELETE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Comment deletedComment = comment.withInactiveStatus(user);
+        Comment deletedComment = comment.withInactiveStatus(userJpaEntity);
 
         // 댓글 삭제
         CommentJpaEntity result = commentJpaRepository.save(CommentJpaEntity.from(deletedComment));

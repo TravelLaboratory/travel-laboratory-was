@@ -9,8 +9,8 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginRequest;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.AccessTokenResponse;
@@ -27,23 +27,23 @@ public class UserAuthenticationService {
     @Transactional
     public UserLoginResponse login(UserLoginRequest request) {
         // 회원가입 여부 체크
-        User userEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(
+        UserJpaEntity userJpaEntity = userRepository.findByUsernameAndStatusOrderByIdDesc(
                 request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 비밀번호 체크
-        if (!encoder.matches(request.password(), userEntity.getPassword())) {
+        if (!encoder.matches(request.password(), userJpaEntity.getPassword())) {
             throw new BeApplicationException(ErrorCodes.AUTH_INVALID_PASSWORD,
                 HttpStatus.UNAUTHORIZED);
         }
 
         // 토큰 생성 - accessToken, refreshToken
-        Long userId = userEntity.getId();
+        Long userId = userJpaEntity.getId();
 
         // profile_img_url 전송
         // 여기서 orElseThrow 에 갈일은 위에서 회원가입 여부를 체크하기 없음
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 

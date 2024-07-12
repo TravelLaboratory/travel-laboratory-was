@@ -13,10 +13,10 @@ import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentJpaRepository;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class CommentLikeService {
             .orElse(null);
 
         // 좋아요 누른 유저 가져오기
-        User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -47,7 +47,7 @@ public class CommentLikeService {
         if (commentLikeJpaEntity != null) {
             commentLike = commentLikeJpaEntity.toModel().withToggleStatus();
         } else {
-            commentLike = CommentLike.create(user, comment);
+            commentLike = CommentLike.create(userJpaEntity, comment);
         }
         CommentLikeJpaEntity saveCommentLike = commentLikeJpaRepository.save(CommentLikeJpaEntity.from(commentLike));
         return saveCommentLike.getStatus();

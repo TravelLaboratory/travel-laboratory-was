@@ -34,7 +34,7 @@ public record BookmarkResponse(
                 bookmark.getArticle().getStartAt(),
                 bookmark.getArticle().getEndAt(),
                 bookmark.getArticle().getExpense(),
-                bookmark.getArticle().getUser().getProfileImgUrl(),
+                bookmark.getArticle().getUserJpaEntity().getProfileImgUrl(),
                 bookmark.getArticle().getCoverImageUrl(),
                 bookmark.getArticle().getTravelCompanion().getName(),
                 travelStyleNames,
