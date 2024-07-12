@@ -12,7 +12,7 @@ import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewUpdateRequest;

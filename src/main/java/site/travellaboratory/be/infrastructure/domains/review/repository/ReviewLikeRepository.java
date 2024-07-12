@@ -1,10 +1,10 @@
-package site.travellaboratory.be.infrastructure.domains.userlikereview;
+package site.travellaboratory.be.infrastructure.domains.review.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.ReviewLikeJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 public interface ReviewLikeRepository extends JpaRepository<ReviewLikeJpaEntity, Long> {

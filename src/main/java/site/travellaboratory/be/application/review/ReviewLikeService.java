@@ -11,9 +11,9 @@ import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.ReviewLike;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.ReviewLikeRepository;
-import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.ReviewLikeJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeRepository;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
 
 @Service
 @RequiredArgsConstructor

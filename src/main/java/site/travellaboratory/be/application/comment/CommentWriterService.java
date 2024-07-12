@@ -10,7 +10,7 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.comment.CommentRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.domains.comment.enums.CommentStatus;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;

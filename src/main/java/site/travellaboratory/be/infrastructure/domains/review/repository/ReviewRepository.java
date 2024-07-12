@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.review;
+package site.travellaboratory.be.infrastructure.domains.review.repository;
 
 import java.util.List;
 import java.util.Optional;

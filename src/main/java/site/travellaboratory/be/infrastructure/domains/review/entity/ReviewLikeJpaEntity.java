@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.userlikereview.entity;
+package site.travellaboratory.be.infrastructure.domains.review.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.review.ReviewLike;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 @Entity

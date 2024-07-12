@@ -21,7 +21,7 @@ import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSc
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
