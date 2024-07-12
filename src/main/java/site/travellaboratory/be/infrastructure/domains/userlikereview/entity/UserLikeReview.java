@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.enums.UserLikeReviewStatus;
 
 @Entity
@@ -32,19 +32,19 @@ public class UserLikeReview extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
-    private Review review;
+    private ReviewJpaEntity reviewJpaEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserLikeReviewStatus status;
 
-    public static UserLikeReview of(User user, Review review) {
-        return new UserLikeReview(user, review);
+    public static UserLikeReview of(User user, ReviewJpaEntity reviewJpaEntity) {
+        return new UserLikeReview(user, reviewJpaEntity);
     }
 
-    private UserLikeReview(User user, Review review) {
+    private UserLikeReview(User user, ReviewJpaEntity reviewJpaEntity) {
         this.user = user;
-        this.review = review;
+        this.reviewJpaEntity = reviewJpaEntity;
         this.status = UserLikeReviewStatus.ACTIVE;
     }
 

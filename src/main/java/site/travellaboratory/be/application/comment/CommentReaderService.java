@@ -15,8 +15,8 @@ import site.travellaboratory.be.infrastructure.domains.comment.CommentRepository
 import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.domains.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
@@ -42,14 +42,14 @@ public class CommentReaderService {
     ) {
         // 유효하지 않은 후기를 조회할 경우
         // todo: (1) review.getUser() 이 때 쿼리 날라감 (FETCH JOIN) - 55 review user fetch join
-        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
+        ReviewJpaEntity reviewJpaEntity = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.COMMENT_READ_ALL_PAGINATION_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (review.getStatus() == ReviewStatus.PRIVATE && (!review.getUser().getId()
+        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUser().getId()
             .equals(userId))) {
             throw new BeApplicationException(ErrorCodes.COMMENT_READ_ALL_PAGINATION_NOT_USER,
                 HttpStatus.FORBIDDEN);
@@ -58,7 +58,7 @@ public class CommentReaderService {
         // 후기 리스트 조회 (N+1 쿼리 해결)
         // todo: 62 ~ 82 단순 테이블안에서 변환 N+1 발생 X
         // (1) 페이징 처리
-        Page<Comment> commentPage = commentRepository.findByReviewIdAndStatusOrderByCreatedAtDesc(reviewId,
+        Page<Comment> commentPage = commentRepository.findByReviewJpaEntityIdAndStatusOrderByCreatedAtDesc(reviewId,
             CommentStatus.ACTIVE, PageRequest.of(page, size));
 
         // (2) 좋아요 체크, 좋아요 수 알기 위해

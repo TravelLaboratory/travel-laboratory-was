@@ -10,18 +10,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.common.BaseEntity;
+import site.travellaboratory.be.domain.review.Review;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.common.BaseJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
 
 @Entity
+@Table(name = "review")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review extends BaseEntity {
+public class ReviewJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,7 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
+    // todo : 여행 계획의 status 만 확인하면 되기에 어찌보면 굳이 Article로 객체를 가지고 있을 필요가 없을 수 있다.
     private Article article;
 
     @Column(nullable = false, length = 150)
@@ -48,41 +52,26 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private ReviewStatus status;
 
-    private Review(
-        User user,
-        Article article,
-        String title,
-        String representativeImgUrl,
-        String description,
-        ReviewStatus status)
-    {
-        this.user = user;
-        this.article = article;
-        this.title = title;
-        this.representativeImgUrl = representativeImgUrl;
-        this.description = description;
-        this.status = status;
+    public static ReviewJpaEntity from(Review review) {
+        ReviewJpaEntity result = new ReviewJpaEntity();
+        result.id = review.getId();
+        result.user = review.getUser();
+        result.article = review.getArticle();
+        result.title = review.getTitle();
+        result.representativeImgUrl = review.getRepresentativeImgUrl();
+        result.description = review.getDescription();
+        result.status = review.getStatus();
+        return result;
     }
 
-    public static Review of(
-        final User user,
-        final Article article,
-        final String title,
-        final String representativeImgUrl,
-        final String description,
-        final ReviewStatus status
-    ) {
-        return new Review(user, article, title, representativeImgUrl, description, status);
-    }
-
-    public void update(String title, String representativeImgUrl, String description, ReviewStatus status) {
-        this.title = title;
-        this.representativeImgUrl = representativeImgUrl;
-        this.description = description;
-        this.status = status;
-    }
-
-    public void delete() {
-        this.status = ReviewStatus.INACTIVE;
+    public Review toModel() {
+        return Review.builder()
+            .user(this.user)
+            .article(this.article)
+            .title(this.title)
+            .representativeImgUrl(this.representativeImgUrl)
+            .description(this.description)
+            .status(this.status)
+            .build();
     }
 }

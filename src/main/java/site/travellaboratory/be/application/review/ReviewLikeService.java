@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.UserLikeReviewRepository;
 import site.travellaboratory.be.infrastructure.domains.userlikereview.entity.UserLikeReview;
@@ -25,7 +25,7 @@ public class ReviewLikeService {
     @Transactional
     public ReviewToggleLikeResponse toggleLikeReview(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 좋아요 할 경우
-        Review review = reviewRepository.findByIdAndStatusIn(reviewId,
+        ReviewJpaEntity reviewJpaEntity = reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
                 HttpStatus.NOT_FOUND));
@@ -40,7 +40,7 @@ public class ReviewLikeService {
         } else {
             // 처음 좋아요를 누른 경우 - 새로 생성
             User user = User.of(userId);
-            userLikeReview = UserLikeReview.of(user, review);
+            userLikeReview = UserLikeReview.of(user, reviewJpaEntity);
         }
 
         UserLikeReview saveLikeReview = userLikeReviewRepository.save(userLikeReview);

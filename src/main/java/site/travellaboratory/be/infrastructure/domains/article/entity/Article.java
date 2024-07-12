@@ -18,6 +18,9 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelCompanionConverter;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelStyleConverter;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
@@ -136,5 +139,11 @@ public class Article extends BaseEntity {
 
     public String getNickname() {
         return user.getNickname();
+    }
+
+    public void verifyOwner(Long userId) {
+        if (this.user.getId().equals(userId)) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);
+        }
     }
 }

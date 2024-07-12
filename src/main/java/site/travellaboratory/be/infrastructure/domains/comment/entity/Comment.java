@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 
 @Entity
 @Getter
@@ -32,7 +32,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
-    private Review review;
+    private ReviewJpaEntity reviewJpaEntity;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String replyContent;
@@ -43,21 +43,21 @@ public class Comment extends BaseEntity {
 
     private Comment(
         User user,
-        Review review,
+        ReviewJpaEntity reviewJpaEntity,
         String replyContent
     ) {
         this.user = user;
-        this.review = review;
+        this.reviewJpaEntity = reviewJpaEntity;
         this.replyContent = replyContent;
         this.status = CommentStatus.ACTIVE;
     }
 
     public static Comment of(
         User user,
-        Review review,
+        ReviewJpaEntity reviewJpaEntity,
         String replyContent
     ) {
-        return new Comment(user, review, replyContent);
+        return new Comment(user, reviewJpaEntity, replyContent);
     }
 
     public void update(String replyContent) {

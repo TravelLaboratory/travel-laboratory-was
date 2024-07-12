@@ -22,8 +22,8 @@ import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.Sch
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
 import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.PlaceName;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.SchedulePlace;
@@ -59,7 +59,7 @@ public class ArticleScheduleReaderService
 
         // reviewId 찾아오기 없다면 null
         Long reviewId = reviewRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
-            .map(Review::getId)
+            .map(ReviewJpaEntity::getId)
             .orElse(null);
 
         boolean isEditable = article.getUser().getId().equals(userId);

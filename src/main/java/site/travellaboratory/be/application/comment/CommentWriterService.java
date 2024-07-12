@@ -11,8 +11,8 @@ import site.travellaboratory.be.infrastructure.domains.comment.CommentRepository
 import site.travellaboratory.be.infrastructure.domains.comment.entity.Comment;
 import site.travellaboratory.be.infrastructure.domains.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
@@ -33,7 +33,7 @@ public class CommentWriterService {
     @Transactional
     public CommentSaveResponse saveComment(Long userId, CommentSaveRequest request) {
         // 유효하지 않은 후기에 대한 댓글을 작성할 경우
-        Review review = reviewRepository.findByIdAndStatusIn(request.reviewId(),
+        ReviewJpaEntity reviewJpaEntity = reviewRepository.findByIdAndStatusIn(request.reviewId(),
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_POST_INVALID,
                 HttpStatus.NOT_FOUND));
@@ -47,7 +47,7 @@ public class CommentWriterService {
         Comment saveComment = commentRepository.save(
             Comment.of(
                 commentUser,
-                review,
+                reviewJpaEntity,
                 request.replyComment()
             )
         );
