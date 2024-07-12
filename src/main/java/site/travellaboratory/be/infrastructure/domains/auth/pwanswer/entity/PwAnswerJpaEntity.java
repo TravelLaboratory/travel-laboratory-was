@@ -38,10 +38,20 @@ public class PwAnswerJpaEntity extends BaseEntity {
     public static PwAnswerJpaEntity from(PwAnswer pwAnswer) {
         PwAnswerJpaEntity result = new PwAnswerJpaEntity();
         result.id = pwAnswer.getId();
-        result.userId = pwAnswer.getUser().getId();
-        result.pwQuestionId = pwAnswer.getPwQuestion().getId();
+        result.userId = pwAnswer.getUserId();
+        result.pwQuestionId = pwAnswer.getPwQuestionId();
         result.answer = pwAnswer.getAnswer();
         result.status = pwAnswer.getStatus();
         return result;
+    }
+
+    public PwAnswer toModel() {
+        return PwAnswer.builder()
+            .id(this.id)
+            .userId(this.userId)
+            .pwQuestionId(this.pwQuestionId)
+            .answer(this.answer)
+            .status(this.status)
+            .build();
     }
 }

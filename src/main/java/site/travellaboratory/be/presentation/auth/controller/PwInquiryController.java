@@ -38,6 +38,7 @@ public class PwInquiryController {
     public ResponseEntity<Void> pwInquiryRenewal(
         @RequestBody PwInquiryRenewalRequest pwInquiryRenewalRequest
     ) {
+        // todo : 포른트와 상의 후 return값 정할 필요있다면 수정해줄것
         pwInquiryService.pwInquiryRenewal(pwInquiryRenewalRequest);
         return ResponseEntity.ok().build();
     }

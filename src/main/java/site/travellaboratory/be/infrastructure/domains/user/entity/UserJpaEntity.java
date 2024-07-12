@@ -51,6 +51,16 @@ public class UserJpaEntity extends BaseEntity {
         this.status = UserStatus.ACTIVE;
     }
 
+    public static UserJpaEntity from(User user) {
+        UserJpaEntity result = new UserJpaEntity();
+        result.id = user.getId();
+        result.nickname = user.getNickname();
+        result.profileImgUrl = user.getProfileImgUrl();
+        result.introduce = user.getIntroduce();;
+        result.status = user.getStatus();
+        return result;
+    }
+
     public static UserJpaEntity from(User user, UserAuth userAuth) {
         UserJpaEntity result = new UserJpaEntity();
         result.id = user.getId();
@@ -91,9 +101,7 @@ public class UserJpaEntity extends BaseEntity {
         this.introduce = introduce;
     }
 
-    public void setPassword(final String password) {
-        this.password = password;
-    }
+
 
     public void setNickname(final String nickname) {
         this.nickname = nickname;
@@ -111,15 +119,6 @@ public class UserJpaEntity extends BaseEntity {
         isAgreement = agreement;
     }
 
-    // 일반 회원가입 시
-    public static UserJpaEntity of(String username, String password, String nickname, Boolean isAgreement) {
-        UserJpaEntity userJpaEntity = new UserJpaEntity();
-        userJpaEntity.setUsername(username);
-        userJpaEntity.setPassword(password);
-        userJpaEntity.setNickname(nickname);
-        userJpaEntity.setIsAgreement(isAgreement);
-        return userJpaEntity;
-    }
 
     // 소셜 로그인 시
     public static UserJpaEntity socialOf(String email, String profileImgUrl, String nickname, Boolean isAgreement) {

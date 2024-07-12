@@ -60,7 +60,7 @@ public class UserRegistrationService {
                 HttpStatus.BAD_REQUEST)).toModel();
 
         // 비번 답변 저장
-        PwAnswer pwAnswer = PwAnswer.create(savedUser, pwQuestion, request.pwAnswer());
+        PwAnswer pwAnswer = PwAnswer.create(savedUser.getId(), pwQuestion.getId(), request.pwAnswer());
         pwAnswerRepository.save(PwAnswerJpaEntity.from(pwAnswer));
         return savedUser;
     }

@@ -32,4 +32,14 @@ public class UserAuth {
             .isAgreement(isAgreement)
             .build();
     }
+
+    public UserAuth withPassword(String password) {
+        return UserAuth.builder()
+            .id(this.id)
+            .username(this.username)
+            .password(password)
+            .role(this.role)
+            .isAgreement(this.isAgreement)
+            .build();
+    }
 }
