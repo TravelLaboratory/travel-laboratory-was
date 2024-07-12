@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.comment.CommentLikeService;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.presentation.comment.dto.like.CommentToggleLikeResponse;
 
 @RestController
@@ -22,8 +23,7 @@ public class CommentLikeController {
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
-        CommentToggleLikeResponse response = commentLikeService.toggleLikeComment(userId,
-            commentId);
-        return ResponseEntity.ok(response);
+        CommentLikeStatus result = commentLikeService.toggleLikeComment(userId, commentId);
+        return ResponseEntity.ok(CommentToggleLikeResponse.from(result));
     }
 }

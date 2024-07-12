@@ -13,9 +13,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.domain.comment.CommentLike;
+import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.userlikecomment.enums.UserLikeCommentStatus;
 
 @Entity
 @Table(name = "comment_like")
@@ -37,23 +38,23 @@ public class CommentLikeJpaEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserLikeCommentStatus status;
+    private CommentLikeStatus status;
 
-    private CommentLikeJpaEntity(User user, CommentJpaEntity commentJpaEntity) {
-        this.user = user;
-        this.commentJpaEntity = commentJpaEntity;
-        this.status = UserLikeCommentStatus.ACTIVE;
+    public static CommentLikeJpaEntity from(CommentLike commentLike) {
+        CommentLikeJpaEntity result = new CommentLikeJpaEntity();
+        result.id = commentLike.getId();
+        result.user = commentLike.getUser();
+        result.commentJpaEntity = CommentJpaEntity.from(commentLike.getComment());
+        result.status = commentLike.getStatus();
+        return result;
     }
 
-    public static CommentLikeJpaEntity of(User user, CommentJpaEntity commentJpaEntity) {
-        return new CommentLikeJpaEntity(user, commentJpaEntity);
-    }
-
-    public void toggleStatus() {
-        if (this.status == UserLikeCommentStatus.ACTIVE) {
-            this.status = UserLikeCommentStatus.INACTIVE;
-        } else {
-            this.status = UserLikeCommentStatus.ACTIVE;
-        }
+    public CommentLike toModel() {
+        return CommentLike.builder()
+            .id(this.getId())
+            .user(this.getUser())
+            .comment(this.getCommentJpaEntity().toModel())
+            .status(this.getStatus())
+            .build();
     }
 }

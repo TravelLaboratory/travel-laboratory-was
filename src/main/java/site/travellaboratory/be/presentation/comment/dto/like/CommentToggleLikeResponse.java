@@ -1,11 +1,11 @@
 package site.travellaboratory.be.presentation.comment.dto.like;
 
-import site.travellaboratory.be.infrastructure.domains.userlikecomment.enums.UserLikeCommentStatus;
+import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 
 public record CommentToggleLikeResponse(
-    UserLikeCommentStatus status
+    CommentLikeStatus status
 ) {
-    public static CommentToggleLikeResponse from(UserLikeCommentStatus status) {
+    public static CommentToggleLikeResponse from(CommentLikeStatus status) {
         return new CommentToggleLikeResponse(status);
     }
 }

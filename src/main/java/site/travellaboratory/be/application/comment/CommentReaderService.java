@@ -22,7 +22,7 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.userlikecomment.enums.UserLikeCommentStatus;
+import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.presentation.comment.dto.reader.CommentLikeCount;
 import site.travellaboratory.be.presentation.comment.dto.reader.CommentReadPaginationResponse;
 import site.travellaboratory.be.presentation.comment.dto.reader.CommentReadResponse;
@@ -69,7 +69,7 @@ public class CommentReaderService {
         // (3)-1 좋아요 수
         List<CommentLikeCount> commentLikeCounts = commentLikeJpaRepository.countByCommentIdsAndStatusGroupByCommentId(
             commentIds,
-            UserLikeCommentStatus.ACTIVE).stream().map(result -> new CommentLikeCount(
+            CommentLikeStatus.ACTIVE).stream().map(result -> new CommentLikeCount(
             (Long) result[0], (Long) result[1])).toList();
 
         // (3)-2 좋아요 수 개수 Map<commentId, likeCount> 변환
@@ -83,9 +83,9 @@ public class CommentReaderService {
         // todo: before after 비교해보기
         List<CommentLikeJpaEntity> commentLikeJpaEntities = commentLikeJpaRepository.findAllByUserIdAndCommentIdInAndStatusFetchJoinComment(
             userId, commentIds,
-            UserLikeCommentStatus.ACTIVE);
+            CommentLikeStatus.ACTIVE);
         // (4)-2 좋아요 체크 Map<commentId, UserLikeCommentStatus> 변환
-        Map<Long, UserLikeCommentStatus> isLikes = commentLikeJpaEntities.stream()
+        Map<Long, CommentLikeStatus> isLikes = commentLikeJpaEntities.stream()
             .collect(Collectors.toMap(
                 commentLikeJpaEntity -> commentLikeJpaEntity.getCommentJpaEntity().getId(),
                 CommentLikeJpaEntity::getStatus
@@ -104,7 +104,7 @@ public class CommentReaderService {
         List<CommentReadResponse> comments = commentsWithUsers.stream().map(comment -> {
                 // isLikes 에서 commentId 가 있고, 그게 ACTIVE 라면 true
                 boolean isLike = isLikes.containsKey(comment.getId())
-                    && isLikes.get(comment.getId()) == UserLikeCommentStatus.ACTIVE;
+                    && isLikes.get(comment.getId()) == CommentLikeStatus.ACTIVE;
                 // likeCounts 에서 commetId 가 있다면 반환 없으면 0
                 long likeCount = likeCounts.getOrDefault(comment.getId(), 0L);
                 return CommentReadResponse.from(

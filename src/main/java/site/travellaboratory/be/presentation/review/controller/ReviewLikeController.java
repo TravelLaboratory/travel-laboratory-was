@@ -23,10 +23,7 @@ public class ReviewLikeController {
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
-        ReviewLikeStatus result = reviewLikeService.toggleLikeReview(userId,
-            reviewId);
-
-        ReviewToggleLikeResponse response = ReviewToggleLikeResponse.from(result);
-        return ResponseEntity.ok(response);
+        ReviewLikeStatus result = reviewLikeService.toggleLikeReview(userId, reviewId);
+        return ResponseEntity.ok(ReviewToggleLikeResponse.from(result));
     }
 }
