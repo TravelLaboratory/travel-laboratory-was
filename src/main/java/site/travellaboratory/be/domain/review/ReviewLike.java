@@ -16,8 +16,6 @@ public class ReviewLike {
     private final Review review;
     private final ReviewLikeStatus status;
 
-
-    // todo : 좋아요
     public static ReviewLike create(User user, Review review) {
         return ReviewLike.builder()
             .user(user)
@@ -26,13 +24,13 @@ public class ReviewLike {
             .build();
     }
 
-
     public ReviewLike withToggleStatus() {
         return ReviewLike.builder()
             .id(this.getId())
             .user(this.getUser())
             .review(this.getReview())
-            .status((this.status == ReviewLikeStatus.ACTIVE) ? ReviewLikeStatus.INACTIVE : ReviewLikeStatus.ACTIVE)
+            .status((this.status == ReviewLikeStatus.ACTIVE) ? ReviewLikeStatus.INACTIVE
+                : ReviewLikeStatus.ACTIVE)
             .build();
     }
 }

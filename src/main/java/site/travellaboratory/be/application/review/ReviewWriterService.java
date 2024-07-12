@@ -75,9 +75,7 @@ public class ReviewWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 삭제
-        Review deletedReview= review.withInactiveStatus(userId);
-
-        // 후기 삭제
+        Review deletedReview = review.withInactiveStatus(userId);
         Review result = reviewRepository.save(ReviewJpaEntity.from(deletedReview)).toModel();
         return result.getStatus().equals(ReviewStatus.INACTIVE);
     }

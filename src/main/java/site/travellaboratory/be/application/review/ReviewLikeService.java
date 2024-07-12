@@ -40,7 +40,6 @@ public class ReviewLikeService {
         } else {
             reviewLike = ReviewLike.create(review.getUser(), review);
         }
-
         ReviewLikeJpaEntity saveReviewLike = reviewLikeRepository.save(ReviewLikeJpaEntity.from(reviewLike));
         return saveReviewLike.getStatus();
     }
