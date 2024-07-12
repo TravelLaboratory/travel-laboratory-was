@@ -23,10 +23,10 @@ public class Review {
     private final String description;
     private final ReviewStatus status;
 
-    public static Review create(Long userId, User user, Article article, String title,
+    public static Review create(User user, Article article, String title,
         String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 article_id이 아닌 경우
-        article.verifyOwner(userId);
+        article.verifyOwner(user);
 
         return Review.builder()
             .user(user)
@@ -39,9 +39,9 @@ public class Review {
             .build();
     }
 
-    public Review withUpdatedContent(Long userId, String title, String representativeImgUrl, String description, ReviewStatus status) {
+    public Review withUpdatedContent(User user, String title, String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 후기가 아닌 경우
-        verifyOwner(userId);
+        verifyOwner(user);
 
         return Review.builder()
             .id(this.id)
@@ -54,9 +54,9 @@ public class Review {
             .build();
     }
 
-    public Review withInactiveStatus(Long userId) {
+    public Review withInactiveStatus(User user) {
         // 유저가 작성한 후기인지 확인
-        verifyOwner(userId);
+        verifyOwner(user);
 
         return Review.builder()
             .id(this.id)
@@ -69,9 +69,9 @@ public class Review {
             .build();
     }
 
-    private void verifyOwner(Long userId) {
+    private void verifyOwner(User user) {
         // 유저가 작성한 후기가 아닌 경우
-        if (!this.getUser().getId().equals(userId)) {
+        if (!this.getUser().getId().equals(user.getId())) {
             throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

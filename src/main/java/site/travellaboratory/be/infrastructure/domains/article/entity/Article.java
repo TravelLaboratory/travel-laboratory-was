@@ -141,8 +141,8 @@ public class Article extends BaseEntity {
         return user.getNickname();
     }
 
-    public void verifyOwner(Long userId) {
-        if (this.user.getId().equals(userId)) {
+    public void verifyOwner(User user) {
+        if (!this.user.getId().equals(user.getId())) {
             throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);
         }
     }
