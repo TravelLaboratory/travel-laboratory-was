@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.auth.UserAuthenticationService;
-import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserInfoResponse;
-import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginRequest;
-import site.travellaboratory.be.presentation.auth.dto.userauthentication.UserLoginResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.LoginResponse;
+import site.travellaboratory.be.presentation.auth.dto.userauthentication.LoginRequest;
+import site.travellaboratory.be.application.auth.command.LoginCommand;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.AccessTokenResponse;
 
 @RestController
@@ -23,17 +23,18 @@ public class UserAuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<UserInfoResponse> login(
-        @RequestBody UserLoginRequest userLoginRequest,
+    public ResponseEntity<LoginResponse> login(
+        @RequestBody LoginRequest loginRequest,
         HttpServletResponse response
     ) {
-        UserLoginResponse userLoginResponse = userAuthenticationService.login(userLoginRequest);
+        LoginCommand result = userAuthenticationService.login(loginRequest);
 
-        response.setHeader("authorization-token", userLoginResponse.authTokenResponse().accessToken());
-        response.setHeader("authorization-token-expired-at", userLoginResponse.authTokenResponse().expiredAt());
+        response.setHeader("authorization-token", result.accessToken());
+        response.setHeader("authorization-token-expired-at", result.expiredAt());
+        response.setHeader("refresh-token", result.refreshToken());
 
-        response.setHeader("refresh-token", userLoginResponse.authTokenResponse().refreshToken());
-        return ResponseEntity.ok(userLoginResponse.userInfoResponse());
+        return ResponseEntity.ok(LoginResponse.from(result.userId(), result.nickname(),
+            result.profileImgUrl()));
     }
 
     @GetMapping("/auth/reissue-token")
@@ -44,8 +45,7 @@ public class UserAuthenticationController {
     ) {
         System.out.println("refreshToken = " + refreshToken);
         // 쿠키에서 리프레시 토큰 값 추출
-        AccessTokenResponse accessTokenResponse = userAuthenticationService.reIssueAccessToken(accessToken,
-            refreshToken);
+        AccessTokenResponse accessTokenResponse = userAuthenticationService.reIssueAccessToken(accessToken, refreshToken);
 
         response.setHeader("authorization-token", accessTokenResponse.accessToken());
         response.setHeader("authorization-token-expired-at", accessTokenResponse.expiredAt());
