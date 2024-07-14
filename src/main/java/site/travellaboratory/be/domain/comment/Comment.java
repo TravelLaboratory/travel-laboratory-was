@@ -36,6 +36,7 @@ public class Comment {
         verifyOwner(userJpaEntity);
 
         return Comment.builder()
+            .id(this.id)
             .userJpaEntity(this.userJpaEntity)
             .review(this.review)
             .replyContent(replyContent)
@@ -48,6 +49,7 @@ public class Comment {
         verifyOwner(userJpaEntity);
 
         return Comment.builder()
+            .id(this.id)
             .userJpaEntity(this.userJpaEntity)
             .review(this.review)
             .replyContent(this.replyContent)

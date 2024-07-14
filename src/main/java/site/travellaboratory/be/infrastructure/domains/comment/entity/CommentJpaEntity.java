@@ -46,6 +46,7 @@ public class CommentJpaEntity extends BaseEntity {
 
     public static CommentJpaEntity from(Comment comment) {
         CommentJpaEntity result = new CommentJpaEntity();
+        result.id = comment.getId();
         result.userJpaEntity = comment.getUserJpaEntity();
         result.reviewJpaEntity = ReviewJpaEntity.from(comment.getReview());
         result.replyContent = comment.getReplyContent();
@@ -59,6 +60,7 @@ public class CommentJpaEntity extends BaseEntity {
             .userJpaEntity(this.userJpaEntity)
             .review(this.reviewJpaEntity.toModel())
             .replyContent(this.replyContent)
+            .status(this.status)
             .build();
     }
 }
