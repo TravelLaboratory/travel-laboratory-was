@@ -34,7 +34,7 @@ import site.travellaboratory.be.infrastructure.common.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Article extends BaseEntity {
+public class ArticleJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,7 +69,7 @@ public class Article extends BaseEntity {
 
     private String coverImageUrl;
 
-    public Article(final Long id,
+    public ArticleJpaEntity(final Long id,
                    final UserJpaEntity userJpaEntity,
                    final String title,
                    final List<Location> location,
@@ -91,8 +91,8 @@ public class Article extends BaseEntity {
         this.status = ArticleStatus.ACTIVE;
     }
 
-    public static Article of(final UserJpaEntity userJpaEntity, final ArticleRegisterRequest articleRegisterRequest) {
-        return new Article(
+    public static ArticleJpaEntity of(final UserJpaEntity userJpaEntity, final ArticleRegisterRequest articleRegisterRequest) {
+        return new ArticleJpaEntity(
                 null,
             userJpaEntity,
                 articleRegisterRequest.title(),

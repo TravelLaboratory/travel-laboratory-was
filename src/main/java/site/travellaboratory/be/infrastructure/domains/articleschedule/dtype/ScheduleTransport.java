@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleTransportRequest;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
@@ -50,7 +50,7 @@ public class ScheduleTransport extends ArticleSchedule {
 
     private ScheduleTransport(
         // super
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -70,7 +70,7 @@ public class ScheduleTransport extends ArticleSchedule {
         String googleMapEndPlaceAddress,
         Double googleMapEndLatitude,
         Double googleMapEndLongitude) {
-        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
+        super(articleJpaEntity, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.transportation = transportation;
         this.startPlaceName = startPlaceName;
         this.googleMapStartPlaceAddress = googleMapStartPlaceAddress;
@@ -83,7 +83,7 @@ public class ScheduleTransport extends ArticleSchedule {
     }
 
     public static ScheduleTransport of(
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -96,7 +96,7 @@ public class ScheduleTransport extends ArticleSchedule {
         ScheduleTransportRequest request
     ) {
         return new ScheduleTransport(
-            article,
+            articleJpaEntity,
             visitedDate,
             visitedTime,
             sortOrder,

@@ -122,14 +122,14 @@ public class ReviewReaderService {
     }
 
     private ProfileReviewResponse toProfileReviewResponse(ReviewJpaEntity reviewJpaEntity) {
-        List<ProfileReviewLocation> locations = reviewJpaEntity.getArticle().getLocation().stream()
+        List<ProfileReviewLocation> locations = reviewJpaEntity.getArticleJpaEntity().getLocation().stream()
             .map(ProfileReviewLocation::from)
             .collect(Collectors.toList());
         return ProfileReviewResponse.from(reviewJpaEntity, locations);
     }
 
     private ReviewBannerResponse toReviewBannerResponse(ReviewJpaEntity reviewJpaEntity) {
-        List<BannerReviewLocation> locations = reviewJpaEntity.getArticle().getLocation().stream()
+        List<BannerReviewLocation> locations = reviewJpaEntity.getArticleJpaEntity().getLocation().stream()
             .map(BannerReviewLocation::from)
             .collect(Collectors.toList());
         return ReviewBannerResponse.from(reviewJpaEntity, locations);

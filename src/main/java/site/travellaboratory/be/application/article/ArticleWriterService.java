@@ -9,8 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
-import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
@@ -27,7 +27,7 @@ import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRes
 @RequiredArgsConstructor
 public class ArticleWriterService {
 
-    private final ArticleRepository articleRepository;
+    private final ArticleJpaRepository articleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final S3FileUploader s3FileUploader;
 
@@ -38,22 +38,22 @@ public class ArticleWriterService {
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final Article article = Article.of(userJpaEntity, articleRegisterRequest);
-        articleRepository.save(article);
-        return ArticleRegisterResponse.from(article.getId());
+        final ArticleJpaEntity articleJpaEntity = ArticleJpaEntity.of(userJpaEntity, articleRegisterRequest);
+        articleJpaRepository.save(articleJpaEntity);
+        return ArticleRegisterResponse.from(articleJpaEntity.getId());
     }
 
     @Transactional
     public ArticleUpdateCoverImageResponse updateCoverImage(
             final MultipartFile coverImage,
             final Long articleId) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         final String url = s3FileUploader.uploadFiles(coverImage);
 
-        article.updateCoverImage(url);
+        articleJpaEntity.updateCoverImage(url);
 
         return new ArticleUpdateCoverImageResponse(url);
     }
@@ -65,31 +65,31 @@ public class ArticleWriterService {
             final Long userId,
             final Long articleId
     ) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_UPDATE_NOT_USER, HttpStatus.UNAUTHORIZED);
         }
 
-        article.update(articleUpdateRequest);
-        return ArticleUpdateResponse.from(article);
+        articleJpaEntity.update(articleUpdateRequest);
+        return ArticleUpdateResponse.from(articleJpaEntity);
     }
 
     // 아티클 삭제
     @Transactional
     public ArticleDeleteResponse deleteArticle(final Long userId, final Long articleId) {
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
         }
 
-        article.delete();
-        articleRepository.save(article);
+        articleJpaEntity.delete();
+        articleJpaRepository.save(articleJpaEntity);
         return ArticleDeleteResponse.from(true);
     }
 
@@ -97,23 +97,23 @@ public class ArticleWriterService {
     @Transactional
     public ArticleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
         // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 초기 여행 계획 비공개 여부 수정
-        article.togglePrivacyStatus();
+        articleJpaEntity.togglePrivacyStatus();
 
         // 비공개 true, 공개 false
-        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
+        boolean isPrivate = (articleJpaEntity.getStatus() == ArticleStatus.PRIVATE);
 
         return ArticleUpdatePrivacyResponse.from(isPrivate);
     }

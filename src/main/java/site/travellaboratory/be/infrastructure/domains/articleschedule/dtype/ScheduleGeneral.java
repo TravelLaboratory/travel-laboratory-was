@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleGeneralRequest;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
@@ -44,7 +44,7 @@ public class ScheduleGeneral extends ArticleSchedule {
 
     private ScheduleGeneral(
         // super
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -62,7 +62,7 @@ public class ScheduleGeneral extends ArticleSchedule {
         String googleMapPhoneNumber,
         String googleMapHomePageUrl
         ) {
-        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
+        super(articleJpaEntity, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.placeName = placeName;
         this.googleMapPlaceId = googleMapPlaceId;
         this.googleMapLatitude = googleMapLatitude;
@@ -73,7 +73,7 @@ public class ScheduleGeneral extends ArticleSchedule {
     }
 
     public static ScheduleGeneral of(
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -86,7 +86,7 @@ public class ScheduleGeneral extends ArticleSchedule {
         ScheduleGeneralRequest request
     ) {
         return new ScheduleGeneral(
-            article,
+            articleJpaEntity,
             visitedDate,
             visitedTime,
             sortOrder,

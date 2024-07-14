@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleEtcRequest;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
@@ -25,7 +25,7 @@ public class ScheduleEtc extends ArticleSchedule {
 
     private ScheduleEtc(
         // super
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -35,12 +35,12 @@ public class ScheduleEtc extends ArticleSchedule {
         String memo,
         ArticleScheduleStatus status,
         String placeName) {
-        super(article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
+        super(articleJpaEntity, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status);
         this.placeName = placeName;
     }
 
     public static ScheduleEtc of(
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -52,7 +52,7 @@ public class ScheduleEtc extends ArticleSchedule {
         ScheduleEtcRequest request
         ) {
         return new ScheduleEtc(
-            article,
+            articleJpaEntity,
             visitedDate,
             visitedTime,
             sortOrder,

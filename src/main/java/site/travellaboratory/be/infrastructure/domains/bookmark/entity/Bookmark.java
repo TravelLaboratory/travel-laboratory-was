@@ -14,7 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
@@ -34,20 +34,20 @@ public class Bookmark extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "article_id")
-    private Article article;
+    private ArticleJpaEntity articleJpaEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookmarkStatus status;
 
-    public Bookmark(final UserJpaEntity userJpaEntity, final Article article) {
+    public Bookmark(final UserJpaEntity userJpaEntity, final ArticleJpaEntity articleJpaEntity) {
         this.userJpaEntity = userJpaEntity;
-        this.article = article;
+        this.articleJpaEntity = articleJpaEntity;
         this.status = BookmarkStatus.ACTIVE;
     }
 
-    public static Bookmark of(final UserJpaEntity userJpaEntity, final Article article) {
-        return new Bookmark(userJpaEntity, article);
+    public static Bookmark of(final UserJpaEntity userJpaEntity, final ArticleJpaEntity articleJpaEntity) {
+        return new Bookmark(userJpaEntity, articleJpaEntity);
     }
 
     public void toggleStatus() {

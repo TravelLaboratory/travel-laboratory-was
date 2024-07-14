@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.common.BaseJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Entity
@@ -37,7 +37,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     // todo : 여행 계획의 status 만 확인하면 되기에 어찌보면 굳이 Article로 객체를 가지고 있을 필요가 없을 수 있다.
-    private Article article;
+    private ArticleJpaEntity articleJpaEntity;
 
     @Column(nullable = false, length = 150)
     private String title;
@@ -56,7 +56,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
         ReviewJpaEntity result = new ReviewJpaEntity();
         result.id = review.getId();
         result.userJpaEntity = review.getUserJpaEntity();
-        result.article = review.getArticle();
+        result.articleJpaEntity = review.getArticleJpaEntity();
         result.title = review.getTitle();
         result.representativeImgUrl = review.getRepresentativeImgUrl();
         result.description = review.getDescription();
@@ -67,7 +67,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     public Review toModel() {
         return Review.builder()
             .userJpaEntity(this.userJpaEntity)
-            .article(this.article)
+            .articleJpaEntity(this.articleJpaEntity)
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)

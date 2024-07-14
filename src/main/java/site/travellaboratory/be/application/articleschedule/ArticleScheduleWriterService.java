@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleRepository;
@@ -26,28 +26,28 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleS
 @RequiredArgsConstructor
 public class ArticleScheduleWriterService {
 
-    private final ArticleRepository articleRepository;
+    private final ArticleJpaRepository articleJpaRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
 
     @Transactional
     public ArticleScheduleUpdateResponse updateSchedules(Long userId, Long articleId,
         List<ArticleScheduleRequest> requests) {
         // 유효하지 않은 여행 계획에 대한 상세 일정을 수정할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획이 아닌 경우
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // (0) 기존 일정들 불러오기 (삭제된 건 제외 + sortOrder로 내림차순) (N+1을 막기 위해 FETCH JOIN)
-        List<ArticleSchedule> existingSchedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
-            article, ArticleScheduleStatus.ACTIVE);
+        List<ArticleSchedule> existingSchedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+            articleJpaEntity, ArticleScheduleStatus.ACTIVE);
         // (1) 일정 수정 - id o , 일정 생성 - id x -> 이를 분리
         Map<Long, ArticleScheduleRequest> requestMap = requests.stream()
             .filter(request -> request.scheduleId() != null)
@@ -66,7 +66,7 @@ public class ArticleScheduleWriterService {
         for (ArticleScheduleRequest request : requests) {
             // id x -> 새로운 일정 생성 [INSERT]
             if (request.scheduleId() == null) {
-                ArticleSchedule newSchedule = toArticleSchedule(article, request);
+                ArticleSchedule newSchedule = toArticleSchedule(articleJpaEntity, request);
                 articleScheduleRepository.save(newSchedule);
             }
             // id o -> 기존 일정 수정 [UPDATE]
@@ -77,30 +77,30 @@ public class ArticleScheduleWriterService {
                 updateExistingSchedule(existingSchedule, request);
             }
         }
-        return ArticleScheduleUpdateResponse.from(article.getId());
+        return ArticleScheduleUpdateResponse.from(articleJpaEntity.getId());
     }
 
     @Transactional
     public ArticleScheduleDeleteResponse deleteArticleSchedules(Long userId, Long articleId) {
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 초기 여행 계획 삭제
-        article.delete();
+        articleJpaEntity.delete();
 
         // 관련된 일정들 삭제
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderByIdDesc(
-            article, ArticleScheduleStatus.ACTIVE);
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
+            articleJpaEntity, ArticleScheduleStatus.ACTIVE);
         for (ArticleSchedule schedule : schedules) {
             schedule.delete();
         }
@@ -108,11 +108,11 @@ public class ArticleScheduleWriterService {
         return ArticleScheduleDeleteResponse.from(true);
     }
 
-    private ArticleSchedule toArticleSchedule(Article article, ArticleScheduleRequest request) {
+    private ArticleSchedule toArticleSchedule(ArticleJpaEntity articleJpaEntity, ArticleScheduleRequest request) {
         switch (request.dtype()) {
             case "GENERAL" -> {
                 return ScheduleGeneral.of(
-                    article,
+                    articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
                     request.sortOrder(),
@@ -128,7 +128,7 @@ public class ArticleScheduleWriterService {
             case "TRANSPORT" -> {
                 System.out.println("transport");
                 return ScheduleTransport.of(
-                    article,
+                    articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
                     request.sortOrder(),
@@ -142,7 +142,7 @@ public class ArticleScheduleWriterService {
             }
             case "ETC" -> {
                 return ScheduleEtc.of(
-                    article,
+                    articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
                     request.sortOrder(),
