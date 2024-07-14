@@ -8,7 +8,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.domain.review.Review;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.user.User;
 
 @Getter
 @Builder
@@ -16,50 +16,50 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity
 public class Comment {
 
     private final Long id;
-    private final UserJpaEntity userJpaEntity;
+    private final User user;
     private final Review review;
     private final String replyContent;
     private final CommentStatus status;
 
-    public static Comment create(UserJpaEntity userJpaEntity, Review review, String replyContent) {
+    public static Comment create(User user, Review review, String replyContent) {
 
         return Comment.builder()
-            .userJpaEntity(userJpaEntity)
+            .user(user)
             .review(review)
             .replyContent(replyContent)
             .status(CommentStatus.ACTIVE)
             .build();
     }
 
-    public Comment withUpdatedReplyContent(UserJpaEntity userJpaEntity, String replyContent) {
+    public Comment withUpdatedReplyContent(User user, String replyContent) {
         // 유저가 작성한 댓글이 아닌 경우
-        verifyOwner(userJpaEntity);
+        verifyOwner(user);
 
         return Comment.builder()
             .id(this.id)
-            .userJpaEntity(this.userJpaEntity)
+            .user(this.user)
             .review(this.review)
             .replyContent(replyContent)
             .status(this.status)
             .build();
     }
 
-    public Comment withInactiveStatus(UserJpaEntity userJpaEntity) {
+    public Comment withInactiveStatus(User user) {
         // 유저가 작성한 댓글이 아닌 경우
-        verifyOwner(userJpaEntity);
+        verifyOwner(user);
 
         return Comment.builder()
             .id(this.id)
-            .userJpaEntity(this.userJpaEntity)
+            .user(this.user)
             .review(this.review)
             .replyContent(this.replyContent)
             .status(CommentStatus.INACTIVE)
             .build();
     }
 
-    private void verifyOwner(UserJpaEntity userJpaEntity) {
+    private void verifyOwner(User user) {
         // 유저가 작성한 댓글이 아닌 경우
-        if (!this.getUserJpaEntity().getId().equals(userJpaEntity.getId())) {
+        if (!this.getUser().getId().equals(user.getId())) {
             throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.user.User;
 
 @Getter
 @Builder
@@ -12,13 +12,13 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity
 public class CommentLike {
 
     private final Long id;
-    private final UserJpaEntity userJpaEntity;
+    private final User user;
     private final Comment comment;
     private final CommentLikeStatus status;
 
-    public static CommentLike create(UserJpaEntity userJpaEntity, Comment comment) {
+    public static CommentLike create(User user, Comment comment) {
         return CommentLike.builder()
-            .userJpaEntity(userJpaEntity)
+            .user(user)
             .comment(comment)
             .status(CommentLikeStatus.ACTIVE)
             .build();
@@ -27,7 +27,7 @@ public class CommentLike {
     public CommentLike withToggleStatus() {
         return CommentLike.builder()
             .id(this.getId())
-            .userJpaEntity(this.getUserJpaEntity())
+            .user(this.getUser())
             .comment(this.getComment())
             .status((this.status == CommentLikeStatus.ACTIVE) ? CommentLikeStatus.INACTIVE : CommentLikeStatus.ACTIVE)
             .build();

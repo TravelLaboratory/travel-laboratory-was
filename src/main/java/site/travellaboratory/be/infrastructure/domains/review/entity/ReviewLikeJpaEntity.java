@@ -44,7 +44,7 @@ public class ReviewLikeJpaEntity extends BaseEntity {
     public static ReviewLikeJpaEntity from(ReviewLike reviewLike) {
         ReviewLikeJpaEntity result = new ReviewLikeJpaEntity();
         result.id = reviewLike.getId();
-        result.userJpaEntity = reviewLike.getUserJpaEntity();
+        result.userJpaEntity = UserJpaEntity.from(reviewLike.getUser());
         result.reviewJpaEntity = ReviewJpaEntity.from(reviewLike.getReview());
         result.status = reviewLike.getStatus();
         return result;
@@ -53,7 +53,7 @@ public class ReviewLikeJpaEntity extends BaseEntity {
     public ReviewLike toModel() {
         return ReviewLike.builder()
             .id(this.getId())
-            .userJpaEntity(this.getUserJpaEntity())
+            .user(this.getUserJpaEntity().toModel())
             .review(this.getReviewJpaEntity().toModel())
             .status(this.getStatus())
             .build();

@@ -47,7 +47,7 @@ public class CommentLikeService {
         if (commentLikeJpaEntity != null) {
             commentLike = commentLikeJpaEntity.toModel().withToggleStatus();
         } else {
-            commentLike = CommentLike.create(userJpaEntity, comment);
+            commentLike = CommentLike.create(userJpaEntity.toModel(), comment);
         }
         CommentLikeJpaEntity saveCommentLike = commentLikeJpaRepository.save(CommentLikeJpaEntity.from(commentLike));
         return saveCommentLike.getStatus();
