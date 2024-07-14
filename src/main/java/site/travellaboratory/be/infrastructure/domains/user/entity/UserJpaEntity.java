@@ -56,7 +56,6 @@ public class UserJpaEntity extends BaseEntity {
         result.nickname = user.getNickname();
         result.profileImgUrl = user.getProfileImgUrl();
         result.introduce = user.getIntroduce();
-        ;
         result.status = user.getStatus();
         return result;
     }
