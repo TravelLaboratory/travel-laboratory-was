@@ -2,14 +2,14 @@ package site.travellaboratory.be.presentation.article.dto.like;
 
 import java.time.LocalDate;
 import java.util.List;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
-import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleLocationJpaEntity;
+import site.travellaboratory.be.domain.article.enums.TravelStyle;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 
 public record BookmarkResponse(
         Long articleId,
         String title,
-        List<Location> location,
+        List<ArticleLocationJpaEntity> locationJpaEntities,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
@@ -30,7 +30,7 @@ public record BookmarkResponse(
         return new BookmarkResponse(
                 bookmark.getArticleJpaEntity().getId(),
                 bookmark.getArticleJpaEntity().getTitle(),
-                bookmark.getArticleJpaEntity().getLocation(),
+                bookmark.getArticleJpaEntity().getLocationJpaEntities(),
                 bookmark.getArticleJpaEntity().getStartAt(),
                 bookmark.getArticleJpaEntity().getEndAt(),
                 bookmark.getArticleJpaEntity().getExpense(),

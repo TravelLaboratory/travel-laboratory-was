@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.article.enums;
+package site.travellaboratory.be.domain.article.enums;
 
 import java.util.Arrays;
 import java.util.List;

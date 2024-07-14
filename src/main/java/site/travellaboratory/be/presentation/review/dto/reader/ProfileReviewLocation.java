@@ -1,17 +1,17 @@
 package site.travellaboratory.be.presentation.review.dto.reader;
 
-import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleLocationJpaEntity;
 
 public record ProfileReviewLocation(
     String placeId,
     String address,
     String city
 ) {
-    public static ProfileReviewLocation from(Location location) {
+    public static ProfileReviewLocation from(ArticleLocationJpaEntity articleLocationJpaEntity) {
         return new ProfileReviewLocation(
-            location.getPlaceId(),
-            location.getAddress(),
-            location.getCity()
+            articleLocationJpaEntity.getPlaceId(),
+            articleLocationJpaEntity.getAddress(),
+            articleLocationJpaEntity.getCity()
         );
     }
 }

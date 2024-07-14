@@ -2,7 +2,7 @@ package site.travellaboratory.be.infrastructure.domains.article.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import site.travellaboratory.be.infrastructure.domains.article.enums.TravelCompanion;
+import site.travellaboratory.be.domain.article.enums.TravelCompanion;
 
 @Converter(autoApply = true)
 public class TravelCompanionConverter implements AttributeConverter<TravelCompanion, String> {

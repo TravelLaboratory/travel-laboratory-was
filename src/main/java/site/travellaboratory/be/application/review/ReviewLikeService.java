@@ -47,9 +47,9 @@ public class ReviewLikeService {
         if (reviewLikeJpaEntity != null) {
             reviewLike = reviewLikeJpaEntity.toModel().withToggleStatus();
         } else {
-            reviewLike = ReviewLike.create(userJpaEntity, review);
+            reviewLike = ReviewLike.create(userJpaEntity.toModel(), review);
         }
-        ReviewLikeJpaEntity saveReviewLike = reviewLikeJpaRepository.save(ReviewLikeJpaEntity.from(reviewLike));
+        ReviewLike saveReviewLike = reviewLikeJpaRepository.save(ReviewLikeJpaEntity.from(reviewLike)).toModel();
         return saveReviewLike.getStatus();
     }
 }

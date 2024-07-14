@@ -2,11 +2,11 @@ package site.travellaboratory.be.presentation.article.dto.writer;
 
 import java.time.LocalDate;
 import java.util.List;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
+
 
 public record ArticleUpdateRequest(
         String title,
-        List<Location> location,
+        List<LocationDto> locations,
         LocalDate startAt,
         LocalDate endAt,
         String expense,

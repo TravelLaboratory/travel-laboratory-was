@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.user.User;
 
 @Getter
 @Builder
@@ -16,21 +16,21 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity
 public class Review {
 
     private final Long id;
-    private final UserJpaEntity userJpaEntity;
-    private final ArticleJpaEntity articleJpaEntity;
+    private final User user;
+    private final Article article;
     private final String title;
     private final String representativeImgUrl;
     private final String description;
     private final ReviewStatus status;
 
-    public static Review create(UserJpaEntity userJpaEntity, ArticleJpaEntity articleJpaEntity, String title,
+    public static Review create(User user, Article article, String title,
         String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 article_id이 아닌 경우
-        articleJpaEntity.verifyOwner(userJpaEntity);
+        article.verifyOwner(user);
 
         return Review.builder()
-            .userJpaEntity(userJpaEntity)
-            .articleJpaEntity(articleJpaEntity)
+            .user(user)
+            .article(article)
             .title(title)
             .representativeImgUrl(representativeImgUrl)
             .description(description)
@@ -39,14 +39,14 @@ public class Review {
             .build();
     }
 
-    public Review withUpdatedContent(UserJpaEntity userJpaEntity, String title, String representativeImgUrl, String description, ReviewStatus status) {
+    public Review withUpdatedContent(User user, String title, String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 후기가 아닌 경우
-        verifyOwner(userJpaEntity);
+        verifyOwner(user);
 
         return Review.builder()
             .id(this.id)
-            .userJpaEntity(this.userJpaEntity)
-            .articleJpaEntity(this.articleJpaEntity)
+            .user(this.user)
+            .article(this.article)
             .title(title)
             .representativeImgUrl(representativeImgUrl)
             .description(description)
@@ -54,14 +54,14 @@ public class Review {
             .build();
     }
 
-    public Review withInactiveStatus(UserJpaEntity userJpaEntity) {
+    public Review withInactiveStatus(User user) {
         // 유저가 작성한 후기인지 확인
-        verifyOwner(userJpaEntity);
+        verifyOwner(user);
 
         return Review.builder()
             .id(this.id)
-            .userJpaEntity(this.userJpaEntity)
-            .articleJpaEntity(this.articleJpaEntity)
+            .user(this.user)
+            .article(this.article)
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)
@@ -69,9 +69,9 @@ public class Review {
             .build();
     }
 
-    private void verifyOwner(UserJpaEntity userJpaEntity) {
+    private void verifyOwner(User user) {
         // 유저가 작성한 후기가 아닌 경우
-        if (!this.getUserJpaEntity().getId().equals(userJpaEntity.getId())) {
+        if (!this.getUser().getId().equals(user.getId())) {
             throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

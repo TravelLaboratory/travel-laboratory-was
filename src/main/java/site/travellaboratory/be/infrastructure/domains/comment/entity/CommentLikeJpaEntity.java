@@ -43,7 +43,7 @@ public class CommentLikeJpaEntity extends BaseEntity {
     public static CommentLikeJpaEntity from(CommentLike commentLike) {
         CommentLikeJpaEntity result = new CommentLikeJpaEntity();
         result.id = commentLike.getId();
-        result.userJpaEntity = commentLike.getUserJpaEntity();
+        result.userJpaEntity = UserJpaEntity.from(commentLike.getUser());
         result.commentJpaEntity = CommentJpaEntity.from(commentLike.getComment());
         result.status = commentLike.getStatus();
         return result;
@@ -52,7 +52,7 @@ public class CommentLikeJpaEntity extends BaseEntity {
     public CommentLike toModel() {
         return CommentLike.builder()
             .id(this.getId())
-            .userJpaEntity(this.getUserJpaEntity())
+            .user(this.getUserJpaEntity().toModel())
             .comment(this.getCommentJpaEntity().toModel())
             .status(this.getStatus())
             .build();

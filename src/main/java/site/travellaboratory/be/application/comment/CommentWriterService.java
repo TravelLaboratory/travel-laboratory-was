@@ -43,7 +43,7 @@ public class CommentWriterService {
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 댓글 작성
-        Comment saveComment = Comment.create(userJpaEntity, review, request.replyComment());
+        Comment saveComment = Comment.create(userJpaEntity.toModel(), review, request.replyComment());
         CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(saveComment));
         return savedEntity.getId();
     }
@@ -62,7 +62,7 @@ public class CommentWriterService {
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Comment updateComment = comment.withUpdatedReplyContent(userJpaEntity, request.replyComment());
+        Comment updateComment = comment.withUpdatedReplyContent(userJpaEntity.toModel(), request.replyComment());
         CommentJpaEntity savedEntity = commentJpaRepository.save(CommentJpaEntity.from(updateComment));
         return savedEntity.getId();
     }
@@ -79,10 +79,10 @@ public class CommentWriterService {
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Comment deletedComment = comment.withInactiveStatus(userJpaEntity);
+        Comment deletedComment = comment.withInactiveStatus(userJpaEntity.toModel());
 
         // 댓글 삭제
         CommentJpaEntity result = commentJpaRepository.save(CommentJpaEntity.from(deletedComment));
-        return result.getStatus() == CommentStatus.ACTIVE;
+        return result.getStatus() == CommentStatus.INACTIVE;
     }
 }

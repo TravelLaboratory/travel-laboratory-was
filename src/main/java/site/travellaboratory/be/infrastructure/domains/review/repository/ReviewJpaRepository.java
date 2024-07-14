@@ -35,7 +35,7 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewJpaEntity, Long
         @Param("status") List<ReviewStatus> status, Pageable pageable);
 
     // todo: after(2)
-    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.articleJpaEntity a JOIN FETCH a.location l WHERE t.id IN :ids ORDER BY t.createdAt DESC ")
+    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.articleJpaEntity a JOIN FETCH a.locationJpaEntities l WHERE t.id IN :ids ORDER BY t.createdAt DESC ")
     List<ReviewJpaEntity> findReviewsWithArticlesAndLocationsByIds(@Param("ids") List<Long> ids);
 
 
@@ -43,6 +43,6 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewJpaEntity, Long
     @Query("SELECT t.id FROM ReviewJpaEntity t WHERE t.status = 'ACTIVE' ORDER BY t.createdAt DESC")
     Page<Long> findReviewIdsByStatusOrderByCreatedAt(Pageable pageable);
 
-    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.articleJpaEntity a JOIN FETCH a.location l JOIN FETCH t.userJpaEntity u WHERE t.id IN :ids ORDER BY t.createdAt DESC")
+    @Query("SELECT t FROM ReviewJpaEntity t JOIN FETCH t.articleJpaEntity a JOIN FETCH a.locationJpaEntities l JOIN FETCH t.userJpaEntity u WHERE t.id IN :ids ORDER BY t.createdAt DESC")
     List<ReviewJpaEntity> findReviewsWithArticlesAndLocationsByIdsAndUserStatus(@Param("ids") List<Long> ids);
 }

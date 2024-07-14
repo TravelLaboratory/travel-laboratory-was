@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
+import site.travellaboratory.be.domain.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Repository
@@ -26,12 +26,12 @@ public interface ArticleJpaRepository extends JpaRepository<ArticleJpaEntity, Lo
 
     Optional<Page<ArticleJpaEntity>> findByUserJpaEntityAndStatusIn(UserJpaEntity userJpaEntity, List<ArticleStatus> status, Pageable pageable);
 
-    @Query("SELECT a FROM ArticleJpaEntity a JOIN a.location l WHERE l.city LIKE %:keyword% AND a.status = :status")
+    @Query("SELECT a FROM ArticleJpaEntity a JOIN a.locationJpaEntities l WHERE l.city LIKE %:keyword% AND a.status = :status")
     List<ArticleJpaEntity> findByLocationCityContainingAndStatusActive(
             @Param("keyword") String keyword,
             @Param("status") ArticleStatus status);
 
-    @Query("SELECT a FROM ArticleJpaEntity a JOIN a.location l WHERE l.city LIKE %:keyword% AND a.status = :status")
+    @Query("SELECT a FROM ArticleJpaEntity a JOIN a.locationJpaEntities l WHERE l.city LIKE %:keyword% AND a.status = :status")
     Page<ArticleJpaEntity> findByLocationCityContainingAndStatusActive(
             @Param("keyword") String keyword,
             Pageable pageable,

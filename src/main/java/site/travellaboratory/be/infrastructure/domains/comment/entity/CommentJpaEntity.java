@@ -25,6 +25,7 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentJpaEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,7 +47,8 @@ public class CommentJpaEntity extends BaseEntity {
 
     public static CommentJpaEntity from(Comment comment) {
         CommentJpaEntity result = new CommentJpaEntity();
-        result.userJpaEntity = comment.getUserJpaEntity();
+        result.id = comment.getId();
+        result.userJpaEntity = UserJpaEntity.from(comment.getUser());
         result.reviewJpaEntity = ReviewJpaEntity.from(comment.getReview());
         result.replyContent = comment.getReplyContent();
         result.status = comment.getStatus();
@@ -56,9 +58,10 @@ public class CommentJpaEntity extends BaseEntity {
     public Comment toModel() {
         return Comment.builder()
             .id(this.id)
-            .userJpaEntity(this.userJpaEntity)
+            .user(this.userJpaEntity.toModel())
             .review(this.reviewJpaEntity.toModel())
             .replyContent(this.replyContent)
+            .status(this.status)
             .build();
     }
 }
