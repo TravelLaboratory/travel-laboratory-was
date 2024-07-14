@@ -3,7 +3,7 @@ package site.travellaboratory.be.presentation.article.dto.reader;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
 
@@ -25,27 +25,27 @@ public record ArticleTotalResponse(
 
 ) {
     public static ArticleTotalResponse of(
-            final Article article,
+            final ArticleJpaEntity articleJpaEntity,
             final Long bookmarkCount,
             final Boolean isBookmarked,
             final Boolean isEditable
     ) {
-        List<String> travelStyleNames = article.getTravelStyles().stream()
+        List<String> travelStyleNames = articleJpaEntity.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
         return new ArticleTotalResponse(
-                article.getId(),
-                article.getTitle(),
-                article.getLocation(),
-                article.getStartAt(),
-                article.getEndAt(),
-                article.getExpense(),
-                article.getUserJpaEntity().getProfileImgUrl(),
-                article.getCoverImageUrl(),
-                article.getTravelCompanion().getName(),
+                articleJpaEntity.getId(),
+                articleJpaEntity.getTitle(),
+                articleJpaEntity.getLocation(),
+                articleJpaEntity.getStartAt(),
+                articleJpaEntity.getEndAt(),
+                articleJpaEntity.getExpense(),
+                articleJpaEntity.getUserJpaEntity().getProfileImgUrl(),
+                articleJpaEntity.getCoverImageUrl(),
+                articleJpaEntity.getTravelCompanion().getName(),
                 travelStyleNames,
-                article.getUserJpaEntity().getNickname(),
+                articleJpaEntity.getUserJpaEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
                 isEditable

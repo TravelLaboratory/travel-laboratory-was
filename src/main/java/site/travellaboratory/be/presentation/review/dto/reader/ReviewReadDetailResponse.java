@@ -25,7 +25,7 @@ public record ReviewReadDetailResponse(
             reviewJpaEntity.getUserJpaEntity().getProfileImgUrl(),
             reviewJpaEntity.getUserJpaEntity().getNickname(),
             isEditable,
-            reviewJpaEntity.getArticle().getId(),
+            reviewJpaEntity.getArticleJpaEntity().getId(),
             reviewJpaEntity.getId(),
             reviewJpaEntity.getTitle(),
             reviewJpaEntity.getRepresentativeImgUrl(),

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 
 @Getter
@@ -17,20 +17,20 @@ public class Review {
 
     private final Long id;
     private final UserJpaEntity userJpaEntity;
-    private final Article article;
+    private final ArticleJpaEntity articleJpaEntity;
     private final String title;
     private final String representativeImgUrl;
     private final String description;
     private final ReviewStatus status;
 
-    public static Review create(UserJpaEntity userJpaEntity, Article article, String title,
+    public static Review create(UserJpaEntity userJpaEntity, ArticleJpaEntity articleJpaEntity, String title,
         String representativeImgUrl, String description, ReviewStatus status) {
         // 유저가 작성한 article_id이 아닌 경우
-        article.verifyOwner(userJpaEntity);
+        articleJpaEntity.verifyOwner(userJpaEntity);
 
         return Review.builder()
             .userJpaEntity(userJpaEntity)
-            .article(article)
+            .articleJpaEntity(articleJpaEntity)
             .title(title)
             .representativeImgUrl(representativeImgUrl)
             .description(description)
@@ -46,7 +46,7 @@ public class Review {
         return Review.builder()
             .id(this.id)
             .userJpaEntity(this.userJpaEntity)
-            .article(this.article)
+            .articleJpaEntity(this.articleJpaEntity)
             .title(title)
             .representativeImgUrl(representativeImgUrl)
             .description(description)
@@ -61,7 +61,7 @@ public class Review {
         return Review.builder()
             .id(this.id)
             .userJpaEntity(this.userJpaEntity)
-            .article(this.article)
+            .articleJpaEntity(this.articleJpaEntity)
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)

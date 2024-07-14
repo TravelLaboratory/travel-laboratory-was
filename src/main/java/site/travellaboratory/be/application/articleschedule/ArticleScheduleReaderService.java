@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleRepository;
@@ -33,7 +33,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleS
 @RequiredArgsConstructor
 public class ArticleScheduleReaderService
 {
-    private final ArticleRepository articleRepository;
+    private final ArticleJpaRepository articleJpaRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
     private final ReviewJpaRepository reviewJpaRepository;
 
@@ -44,30 +44,30 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadDetailResponse readSchedulesDetail(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUserJpaEntity().getId()
+        if (articleJpaEntity.getStatus() == ArticleStatus.PRIVATE && !articleJpaEntity.getUserJpaEntity().getId()
             .equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // reviewId 찾아오기 없다면 null
-        Long reviewId = reviewJpaRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
+        Long reviewId = reviewJpaRepository.findByArticleJpaEntityAndStatus(articleJpaEntity, ReviewStatus.ACTIVE)
             .map(ReviewJpaEntity::getId)
             .orElse(null);
 
-        boolean isEditable = article.getUserJpaEntity().getId().equals(userId);
+        boolean isEditable = articleJpaEntity.getUserJpaEntity().getId().equals(userId);
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
-            article, ArticleScheduleStatus.ACTIVE);
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+            articleJpaEntity, ArticleScheduleStatus.ACTIVE);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
     }
@@ -79,19 +79,19 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        Article article = articleRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 article_id이 아닌 경우
-        if (!article.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleAndStatusInOrderByArticleDesc(article,
+        reviewJpaRepository.findByArticleJpaEntityAndStatusInOrderByArticleJpaEntityDesc(articleJpaEntity,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
@@ -99,8 +99,8 @@ public class ArticleScheduleReaderService
             });
 
         // 일정 리스트 조회
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleAndStatusOrderBySortOrderAsc(
-            article,
+        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+            articleJpaEntity,
             ArticleScheduleStatus.ACTIVE);
 
         // 초기 여행 계획만 있어서, 상세 일정이 빈 리스트인 경우

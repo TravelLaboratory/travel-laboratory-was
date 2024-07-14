@@ -18,8 +18,8 @@ public record ProfileReviewResponse(
             reviewJpaEntity.getTitle(),
             reviewJpaEntity.getRepresentativeImgUrl(),
             locations,
-            reviewJpaEntity.getArticle().getStartAt(),
-            reviewJpaEntity.getArticle().getEndAt());
+            reviewJpaEntity.getArticleJpaEntity().getStartAt(),
+            reviewJpaEntity.getArticleJpaEntity().getEndAt());
     }
 }
 

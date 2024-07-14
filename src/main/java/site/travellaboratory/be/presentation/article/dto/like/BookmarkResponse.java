@@ -23,22 +23,22 @@ public record BookmarkResponse(
 ) {
 
     public static BookmarkResponse of(final Bookmark bookmark, final Long bookmarkCount, final Boolean isBookmarked) {
-        List<String> travelStyleNames = bookmark.getArticle().getTravelStyles().stream()
+        List<String> travelStyleNames = bookmark.getArticleJpaEntity().getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .toList();
 
         return new BookmarkResponse(
-                bookmark.getArticle().getId(),
-                bookmark.getArticle().getTitle(),
-                bookmark.getArticle().getLocation(),
-                bookmark.getArticle().getStartAt(),
-                bookmark.getArticle().getEndAt(),
-                bookmark.getArticle().getExpense(),
-                bookmark.getArticle().getUserJpaEntity().getProfileImgUrl(),
-                bookmark.getArticle().getCoverImageUrl(),
-                bookmark.getArticle().getTravelCompanion().getName(),
+                bookmark.getArticleJpaEntity().getId(),
+                bookmark.getArticleJpaEntity().getTitle(),
+                bookmark.getArticleJpaEntity().getLocation(),
+                bookmark.getArticleJpaEntity().getStartAt(),
+                bookmark.getArticleJpaEntity().getEndAt(),
+                bookmark.getArticleJpaEntity().getExpense(),
+                bookmark.getArticleJpaEntity().getUserJpaEntity().getProfileImgUrl(),
+                bookmark.getArticleJpaEntity().getCoverImageUrl(),
+                bookmark.getArticleJpaEntity().getTravelCompanion().getName(),
                 travelStyleNames,
-                bookmark.getArticle().getNickname(),
+                bookmark.getArticleJpaEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked
         );

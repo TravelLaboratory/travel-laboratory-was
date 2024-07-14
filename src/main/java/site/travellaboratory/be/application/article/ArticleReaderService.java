@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
@@ -31,7 +31,7 @@ import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 @RequiredArgsConstructor
 public class ArticleReaderService {
 
-    private final ArticleRepository articleRepository;
+    private final ArticleJpaRepository articleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final BookmarkRepository bookmarkRepository;
 
@@ -46,13 +46,13 @@ public class ArticleReaderService {
         boolean isEditable = userJpaEntity.getId().equals(loginId);
 
         // 사용자가 작성한 아티클 또는 다른 사용자의 공개된 아티클 목록 조회
-        Page<Article> articlesPage;
+        Page<ArticleJpaEntity> articlesPage;
         if (isEditable) {
-            articlesPage = articleRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
+            articlesPage = articleJpaRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
                             List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         } else {
-            articlesPage = articleRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
+            articlesPage = articleJpaRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
                             List.of(ArticleStatus.ACTIVE), pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         }
@@ -62,7 +62,7 @@ public class ArticleReaderService {
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(loginId,
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(loginId,
                             article.getId(), BookmarkStatus.ACTIVE);
                     return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
                 })
@@ -76,20 +76,20 @@ public class ArticleReaderService {
     @Transactional
     public ArticleOneResponse findByArticle(final Long loginId, final Long articleId) {
         // 유효하지 않은 아티클 조회 할 경우
-        final Article article = articleRepository.findByIdAndStatusIn(articleId,
+        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(articleId, BookmarkStatus.ACTIVE);
 
-        boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(loginId, articleId,
+        boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(loginId, articleId,
                 BookmarkStatus.ACTIVE);
 
-        boolean isPrivate = (article.getStatus() == ArticleStatus.PRIVATE);
+        boolean isPrivate = (articleJpaEntity.getStatus() == ArticleStatus.PRIVATE);
 
-        boolean isEditable = article.getUserJpaEntity().getId().equals(loginId);
+        boolean isEditable = articleJpaEntity.getUserJpaEntity().getId().equals(loginId);
 
-        return ArticleOneResponse.of(article, bookmarkCount, isBookmarked, isPrivate, isEditable);
+        return ArticleOneResponse.of(articleJpaEntity, bookmarkCount, isBookmarked, isPrivate, isEditable);
     }
 
     // 아티클 검색
@@ -100,20 +100,20 @@ public class ArticleReaderService {
             final Long loginId,
             final String sort
     ) {
-        List<Article> articles;
-        Page<Article> newArticles;
+        List<ArticleJpaEntity> articleJpaEntities;
+        Page<ArticleJpaEntity> newArticles;
 
         if (sort.equals("popularity")) {
-            articles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, ArticleStatus.ACTIVE);
-            articles = sortByBookmarkCount(articles);
-            newArticles = slicePage(pageable, articles);
+            articleJpaEntities = articleJpaRepository.findByLocationCityContainingAndStatusActive(keyword, ArticleStatus.ACTIVE);
+            articleJpaEntities = sortByBookmarkCount(articleJpaEntities);
+            newArticles = slicePage(pageable, articleJpaEntities);
         } else {
             String[] sortParams = sort.split(",");
             Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
             Sort sortOrder = Sort.by(direction, sortParams[0]);
 
             Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
-            newArticles = articleRepository.findByLocationCityContainingAndStatusActive(keyword, sortedPageable,
+            newArticles = articleJpaRepository.findByLocationCityContainingAndStatusActive(keyword, sortedPageable,
                     ArticleStatus.ACTIVE);
         }
 
@@ -122,7 +122,7 @@ public class ArticleReaderService {
                     boolean isEditable = article.getUserJpaEntity().getId().equals(loginId);
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(
                             loginId, article.getId(), BookmarkStatus.ACTIVE);
 
                     return ArticleTotalResponse.of(
@@ -139,9 +139,9 @@ public class ArticleReaderService {
 
     @Transactional
     public List<ArticleTotalResponse> getBannerNotUserArticles() {
-        List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
+        List<ArticleJpaEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
 
-        return articles.stream()
+        return articleJpaEntities.stream()
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
@@ -160,13 +160,13 @@ public class ArticleReaderService {
         userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
+        List<ArticleJpaEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
 
-        return articles.stream()
+        return articleJpaEntities.stream()
                 .map(article -> {
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
                             BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(userId,
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(userId,
                             article.getId(),
                             BookmarkStatus.ACTIVE);
                     boolean isEditable = userId.equals(article.getUserJpaEntity().getId());
@@ -196,10 +196,10 @@ public class ArticleReaderService {
         List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
             .map(bookmark -> {
                 final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(
-                    bookmark.getArticle().getId(),
+                    bookmark.getArticleJpaEntity().getId(),
                     BookmarkStatus.ACTIVE);
-                boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(
-                    loginUserJpaEntity.getId(), bookmark.getArticle().getId(),
+                boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(
+                    loginUserJpaEntity.getId(), bookmark.getArticleJpaEntity().getId(),
                     BookmarkStatus.ACTIVE);
 
                     return BookmarkResponse.of(
@@ -212,24 +212,24 @@ public class ArticleReaderService {
         return new PageImpl<>(bookmarkResponses, pageable, bookmarks.getTotalElements());
     }
 
-    private Page<Article> slicePage(Pageable pageable, List<Article> articles) {
+    private Page<ArticleJpaEntity> slicePage(Pageable pageable, List<ArticleJpaEntity> articleJpaEntities) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
-        List<Article> list;
+        List<ArticleJpaEntity> list;
 
-        if (articles.size() < startItem) {
+        if (articleJpaEntities.size() < startItem) {
             list = Collections.emptyList();
         } else {
-            int toIndex = Math.min(startItem + pageSize, articles.size());
-            list = articles.subList(startItem, toIndex);
+            int toIndex = Math.min(startItem + pageSize, articleJpaEntities.size());
+            list = articleJpaEntities.subList(startItem, toIndex);
         }
 
-        return new PageImpl<>(list, pageable, articles.size());
+        return new PageImpl<>(list, pageable, articleJpaEntities.size());
     }
 
-    private List<Article> sortByBookmarkCount(List<Article> articles) {
-        return articles.stream()
+    private List<ArticleJpaEntity> sortByBookmarkCount(List<ArticleJpaEntity> articleJpaEntities) {
+        return articleJpaEntities.stream()
                 .sorted((a1, a2) -> {
                     Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
                     Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
@@ -244,8 +244,8 @@ public class ArticleReaderService {
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         if (sort.equals("popularity")) {
-            List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
-            articles = articles.stream()
+            List<ArticleJpaEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
+            articleJpaEntities = articleJpaEntities.stream()
                     .sorted((a1, a2) -> {
                         Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
                         Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
@@ -253,20 +253,20 @@ public class ArticleReaderService {
                     })
                     .collect(Collectors.toList());
 
-            Page<Article> pagedArticles = slicePage(pageable, articles);
+            Page<ArticleJpaEntity> pagedArticles = slicePage(pageable, articleJpaEntities);
             return getArticleTotalResponses(loginId, pageable, pagedArticles);
         } else {
-            final Page<Article> articles = articleRepository.findAllByStatusOrderByCreatedAtDesc(ArticleStatus.ACTIVE, pageable);
+            final Page<ArticleJpaEntity> articles = articleJpaRepository.findAllByStatusOrderByCreatedAtDesc(ArticleStatus.ACTIVE, pageable);
             return getArticleTotalResponses(loginId, pageable, articles);
         }
     }
 
-    private Page<ArticleTotalResponse> getArticleTotalResponses(Long loginId, Pageable pageable, Page<Article> articles) {
+    private Page<ArticleTotalResponse> getArticleTotalResponses(Long loginId, Pageable pageable, Page<ArticleJpaEntity> articles) {
         List<ArticleTotalResponse> articleResponses = articles.getContent().stream()
                 .map(article -> {
                     boolean isEditable = article.getUserJpaEntity().getId().equals(loginId);
                     Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(), BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleIdAndStatus(loginId, article.getId(), BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserJpaEntityIdAndArticleJpaEntityIdAndStatus(loginId, article.getId(), BookmarkStatus.ACTIVE);
 
                     return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
                 })

@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 
@@ -35,7 +35,7 @@ public abstract class ArticleSchedule extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    private Article article;
+    private ArticleJpaEntity articleJpaEntity;
 
     @Column(nullable = false)
     private LocalDate visitedDate;
@@ -67,7 +67,7 @@ public abstract class ArticleSchedule extends BaseEntity {
     private String dtype;
 
     protected ArticleSchedule(
-        Article article,
+        ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
         Integer sortOrder,
@@ -76,7 +76,7 @@ public abstract class ArticleSchedule extends BaseEntity {
         String expense,
         String memo,
         ArticleScheduleStatus status) {
-        this.article = article;
+        this.articleJpaEntity = articleJpaEntity;
         this.visitedDate = visitedDate;
         this.visitedTime = visitedTime;
         this.sortOrder = sortOrder;
