@@ -66,6 +66,7 @@ public class ReviewJpaEntity extends BaseJpaEntity {
 
     public Review toModel() {
         return Review.builder()
+            .id(this.id)
             .user(this.userJpaEntity.toModel())
             .article(this.articleJpaEntity.toModel())
             .title(this.title)
