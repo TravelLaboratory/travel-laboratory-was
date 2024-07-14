@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.application.article.ArticleReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleOneResponse;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleTotalResponse;
-import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class ArticleReaderController {
     private final ArticleReaderService articleReaderService;
 
     @GetMapping("/articles/{userId}")
-    public ResponseEntity<Page<ArticleTotalResponse>> findArticles(
+    public ResponseEntity<Page<ArticleTotalResponse>> findArticlesByUser(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
             @RequestParam(defaultValue = "0", value = "page") int page,
@@ -33,6 +33,18 @@ public class ArticleReaderController {
         final Page<ArticleTotalResponse> articleResponse = articleReaderService.findByUserArticles(loginId, userId,
                 PageRequest.of(page, size));
         return ResponseEntity.ok(articleResponse);
+    }
+
+    @GetMapping("/articles")
+    public ResponseEntity<Page<ArticleTotalResponse>> findArticles(
+            @UserId final Long loginId,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size,
+            @RequestParam(value = "sort", defaultValue = "createdAt,DESC") String sort
+    ) {
+        final Page<ArticleTotalResponse> articleTotalResponses = articleReaderService.searchAllArticles(loginId,
+                PageRequest.of(page, size), sort);
+        return ResponseEntity.ok(articleTotalResponses);
     }
 
     @GetMapping("/article/{articleId}")
@@ -72,13 +84,13 @@ public class ArticleReaderController {
 
     @GetMapping("/bookmarks/{userId}")
     public ResponseEntity<Page<BookmarkResponse>> findMyAllBookmark(
-        @UserId final Long loginId,
-        @PathVariable(name = "userId") final Long userId,
-        @RequestParam(defaultValue = "0", value = "page") int page,
-        @RequestParam(defaultValue = "10", value = "size") int size
+            @UserId final Long loginId,
+            @PathVariable(name = "userId") final Long userId,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size
     ) {
-        final Page<BookmarkResponse> allBookmarkByUser = articleReaderService.findAllBookmarkByUser(loginId,userId,
-            PageRequest.of(page, size));
+        final Page<BookmarkResponse> allBookmarkByUser = articleReaderService.findAllBookmarkByUser(loginId, userId,
+                PageRequest.of(page, size));
 
         return ResponseEntity.ok(allBookmarkByUser);
     }
