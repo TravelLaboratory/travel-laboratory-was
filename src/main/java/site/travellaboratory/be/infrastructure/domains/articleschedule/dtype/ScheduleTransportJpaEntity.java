@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import java.sql.Time;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -11,15 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleTransportRequest;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
 
 @Entity
+@Table(name = "schedule_transport")
 @DiscriminatorValue("TRANSPORT")
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleTransport extends ArticleSchedule {
+public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
 
     @Column(nullable = false, length = 20)
     private String transportation;
@@ -48,7 +50,7 @@ public class ScheduleTransport extends ArticleSchedule {
     @Column(nullable = false, columnDefinition = "DECIMAL(11,8)")
     private Double googleMapEndLongitude;
 
-    private ScheduleTransport(
+    private ScheduleTransportJpaEntity(
         // super
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
@@ -82,7 +84,7 @@ public class ScheduleTransport extends ArticleSchedule {
         this.googleMapEndLongitude = googleMapEndLongitude;
     }
 
-    public static ScheduleTransport of(
+    public static ScheduleTransportJpaEntity of(
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
@@ -95,7 +97,7 @@ public class ScheduleTransport extends ArticleSchedule {
 
         ScheduleTransportRequest request
     ) {
-        return new ScheduleTransport(
+        return new ScheduleTransportJpaEntity(
             articleJpaEntity,
             visitedDate,
             visitedTime,

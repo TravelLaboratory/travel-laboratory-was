@@ -12,12 +12,12 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.domain.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleRepository;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtc;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtcJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneralJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransportJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleUpdateResponse;
@@ -27,7 +27,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleS
 public class ArticleScheduleWriterService {
 
     private final ArticleJpaRepository articleJpaRepository;
-    private final ArticleScheduleRepository articleScheduleRepository;
+    private final ArticleScheduleJpaRepository articleScheduleJpaRepository;
 
     @Transactional
     public ArticleScheduleUpdateResponse updateSchedules(Long userId, Long articleId,
@@ -46,7 +46,7 @@ public class ArticleScheduleWriterService {
         }
 
         // (0) 기존 일정들 불러오기 (삭제된 건 제외 + sortOrder로 내림차순) (N+1을 막기 위해 FETCH JOIN)
-        List<ArticleSchedule> existingSchedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+        List<ArticleScheduleJpaEntity> existingSchedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
             articleJpaEntity, ArticleScheduleStatus.ACTIVE);
         // (1) 일정 수정 - id o , 일정 생성 - id x -> 이를 분리
         Map<Long, ArticleScheduleRequest> requestMap = requests.stream()
@@ -55,7 +55,7 @@ public class ArticleScheduleWriterService {
             .collect(Collectors.toMap(ArticleScheduleRequest::scheduleId, request -> request));
 
         // (2) 삭제 처리 - 요청에 없음
-        for (ArticleSchedule existingSchedule : existingSchedules) {
+        for (ArticleScheduleJpaEntity existingSchedule : existingSchedules) {
             // 기존 일정에는 있는데 요청에 없다면? 삭제 처리
             if (!requestMap.containsKey(existingSchedule.getId())) {
                 existingSchedule.delete();
@@ -66,13 +66,13 @@ public class ArticleScheduleWriterService {
         for (ArticleScheduleRequest request : requests) {
             // id x -> 새로운 일정 생성 [INSERT]
             if (request.scheduleId() == null) {
-                ArticleSchedule newSchedule = toArticleSchedule(articleJpaEntity, request);
-                articleScheduleRepository.save(newSchedule);
+                ArticleScheduleJpaEntity newSchedule = toArticleSchedule(articleJpaEntity, request);
+                articleScheduleJpaRepository.save(newSchedule);
             }
             // id o -> 기존 일정 수정 [UPDATE]
             else {
                 // 유효하지 않은 일정을 수정하려고 하는 경우
-                ArticleSchedule existingSchedule = findScheduleById(existingSchedules,
+                ArticleScheduleJpaEntity existingSchedule = findScheduleById(existingSchedules,
                     request.scheduleId());
                 updateExistingSchedule(existingSchedule, request);
             }
@@ -99,19 +99,19 @@ public class ArticleScheduleWriterService {
         articleJpaEntity.delete();
 
         // 관련된 일정들 삭제
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
+        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
             articleJpaEntity, ArticleScheduleStatus.ACTIVE);
-        for (ArticleSchedule schedule : schedules) {
+        for (ArticleScheduleJpaEntity schedule : schedules) {
             schedule.delete();
         }
 
         return ArticleScheduleDeleteResponse.from(true);
     }
 
-    private ArticleSchedule toArticleSchedule(ArticleJpaEntity articleJpaEntity, ArticleScheduleRequest request) {
+    private ArticleScheduleJpaEntity toArticleSchedule(ArticleJpaEntity articleJpaEntity, ArticleScheduleRequest request) {
         switch (request.dtype()) {
             case "GENERAL" -> {
-                return ScheduleGeneral.of(
+                return ScheduleGeneralJpaEntity.of(
                     articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
@@ -127,7 +127,7 @@ public class ArticleScheduleWriterService {
             // dtype - transport
             case "TRANSPORT" -> {
                 System.out.println("transport");
-                return ScheduleTransport.of(
+                return ScheduleTransportJpaEntity.of(
                     articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
@@ -141,7 +141,7 @@ public class ArticleScheduleWriterService {
                 );
             }
             case "ETC" -> {
-                return ScheduleEtc.of(
+                return ScheduleEtcJpaEntity.of(
                     articleJpaEntity,
                     request.visitedDate(),
                     request.visitedTime(),
@@ -160,7 +160,7 @@ public class ArticleScheduleWriterService {
         }
     }
 
-    private ArticleSchedule findScheduleById(List<ArticleSchedule> schedules, Long id) {
+    private ArticleScheduleJpaEntity findScheduleById(List<ArticleScheduleJpaEntity> schedules, Long id) {
         // 유효하지 않은 일정을 수정하려고 하는 경우
         return schedules.stream()
             .filter(schedule -> schedule.getId().equals(id))
@@ -169,14 +169,14 @@ public class ArticleScheduleWriterService {
                 ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, HttpStatus.NOT_FOUND));
     }
 
-    private void updateExistingSchedule(ArticleSchedule existingSchedule,
+    private void updateExistingSchedule(ArticleScheduleJpaEntity existingSchedule,
         ArticleScheduleRequest request) {
-        if (existingSchedule instanceof ScheduleGeneral) {
-            ((ScheduleGeneral) existingSchedule).update(request.scheduleGeneral());
-        } else if (existingSchedule instanceof ScheduleTransport) {
-            ((ScheduleTransport) existingSchedule).update(request.scheduleTransport());
-        } else if (existingSchedule instanceof ScheduleEtc) {
-            ((ScheduleEtc) existingSchedule).update(request.scheduleEtc());
+        if (existingSchedule instanceof ScheduleGeneralJpaEntity) {
+            ((ScheduleGeneralJpaEntity) existingSchedule).update(request.scheduleGeneral());
+        } else if (existingSchedule instanceof ScheduleTransportJpaEntity) {
+            ((ScheduleTransportJpaEntity) existingSchedule).update(request.scheduleTransport());
+        } else if (existingSchedule instanceof ScheduleEtcJpaEntity) {
+            ((ScheduleEtcJpaEntity) existingSchedule).update(request.scheduleEtc());
         }
         existingSchedule.update(request);
     }

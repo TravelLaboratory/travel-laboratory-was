@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import java.sql.Time;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -11,15 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleGeneralRequest;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
 
 @Entity
+@Table(name = "schedule_general")
 @DiscriminatorValue("GENERAL")
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleGeneral extends ArticleSchedule {
+public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
 
     @Column(nullable = false, length = 255)
     private String placeName;
@@ -42,7 +44,7 @@ public class ScheduleGeneral extends ArticleSchedule {
     @Column(length = 1000)
     private String googleMapHomePageUrl;
 
-    private ScheduleGeneral(
+    private ScheduleGeneralJpaEntity(
         // super
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
@@ -72,7 +74,7 @@ public class ScheduleGeneral extends ArticleSchedule {
         this.googleMapHomePageUrl = googleMapHomePageUrl;
     }
 
-    public static ScheduleGeneral of(
+    public static ScheduleGeneralJpaEntity of(
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
@@ -85,7 +87,7 @@ public class ScheduleGeneral extends ArticleSchedule {
 
         ScheduleGeneralRequest request
     ) {
-        return new ScheduleGeneral(
+        return new ScheduleGeneralJpaEntity(
             articleJpaEntity,
             visitedDate,
             visitedTime,

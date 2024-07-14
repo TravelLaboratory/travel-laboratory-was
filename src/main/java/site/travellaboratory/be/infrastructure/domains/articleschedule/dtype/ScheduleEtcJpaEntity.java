@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import java.sql.Time;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -11,19 +12,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleEtcRequest;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
 
 @Entity
+@Table(name = "schedule_etc")
 @DiscriminatorValue("ETC")
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleEtc extends ArticleSchedule {
+public class ScheduleEtcJpaEntity extends ArticleScheduleJpaEntity {
     @Column(nullable = false, length = 255)
     private String placeName;
 
-    private ScheduleEtc(
+    private ScheduleEtcJpaEntity(
         // super
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
@@ -39,7 +41,7 @@ public class ScheduleEtc extends ArticleSchedule {
         this.placeName = placeName;
     }
 
-    public static ScheduleEtc of(
+    public static ScheduleEtcJpaEntity of(
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
@@ -51,7 +53,7 @@ public class ScheduleEtc extends ArticleSchedule {
         ArticleScheduleStatus status,
         ScheduleEtcRequest request
         ) {
-        return new ScheduleEtc(
+        return new ScheduleEtcJpaEntity(
             articleJpaEntity,
             visitedDate,
             visitedTime,

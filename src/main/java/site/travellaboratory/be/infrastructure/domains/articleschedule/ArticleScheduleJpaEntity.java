@@ -27,7 +27,7 @@ import site.travellaboratory.be.infrastructure.common.BaseEntity;
 @DiscriminatorColumn(name = "dtype") // 조인 전략은 default DTYPE을 만들지 않기에 명시
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class ArticleSchedule extends BaseEntity {
+public abstract class ArticleScheduleJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,7 +66,7 @@ public abstract class ArticleSchedule extends BaseEntity {
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
     private String dtype;
 
-    protected ArticleSchedule(
+    protected ArticleScheduleJpaEntity(
         ArticleJpaEntity articleJpaEntity,
         LocalDate visitedDate,
         Time visitedTime,
