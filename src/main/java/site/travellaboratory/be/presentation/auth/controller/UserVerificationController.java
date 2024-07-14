@@ -23,14 +23,17 @@ public class UserVerificationController {
     public ResponseEntity<UserNicknameResponse> checkNicknameDuplicate(
         @RequestBody UserNicknameRequest userNicknameRequest
     ) {
-        return ResponseEntity.ok(userVerificationService.isNicknameAvailable(userNicknameRequest));
+        Boolean result = userVerificationService.isNicknameAvailable(
+            userNicknameRequest);
+        return ResponseEntity.ok(UserNicknameResponse.from(result));
     }
 
     @PostMapping("/auth/username")
     public ResponseEntity<UsernameResponse> checkUsernameDuplicate(
         @RequestBody UsernameRequest usernameRequest
     ) {
-        return ResponseEntity.ok(userVerificationService.isUsernameAvailable(usernameRequest));
+        Boolean result = userVerificationService.isUsernameAvailable(usernameRequest);
+        return ResponseEntity.ok(UsernameResponse.from(result));
     }
 }
 

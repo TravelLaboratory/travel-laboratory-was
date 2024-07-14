@@ -40,7 +40,7 @@ public class ArticleScheduleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
@@ -90,7 +90,7 @@ public class ArticleScheduleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

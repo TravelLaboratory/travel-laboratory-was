@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 
 public record ReviewReadDetailResponse(
     Long userId,
@@ -17,20 +17,20 @@ public record ReviewReadDetailResponse(
     boolean isLike,
     long likeCount
 ) {
-    public static ReviewReadDetailResponse from(Review review,
+    public static ReviewReadDetailResponse from(ReviewJpaEntity reviewJpaEntity,
         boolean isEditable,boolean isLike,long likeCount
         ) {
         return new ReviewReadDetailResponse(
-            review.getUser().getId(),
-            review.getUser().getProfileImgUrl(),
-            review.getUser().getNickname(),
+            reviewJpaEntity.getUserJpaEntity().getId(),
+            reviewJpaEntity.getUserJpaEntity().getProfileImgUrl(),
+            reviewJpaEntity.getUserJpaEntity().getNickname(),
             isEditable,
-            review.getArticle().getId(),
-            review.getId(),
-            review.getTitle(),
-            review.getRepresentativeImgUrl(),
-            review.getDescription(),
-            review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            reviewJpaEntity.getArticle().getId(),
+            reviewJpaEntity.getId(),
+            reviewJpaEntity.getTitle(),
+            reviewJpaEntity.getRepresentativeImgUrl(),
+            reviewJpaEntity.getDescription(),
+            reviewJpaEntity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             isLike,
             likeCount
             );

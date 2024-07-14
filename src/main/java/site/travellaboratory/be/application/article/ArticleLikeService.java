@@ -12,9 +12,9 @@ import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.article.dto.like.BookmarkSaveResponse;
 
 @Service
@@ -23,11 +23,11 @@ public class ArticleLikeService {
 
     private final ArticleRepository articleRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Transactional
     public BookmarkSaveResponse saveBookmark(final Long userId, final Long articleId) {
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
@@ -35,12 +35,12 @@ public class ArticleLikeService {
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Bookmark bookmark = bookmarkRepository.findByArticleAndUser(article, user).orElse(null);
+        Bookmark bookmark = bookmarkRepository.findByArticleAndUserJpaEntity(article, userJpaEntity).orElse(null);
 
         if (bookmark != null) {
             bookmark.toggleStatus();
         } else {
-            bookmark = Bookmark.of(user, article);
+            bookmark = Bookmark.of(userJpaEntity, article);
         }
 
         final Bookmark newBookmark = bookmarkRepository.save(bookmark);

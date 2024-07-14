@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerRepository;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswer;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.enums.PwAnswerStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.domain.user.auth.UserAuth;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
+import site.travellaboratory.be.domain.user.pw.PwAnswer;
+import site.travellaboratory.be.domain.user.pw.enums.PwAnswerStatus;
+import site.travellaboratory.be.domain.user.user.User;
+import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryEmailRequest;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryEmailResponse;
 import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryRenewalRequest;
@@ -24,55 +26,61 @@ import site.travellaboratory.be.presentation.auth.dto.pwinquiry.PwInquiryVerific
 public class PwInquiryService {
 
     private final BCryptPasswordEncoder encoder;
-    private final UserRepository userRepository;
-    private final PwAnswerRepository pwAnswerRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final PwAnswerJpaRepository pwAnswerJpaRepository;
 
-    public PwInquiryEmailResponse pwInquiryEmail(final PwInquiryEmailRequest request) {
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+    public PwInquiryEmailResponse pwInquiryEmail(PwInquiryEmailRequest request) {
+        UserAuth userAuth = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(),
+                UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
-                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModelUserAuth();
 
         // 기획상 Optional 일 수 없다.
-        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndStatus(user.getId(),
-            PwAnswerStatus.ACTIVE);
+        PwAnswer pwAnswer = pwAnswerJpaRepository.findByUserIdAndStatus(userAuth.getId(),
+            PwAnswerStatus.ACTIVE).toModel();
 
-        return PwInquiryEmailResponse.from(user, pwAnswer);
+        return PwInquiryEmailResponse.from(userAuth.getUsername(), pwAnswer.getPwQuestionId());
     }
+
 
     public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
         // 해당 이메일의 유저가 존재하는지
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        UserAuth userAuth = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
-                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModelUserAuth();
 
         // 답변이 일치한지 판단
-        PwAnswer pwAnswer = pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                user.getId(),
-                request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+        PwAnswer pwAnswer = pwAnswerJpaRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                userAuth.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
-                    HttpStatus.UNAUTHORIZED));
+                    HttpStatus.UNAUTHORIZED)).toModel();
 
-        return PwInquiryVerificationResponse.from(user, pwAnswer);
+        return PwInquiryVerificationResponse.from(userAuth.getUsername(), pwAnswer.getPwQuestionId(),
+            pwAnswer.getAnswer());
     }
 
     @Transactional
     public void pwInquiryRenewal(final PwInquiryRenewalRequest request) {
         // 해당 이메일의 유저가 존재하는지
-        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        UserJpaEntity userJpaEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
+                request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
+        User user = userJpaEntity.toModel();
+        UserAuth userAuth = userJpaEntity.toModelUserAuth();
+
         // 답변이 일치한지 판단
-        pwAnswerRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+        pwAnswerJpaRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
+                userAuth.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED));
 
         // 비밀번호 암호화 및 업데이트 - 저장
-        String encodedPassword = encoder.encode(request.password());
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
+        String newPassword = encoder.encode(request.password());
+        UserAuth newUserAuth = userAuth.withPassword(newPassword);
+        userJpaRepository.save(UserJpaEntity.from(user, newUserAuth));
     }
 }

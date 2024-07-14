@@ -21,9 +21,9 @@ import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSc
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtc;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
-import site.travellaboratory.be.infrastructure.domains.review.ReviewRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.Review;
-import site.travellaboratory.be.infrastructure.domains.review.enums.ReviewStatus;
+import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.PlaceName;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.SchedulePlace;
@@ -35,7 +35,7 @@ public class ArticleScheduleReaderService
 {
     private final ArticleRepository articleRepository;
     private final ArticleScheduleRepository articleScheduleRepository;
-    private final ReviewRepository reviewRepository;
+    private final ReviewJpaRepository reviewJpaRepository;
 
     /*
     * GET - /api/v1/articles/{articleId}/schedules
@@ -51,18 +51,18 @@ public class ArticleScheduleReaderService
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUser().getId()
+        if (article.getStatus() == ArticleStatus.PRIVATE && !article.getUserJpaEntity().getId()
             .equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // reviewId 찾아오기 없다면 null
-        Long reviewId = reviewRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
-            .map(Review::getId)
+        Long reviewId = reviewJpaRepository.findByArticleAndStatus(article, ReviewStatus.ACTIVE)
+            .map(ReviewJpaEntity::getId)
             .orElse(null);
 
-        boolean isEditable = article.getUser().getId().equals(userId);
+        boolean isEditable = article.getUserJpaEntity().getId().equals(userId);
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
@@ -85,13 +85,13 @@ public class ArticleScheduleReaderService
                 HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 article_id이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article,
+        reviewJpaRepository.findByArticleAndStatusInOrderByArticleDesc(article,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,

@@ -30,8 +30,8 @@ public class CommentWriterController {
         @UserId Long userId,
         @Valid @RequestBody CommentSaveRequest commentSaveRequest
     ) {
-        CommentSaveResponse response = commentWriterService.saveComment(userId, commentSaveRequest);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        Long result = commentWriterService.saveComment(userId, commentSaveRequest);
+        return new ResponseEntity<>(CommentSaveResponse.from(result), HttpStatus.CREATED);
     }
 
     @PatchMapping("/comments/{commentId}")
@@ -40,8 +40,8 @@ public class CommentWriterController {
         @PathVariable(name = "commentId") Long commentId,
         @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
     ) {
-        CommentUpdateResponse response = commentWriterService.updateComment(userId, commentId, commentUpdateRequest);
-        return ResponseEntity.ok(response);
+        Long result = commentWriterService.updateComment(userId, commentId, commentUpdateRequest);
+        return ResponseEntity.ok(CommentUpdateResponse.from(result));
     }
 
     @PatchMapping("/comments/{commentId}/status")
@@ -49,7 +49,7 @@ public class CommentWriterController {
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
-        CommentDeleteResponse response = commentWriterService.deleteComment(userId, commentId);
-        return ResponseEntity.ok(response);
+        boolean result = commentWriterService.deleteComment(userId, commentId);
+        return ResponseEntity.ok(CommentDeleteResponse.from(result));
     }
 }

@@ -18,12 +18,15 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelCompanionConverter;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelStyleConverter;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelCompanion;
 import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRequest;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
@@ -39,7 +42,7 @@ public class Article extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     private String title;
 
@@ -67,7 +70,7 @@ public class Article extends BaseEntity {
     private String coverImageUrl;
 
     public Article(final Long id,
-                   final User user,
+                   final UserJpaEntity userJpaEntity,
                    final String title,
                    final List<Location> location,
                    final LocalDate startAt,
@@ -77,7 +80,7 @@ public class Article extends BaseEntity {
                    final List<String> travelStyles
     ) {
         this.id = id;
-        this.user = user;
+        this.userJpaEntity = userJpaEntity;
         this.title = title;
         this.location = location;
         this.startAt = startAt;
@@ -88,10 +91,10 @@ public class Article extends BaseEntity {
         this.status = ArticleStatus.ACTIVE;
     }
 
-    public static Article of(final User user, final ArticleRegisterRequest articleRegisterRequest) {
+    public static Article of(final UserJpaEntity userJpaEntity, final ArticleRegisterRequest articleRegisterRequest) {
         return new Article(
                 null,
-                user,
+            userJpaEntity,
                 articleRegisterRequest.title(),
                 articleRegisterRequest.location(),
                 articleRegisterRequest.startAt(),
@@ -135,6 +138,12 @@ public class Article extends BaseEntity {
     }
 
     public String getNickname() {
-        return user.getNickname();
+        return userJpaEntity.getNickname();
+    }
+
+    public void verifyOwner(UserJpaEntity userJpaEntity) {
+        if (!this.userJpaEntity.getId().equals(userJpaEntity.getId())) {
+            throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);
+        }
     }
 }

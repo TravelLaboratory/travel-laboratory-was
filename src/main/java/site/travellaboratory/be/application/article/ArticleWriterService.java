@@ -12,9 +12,9 @@ import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.Article;
 import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.User;
-import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterResponse;
@@ -28,17 +28,17 @@ import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRes
 public class ArticleWriterService {
 
     private final ArticleRepository articleRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final S3FileUploader s3FileUploader;
 
     //내 초기 여행 계획 저장
     @Transactional
     public ArticleRegisterResponse saveArticle(final Long userId, final ArticleRegisterRequest articleRegisterRequest) {
-        final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final Article article = Article.of(user, articleRegisterRequest);
+        final Article article = Article.of(userJpaEntity, articleRegisterRequest);
         articleRepository.save(article);
         return ArticleRegisterResponse.from(article.getId());
     }
@@ -69,7 +69,7 @@ public class ArticleWriterService {
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_UPDATE_NOT_USER, HttpStatus.UNAUTHORIZED);
         }
 
@@ -84,7 +84,7 @@ public class ArticleWriterService {
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
         }
 
@@ -104,7 +104,7 @@ public class ArticleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!article.getUser().getId().equals(userId)) {
+        if (!article.getUserJpaEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }

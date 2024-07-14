@@ -43,7 +43,7 @@ public record ArticleOneResponse(
                 article.getCoverImageUrl(),
                 article.getTravelCompanion().getName(),
                 travelStyleNames,
-                article.getUser().getNickname(),
+                article.getUserJpaEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
                 isPrivate,

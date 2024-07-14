@@ -17,7 +17,7 @@ public class UserUnregistrationController {
     private final UserUnregistrationService userUnregistrationService;
 
     @PatchMapping("/auth/signout")
-    public ResponseEntity<UserUnregisterResponse> deleteUser(
+    public ResponseEntity<UserUnregisterResponse> unregister(
         @UserId final Long userId
     ) {
         UserUnregisterResponse userUnRegisterResponse = userUnregistrationService.unregister(userId);
