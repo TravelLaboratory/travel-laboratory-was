@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.application.article.ArticleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.domain.article.Article;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterResponse;
@@ -31,12 +32,11 @@ public class ArticleWriterController {
 
     @PostMapping("/article")
     public ResponseEntity<ArticleRegisterResponse> registerArticle(
-        @RequestBody final ArticleRegisterRequest articleRegisterRequest,
-        @UserId final Long userId
+        @RequestBody ArticleRegisterRequest articleRegisterRequest,
+        @UserId Long userId
     ) {
-        final ArticleRegisterResponse articleRegisterResponse = articleWriterService.saveArticle(userId,
-            articleRegisterRequest);
-        return ResponseEntity.ok(articleRegisterResponse);
+        Long result = articleWriterService.saveArticle(userId, articleRegisterRequest);
+        return ResponseEntity.ok(ArticleRegisterResponse.from(result));
     }
 
     @PutMapping("/article/{articleId}/coverImage")
@@ -55,9 +55,9 @@ public class ArticleWriterController {
         @UserId final Long userId,
         @PathVariable(name = "articleId") final Long articleId
     ) {
-        final ArticleUpdateResponse articleUpdateResponse = articleWriterService.updateArticle(articleUpdateRequest, userId,
-            articleId);
-        return ResponseEntity.ok(articleUpdateResponse);
+        Article result = articleWriterService.updateArticle(userId, articleId,
+            articleUpdateRequest);
+        return ResponseEntity.ok(ArticleUpdateResponse.from(result));
     }
 
     @PatchMapping("/article/status/{articleId}")
@@ -65,7 +65,8 @@ public class ArticleWriterController {
         @UserId final Long userId,
         @PathVariable(name = "articleId") final Long articleId
     ) {
-        ArticleDeleteResponse articleDeleteResponse = articleWriterService.deleteArticle(userId, articleId);
+        ArticleDeleteResponse articleDeleteResponse = articleWriterService.deleteArticle(userId,
+            articleId);
         return ResponseEntity.ok(articleDeleteResponse);
     }
 

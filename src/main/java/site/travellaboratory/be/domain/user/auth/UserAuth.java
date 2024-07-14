@@ -21,7 +21,7 @@ public class UserAuth {
 
     public static UserAuth create(String username, String password, Boolean isAgreement) {
         // 개인정보 미동의 시 에러 반환
-        if (isAgreement) {
+        if (!isAgreement) {
             throw new BeApplicationException(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT,
                 HttpStatus.BAD_REQUEST);
         }
@@ -29,7 +29,7 @@ public class UserAuth {
         return UserAuth.builder()
             .username(username)
             .password(password)
-            .isAgreement(isAgreement)
+            .isAgreement(true)
             .build();
     }
 

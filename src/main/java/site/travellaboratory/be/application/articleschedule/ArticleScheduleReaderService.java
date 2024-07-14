@@ -14,7 +14,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
+import site.travellaboratory.be.domain.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleRepository;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;

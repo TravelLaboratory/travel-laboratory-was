@@ -12,26 +12,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.domain.article.Article;
+import site.travellaboratory.be.domain.article.enums.ArticleStatus;
+import site.travellaboratory.be.domain.article.enums.TravelCompanion;
+import site.travellaboratory.be.domain.article.enums.TravelStyle;
+import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelCompanionConverter;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelStyleConverter;
-import site.travellaboratory.be.infrastructure.domains.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.article.enums.TravelCompanion;
-import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
-import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
-import site.travellaboratory.be.presentation.article.dto.writer.ArticleUpdateRequest;
-import site.travellaboratory.be.infrastructure.common.BaseEntity;
 
 @Entity
+@Table(name = "article")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ArticleJpaEntity extends BaseEntity {
@@ -48,7 +46,7 @@ public class ArticleJpaEntity extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "article_location", joinColumns = @JoinColumn(name = "article_id"))
-    private List<Location> location = new ArrayList<>();
+    private List<ArticleLocationJpaEntity> locationJpaEntities = new ArrayList<>();
 
     private LocalDate startAt;
 
@@ -69,50 +67,39 @@ public class ArticleJpaEntity extends BaseEntity {
 
     private String coverImageUrl;
 
-    public ArticleJpaEntity(final Long id,
-                   final UserJpaEntity userJpaEntity,
-                   final String title,
-                   final List<Location> location,
-                   final LocalDate startAt,
-                   final LocalDate endAt,
-                   final String expense,
-                   final String travelCompanion,
-                   final List<String> travelStyles
-    ) {
-        this.id = id;
-        this.userJpaEntity = userJpaEntity;
-        this.title = title;
-        this.location = location;
-        this.startAt = startAt;
-        this.endAt = endAt;
-        this.expense = expense;
-        this.travelCompanion = TravelCompanion.from(travelCompanion);
-        this.travelStyles = TravelStyle.from(travelStyles);
-        this.status = ArticleStatus.ACTIVE;
+    public static ArticleJpaEntity from(Article article) {
+        ArticleJpaEntity result = new ArticleJpaEntity();
+        result.id = article.getId();
+        result.userJpaEntity = UserJpaEntity.from(article.getUser());
+        result.title = article.getTitle();
+        result.locationJpaEntities = article.getLocations().stream()
+            .map(ArticleLocationJpaEntity::from)
+            .toList();
+        result.startAt = article.getStartAt();
+        result.endAt = article.getEndAt();
+        result.expense = article.getExpense();
+        result.travelCompanion = article.getTravelCompanion();
+        result.travelStyles = article.getTravelStyles();
+        result.status = article.getStatus();
+        result.coverImageUrl = article.getCoverImageUrl();
+        return result;
     }
 
-    public static ArticleJpaEntity of(final UserJpaEntity userJpaEntity, final ArticleRegisterRequest articleRegisterRequest) {
-        return new ArticleJpaEntity(
-                null,
-            userJpaEntity,
-                articleRegisterRequest.title(),
-                articleRegisterRequest.location(),
-                articleRegisterRequest.startAt(),
-                articleRegisterRequest.endAt(),
-                articleRegisterRequest.expense(),
-                articleRegisterRequest.travelCompanion(),
-                articleRegisterRequest.travelStyles()
-        );
-    }
-
-    public void update(final ArticleUpdateRequest articleUpdateRequest) {
-        this.title = articleUpdateRequest.title();
-        this.location = articleUpdateRequest.location();
-        this.startAt = articleUpdateRequest.startAt();
-        this.endAt = articleUpdateRequest.endAt();
-        this.expense = articleUpdateRequest.expense();
-        this.travelCompanion = TravelCompanion.from(articleUpdateRequest.travelCompanion());
-        this.travelStyles = TravelStyle.from(articleUpdateRequest.travelStyles());
+    public Article toModel() {
+        return Article.builder()
+            .id(this.id)
+            .user(this.userJpaEntity.toModel())
+            .title(this.title)
+            .locations(this.locationJpaEntities.stream()
+                .map(ArticleLocationJpaEntity::toModel).toList())
+            .startAt(this.startAt)
+            .endAt(this.endAt)
+            .expense(this.expense)
+            .travelCompanion(this.travelCompanion)
+            .travelStyles(this.travelStyles)
+            .status(this.status)
+            .coverImageUrl(this.coverImageUrl)
+            .build();
     }
 
     public void updateCoverImage(final String coverImageUrl) {
@@ -139,11 +126,5 @@ public class ArticleJpaEntity extends BaseEntity {
 
     public String getNickname() {
         return userJpaEntity.getNickname();
-    }
-
-    public void verifyOwner(UserJpaEntity userJpaEntity) {
-        if (!this.userJpaEntity.getId().equals(userJpaEntity.getId())) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);
-        }
     }
 }

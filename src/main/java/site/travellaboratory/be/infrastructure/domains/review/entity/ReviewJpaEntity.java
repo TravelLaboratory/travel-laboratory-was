@@ -55,8 +55,8 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     public static ReviewJpaEntity from(Review review) {
         ReviewJpaEntity result = new ReviewJpaEntity();
         result.id = review.getId();
-        result.userJpaEntity = review.getUserJpaEntity();
-        result.articleJpaEntity = review.getArticleJpaEntity();
+        result.userJpaEntity = UserJpaEntity.from(review.getUser());
+        result.articleJpaEntity = ArticleJpaEntity.from(review.getArticle());
         result.title = review.getTitle();
         result.representativeImgUrl = review.getRepresentativeImgUrl();
         result.description = review.getDescription();
@@ -66,8 +66,8 @@ public class ReviewJpaEntity extends BaseJpaEntity {
 
     public Review toModel() {
         return Review.builder()
-            .userJpaEntity(this.userJpaEntity)
-            .articleJpaEntity(this.articleJpaEntity)
+            .user(this.userJpaEntity.toModel())
+            .article(this.articleJpaEntity.toModel())
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)

@@ -3,13 +3,13 @@ package site.travellaboratory.be.presentation.article.dto.reader;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleLocationJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.Location;
-import site.travellaboratory.be.infrastructure.domains.article.enums.TravelStyle;
+import site.travellaboratory.be.domain.article.enums.TravelStyle;
 
 public record ArticleOneResponse(
         String title,
-        List<Location> location,
+        List<ArticleLocationJpaEntity> locationJpaEntities,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
@@ -36,7 +36,7 @@ public record ArticleOneResponse(
 
         return new ArticleOneResponse(
                 articleJpaEntity.getTitle(),
-                articleJpaEntity.getLocation(),
+                articleJpaEntity.getLocationJpaEntities(),
                 articleJpaEntity.getStartAt(),
                 articleJpaEntity.getEndAt(),
                 articleJpaEntity.getExpense(),
