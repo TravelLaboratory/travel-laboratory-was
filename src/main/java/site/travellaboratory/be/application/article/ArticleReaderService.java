@@ -1,5 +1,6 @@
 package site.travellaboratory.be.application.article;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,9 @@ import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkSt
 import site.travellaboratory.be.infrastructure.domains.user.UserRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.User;
 import site.travellaboratory.be.infrastructure.domains.user.enums.UserStatus;
+import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleOneResponse;
 import site.travellaboratory.be.presentation.article.dto.reader.ArticleTotalResponse;
-import site.travellaboratory.be.presentation.article.dto.like.BookmarkResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -181,53 +182,98 @@ public class ArticleReaderService {
     @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
         final User loginUser = userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND));
 
         final User user = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND));
 
         final Page<Bookmark> bookmarks = bookmarkRepository.findByUserAndStatusIn(user,
-                List.of(BookmarkStatus.ACTIVE), pageable)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
+                        List.of(BookmarkStatus.ACTIVE), pageable)
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
-            .map(bookmark -> {
-                final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(bookmark.getArticle().getId(),
-                    BookmarkStatus.ACTIVE);
-                boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
-                    loginUser.getId(), bookmark.getArticle().getId(),
-                    BookmarkStatus.ACTIVE);
+                .map(bookmark -> {
+                    final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(
+                            bookmark.getArticle().getId(),
+                            BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(
+                            loginUser.getId(), bookmark.getArticle().getId(),
+                            BookmarkStatus.ACTIVE);
 
-                return BookmarkResponse.of(
-                    bookmark,
-                    bookmarkCount,
-                    isBookmarked
-                );
-            })
-            .toList();
+                    return BookmarkResponse.of(
+                            bookmark,
+                            bookmarkCount,
+                            isBookmarked
+                    );
+                })
+                .toList();
         return new PageImpl<>(bookmarkResponses, pageable, bookmarks.getTotalElements());
     }
 
     private Page<Article> slicePage(Pageable pageable, List<Article> articles) {
         int pageSize = pageable.getPageSize();
-        int pageNumber = pageable.getPageNumber();
-        int fromIndex = pageNumber * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, articles.size());
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<Article> list;
 
-        List<Article> pagedArticles = articles.subList(fromIndex, toIndex);
-        return new PageImpl<>(pagedArticles, pageable, articles.size());
+        if (articles.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, articles.size());
+            list = articles.subList(startItem, toIndex);
+        }
+
+        return new PageImpl<>(list, pageable, articles.size());
     }
 
     private List<Article> sortByBookmarkCount(List<Article> articles) {
         return articles.stream()
-            .sorted((a1, a2) -> {
-                Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
-                Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
-                return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
-            })
-            .collect(Collectors.toList());
+                .sorted((a1, a2) -> {
+                    Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
+                    Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
+                    return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
+                })
+                .collect(Collectors.toList());
     }
+
+    @Transactional
+    public Page<ArticleTotalResponse> searchAllArticles(final Long loginId, Pageable pageable, String sort) {
+        userRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
+                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        if (sort.equals("popularity")) {
+            List<Article> articles = articleRepository.findAllByStatus(ArticleStatus.ACTIVE);
+            articles = articles.stream()
+                    .sorted((a1, a2) -> {
+                        Long count1 = bookmarkRepository.countByArticleIdAndStatus(a1.getId(), BookmarkStatus.ACTIVE);
+                        Long count2 = bookmarkRepository.countByArticleIdAndStatus(a2.getId(), BookmarkStatus.ACTIVE);
+                        return count2.compareTo(count1); // 북마크 수가 많은 순으로 내림차순 정렬
+                    })
+                    .collect(Collectors.toList());
+
+            Page<Article> pagedArticles = slicePage(pageable, articles);
+            return getArticleTotalResponses(loginId, pageable, pagedArticles);
+        } else {
+            final Page<Article> articles = articleRepository.findAllByStatusOrderByCreatedAtDesc(ArticleStatus.ACTIVE, pageable);
+            return getArticleTotalResponses(loginId, pageable, articles);
+        }
+    }
+
+    private Page<ArticleTotalResponse> getArticleTotalResponses(Long loginId, Pageable pageable, Page<Article> articles) {
+        List<ArticleTotalResponse> articleResponses = articles.getContent().stream()
+                .map(article -> {
+                    boolean isEditable = article.getUser().getId().equals(loginId);
+                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(), BookmarkStatus.ACTIVE);
+                    boolean isBookmarked = bookmarkRepository.existsByUserIdAndArticleIdAndStatus(loginId, article.getId(), BookmarkStatus.ACTIVE);
+
+                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
+                })
+                .toList();
+
+        return new PageImpl<>(articleResponses, pageable, articles.getTotalElements());
+    }
+
 }
 
