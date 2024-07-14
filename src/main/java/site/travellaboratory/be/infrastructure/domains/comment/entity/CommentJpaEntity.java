@@ -25,6 +25,7 @@ import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentJpaEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

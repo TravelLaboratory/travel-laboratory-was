@@ -45,10 +45,9 @@ public class UserJpaEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @PrePersist
-    void prePersist() {
-        this.role = UserRole.USER;
-        this.status = UserStatus.ACTIVE;
+    // 후기 좋아요를 위한 생성자
+    private UserJpaEntity(Long id) {
+        this.id = id;
     }
 
     public static UserJpaEntity from(User user) {
@@ -56,7 +55,8 @@ public class UserJpaEntity extends BaseEntity {
         result.id = user.getId();
         result.nickname = user.getNickname();
         result.profileImgUrl = user.getProfileImgUrl();
-        result.introduce = user.getIntroduce();;
+        result.introduce = user.getIntroduce();
+        ;
         result.status = user.getStatus();
         return result;
     }
@@ -73,6 +73,28 @@ public class UserJpaEntity extends BaseEntity {
         result.isAgreement = userAuth.getIsAgreement();
         result.status = user.getStatus();
         return result;
+    }
+
+    // 소셜 로그인 시
+    public static UserJpaEntity socialOf(String email, String profileImgUrl, String nickname,
+        Boolean isAgreement) {
+        UserJpaEntity userJpaEntity = new UserJpaEntity();
+        userJpaEntity.setUsername(email);
+        userJpaEntity.setProfileImgUrl(profileImgUrl);
+        userJpaEntity.setNickname(nickname);
+        userJpaEntity.setIsAgreement(isAgreement);
+        return userJpaEntity;
+    }
+
+    // 후기 좋아요를 위한 of
+    public static UserJpaEntity of(Long userId) {
+        return new UserJpaEntity(userId);
+    }
+
+    @PrePersist
+    void prePersist() {
+        this.role = UserRole.USER;
+        this.status = UserStatus.ACTIVE;
     }
 
     public User toModel() {
@@ -101,8 +123,6 @@ public class UserJpaEntity extends BaseEntity {
         this.introduce = introduce;
     }
 
-
-
     public void setNickname(final String nickname) {
         this.nickname = nickname;
     }
@@ -117,27 +137,6 @@ public class UserJpaEntity extends BaseEntity {
 
     public void setIsAgreement(Boolean agreement) {
         isAgreement = agreement;
-    }
-
-
-    // 소셜 로그인 시
-    public static UserJpaEntity socialOf(String email, String profileImgUrl, String nickname, Boolean isAgreement) {
-        UserJpaEntity userJpaEntity = new UserJpaEntity();
-        userJpaEntity.setUsername(email);
-        userJpaEntity.setProfileImgUrl(profileImgUrl);
-        userJpaEntity.setNickname(nickname);
-        userJpaEntity.setIsAgreement(isAgreement);
-        return userJpaEntity;
-    }
-
-    // 후기 좋아요를 위한 생성자
-    private UserJpaEntity(Long id) {
-        this.id = id;
-    }
-
-    // 후기 좋아요를 위한 of
-    public static UserJpaEntity of(Long userId) {
-        return new UserJpaEntity(userId);
     }
 
     public void delete() {

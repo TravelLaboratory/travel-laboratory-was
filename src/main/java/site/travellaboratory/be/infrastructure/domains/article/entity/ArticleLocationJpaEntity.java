@@ -10,6 +10,7 @@ import site.travellaboratory.be.domain.article.Location;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ArticleLocationJpaEntity {
+
     private String placeId;
 
     private String address;

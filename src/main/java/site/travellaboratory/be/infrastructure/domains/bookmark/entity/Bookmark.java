@@ -46,7 +46,8 @@ public class Bookmark extends BaseEntity {
         this.status = BookmarkStatus.ACTIVE;
     }
 
-    public static Bookmark of(final UserJpaEntity userJpaEntity, final ArticleJpaEntity articleJpaEntity) {
+    public static Bookmark of(final UserJpaEntity userJpaEntity,
+        final ArticleJpaEntity articleJpaEntity) {
         return new Bookmark(userJpaEntity, articleJpaEntity);
     }
 
