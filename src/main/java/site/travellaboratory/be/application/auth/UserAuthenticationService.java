@@ -9,7 +9,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.domain.user.auth.UserAuth;
 import site.travellaboratory.be.domain.user.user.User;
-import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
+import site.travellaboratory.be.application.auth.manager.JwtTokenManager;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
@@ -23,7 +23,7 @@ import site.travellaboratory.be.presentation.auth.dto.userauthentication.AuthTok
 public class UserAuthenticationService {
 
     private final BCryptPasswordEncoder encoder;
-    private final AuthTokenGenerator authTokenGenerator;
+    private final JwtTokenManager jwtTokenManager;
     private final UserJpaRepository userJpaRepository;
 
     @Transactional
@@ -43,11 +43,11 @@ public class UserAuthenticationService {
                 HttpStatus.UNAUTHORIZED);
         }
 
-        AuthTokenResponse authTokenResponse = authTokenGenerator.generateTokens(userAuth.getId());
+        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(userAuth.getId());
         return LoginCommand.from(user, authTokenResponse);
     }
 
     public AccessTokenResponse reIssueAccessToken(String accessToken, String refreshToken) {
-        return authTokenGenerator.reIssueAccessToken(accessToken, refreshToken);
+        return jwtTokenManager.reIssueAccessToken(accessToken, refreshToken);
     }
 }

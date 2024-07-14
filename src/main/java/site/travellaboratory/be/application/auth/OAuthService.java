@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import site.travellaboratory.be.domain.user.auth.UserAuth;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.domain.user.user.User;
-import site.travellaboratory.be.infrastructure.domains.auth.jwt.helper.AuthTokenGenerator;
+import site.travellaboratory.be.application.auth.manager.JwtTokenManager;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
 import site.travellaboratory.be.presentation.auth.dto.oauth.OAuthJoinRequest;
@@ -17,7 +17,7 @@ import site.travellaboratory.be.application.auth.command.LoginCommand;
 public class OAuthService {
 
     private final UserJpaRepository userJpaRepository;
-    private final AuthTokenGenerator authTokenGenerator;
+    private final JwtTokenManager jwtTokenManager;
 
     public LoginCommand kakaoLogin(final OAuthJoinRequest oAuthJoinRequest) {
         UserJpaEntity userJpaEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
@@ -31,7 +31,7 @@ public class OAuthService {
         UserAuth userAuth = userJpaEntity.toModelUserAuth();
         User user = userJpaEntity.toModel();
 
-        AuthTokenResponse authTokenResponse = authTokenGenerator.generateTokens(userAuth.getId());
+        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(userAuth.getId());
         return LoginCommand.from(user, authTokenResponse);
     }
 }
