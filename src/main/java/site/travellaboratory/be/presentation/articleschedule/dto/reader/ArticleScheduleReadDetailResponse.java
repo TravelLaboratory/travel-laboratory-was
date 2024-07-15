@@ -2,10 +2,10 @@ package site.travellaboratory.be.presentation.articleschedule.dto.reader;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtcJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneralJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransportJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportJpaEntity;
 
 public record ArticleScheduleReadDetailResponse(
     Long reviewId,

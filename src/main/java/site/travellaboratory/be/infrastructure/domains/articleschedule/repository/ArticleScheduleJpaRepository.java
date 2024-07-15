@@ -1,8 +1,10 @@
-package site.travellaboratory.be.infrastructure.domains.articleschedule;
+package site.travellaboratory.be.infrastructure.domains.articleschedule.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
 
 public interface ArticleScheduleJpaRepository extends JpaRepository<ArticleScheduleJpaEntity, Long> {
 

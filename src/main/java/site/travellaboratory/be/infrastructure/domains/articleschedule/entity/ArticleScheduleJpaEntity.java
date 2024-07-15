@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.articleschedule;
+package site.travellaboratory.be.infrastructure.domains.articleschedule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -18,9 +18,11 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.domain.article.ArticleSchedule;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // 조인 전략
@@ -31,60 +33,54 @@ public abstract class ArticleScheduleJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    private ArticleJpaEntity articleJpaEntity;
+    protected ArticleJpaEntity articleJpaEntity;
 
     @Column(nullable = false)
-    private LocalDate visitedDate;
+    protected LocalDate visitedDate;
 
     @Column(nullable = false, columnDefinition = "TIME(4)")
-    private Time visitedTime;
+    protected Time visitedTime;
 
     @Column(nullable = false, columnDefinition = "TINYINT")
-    private Integer sortOrder;
+    protected Integer sortOrder;
 
     @Column(nullable = false, length = 15)
-    private String category;
+    protected String category;
 
     @Column(nullable = false, columnDefinition = "TIME(4)")
-    private Time durationTime;
+    protected Time durationTime;
 
     @Column(nullable = false, length = 15)
-    private String expense;
+    protected String expense;
 
     @Column(length = 500)
-    private String memo;
+    protected String memo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ArticleScheduleStatus status;
+    protected ArticleScheduleStatus status;
 
     // insertable, updatable false 한 이유 : JPA 알아서 처리, 직접 조작하지 못하게 막기 위해
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
-    private String dtype;
+    protected String dtype;
 
-    protected ArticleScheduleJpaEntity(
-        ArticleJpaEntity articleJpaEntity,
-        LocalDate visitedDate,
-        Time visitedTime,
-        Integer sortOrder,
-        String category,
-        Time durationTime,
-        String expense,
-        String memo,
-        ArticleScheduleStatus status) {
-        this.articleJpaEntity = articleJpaEntity;
-        this.visitedDate = visitedDate;
-        this.visitedTime = visitedTime;
-        this.sortOrder = sortOrder;
-        this.category = category;
-        this.durationTime = durationTime;
-        this.expense = expense;
-        this.memo = memo;
-        this.status = status;
+    protected static <T extends ArticleScheduleJpaEntity> T from(ArticleSchedule model, T entity) {
+        entity.id = model.getId();
+        entity.articleJpaEntity = ArticleJpaEntity.from(model.getArticle());
+        entity.visitedDate = model.getVisitedDate();
+        entity.visitedTime = model.getVisitedTime();
+        entity.sortOrder = model.getSortOrder();
+        entity.category = model.getCategory();
+        entity.durationTime = model.getDurationTime();
+        entity.expense = model.getExpense();
+        entity.memo = model.getMemo();
+        entity.status = model.getStatus();
+        entity.dtype = model.getDtype();
+        return entity;
     }
 
     public void delete() {
