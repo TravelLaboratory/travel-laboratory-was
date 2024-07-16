@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleEtc;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleEtcRequest;
 
 @Entity
@@ -24,11 +25,22 @@ public class ScheduleEtcJpaEntity extends ArticleScheduleJpaEntity {
 
     public static ScheduleEtcJpaEntity from(ScheduleEtc scheduleEtc) {
         ScheduleEtcJpaEntity result = new ScheduleEtcJpaEntity();
-        ArticleScheduleJpaEntity.from(scheduleEtc, result);
+        result.id = scheduleEtc.getId();
+        result.articleJpaEntity = ArticleJpaEntity.from(scheduleEtc.getArticle());
+        result.visitedDate = scheduleEtc.getVisitedDate();
+        result.visitedTime = scheduleEtc.getVisitedTime();
+        result.sortOrder = scheduleEtc.getSortOrder();
+        result.category = scheduleEtc.getCategory();
+        result.durationTime = scheduleEtc.getDurationTime();
+        result.expense = scheduleEtc.getExpense();
+        result.memo = scheduleEtc.getMemo();
+        result.status = scheduleEtc.getStatus();
+        result.dtype = scheduleEtc.getDtype();
         result.placeName = scheduleEtc.getPlaceName();
         return result;
     }
 
+    @Override
     public ScheduleEtc toModel() {
         return ScheduleEtc.builder()
             .id(this.getId())

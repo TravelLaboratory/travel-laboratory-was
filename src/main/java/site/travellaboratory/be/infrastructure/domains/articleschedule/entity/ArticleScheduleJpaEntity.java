@@ -19,9 +19,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ArticleSchedule;
+import site.travellaboratory.be.domain.article.ScheduleEtc;
+import site.travellaboratory.be.domain.article.ScheduleGeneral;
+import site.travellaboratory.be.domain.article.ScheduleTransport;
+import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Entity
@@ -68,20 +71,18 @@ public abstract class ArticleScheduleJpaEntity extends BaseEntity {
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
     protected String dtype;
 
-    protected static <T extends ArticleScheduleJpaEntity> T from(ArticleSchedule model, T entity) {
-        entity.id = model.getId();
-        entity.articleJpaEntity = ArticleJpaEntity.from(model.getArticle());
-        entity.visitedDate = model.getVisitedDate();
-        entity.visitedTime = model.getVisitedTime();
-        entity.sortOrder = model.getSortOrder();
-        entity.category = model.getCategory();
-        entity.durationTime = model.getDurationTime();
-        entity.expense = model.getExpense();
-        entity.memo = model.getMemo();
-        entity.status = model.getStatus();
-        entity.dtype = model.getDtype();
-        return entity;
+    public static ArticleScheduleJpaEntity from(ArticleSchedule articleSchedule) {
+        ArticleScheduleJpaEntity result;
+        switch (articleSchedule.getDtype()) {
+            case "GENERAL" -> result = ScheduleGeneralJpaEntity.from((ScheduleGeneral) articleSchedule);
+            case "TRANSPORT" -> result = ScheduleTransportJpaEntity.from((ScheduleTransport) articleSchedule);
+            case "ETC" -> result = ScheduleEtcJpaEntity.from((ScheduleEtc) articleSchedule);
+            default -> throw new IllegalArgumentException("Unknown dtype: " + articleSchedule.getDtype());
+        }
+        return result;
     }
+
+    public abstract ArticleSchedule toModel();
 
     public void delete() {
         this.status = ArticleScheduleStatus.INACTIVE;

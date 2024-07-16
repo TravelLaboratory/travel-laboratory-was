@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleTransport;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleTransportRequest;
 
 @Entity
@@ -48,7 +49,17 @@ public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
 
     public static ScheduleTransportJpaEntity from(ScheduleTransport scheduleTransport) {
         ScheduleTransportJpaEntity result = new ScheduleTransportJpaEntity();
-        ArticleScheduleJpaEntity.from(scheduleTransport, result);
+        result.id = scheduleTransport.getId();
+        result.articleJpaEntity = ArticleJpaEntity.from(scheduleTransport.getArticle());
+        result.visitedDate = scheduleTransport.getVisitedDate();
+        result.visitedTime = scheduleTransport.getVisitedTime();
+        result.sortOrder = scheduleTransport.getSortOrder();
+        result.category = scheduleTransport.getCategory();
+        result.durationTime = scheduleTransport.getDurationTime();
+        result.expense = scheduleTransport.getExpense();
+        result.memo = scheduleTransport.getMemo();
+        result.status = scheduleTransport.getStatus();
+        result.dtype = scheduleTransport.getDtype();
         result.transportation = scheduleTransport.getTransportation();
         result.startPlaceName = scheduleTransport.getStartPlaceName();
         result.googleMapStartPlaceAddress = scheduleTransport.getGoogleMapStartPlaceAddress();
@@ -61,6 +72,7 @@ public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
         return result;
     }
 
+    @Override
     public ScheduleTransport toModel() {
         return ScheduleTransport.builder()
             .id(this.getId())

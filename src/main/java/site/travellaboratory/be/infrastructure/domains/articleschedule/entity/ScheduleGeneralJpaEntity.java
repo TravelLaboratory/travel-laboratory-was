@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleGeneral;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleGeneralRequest;
 
 @Entity
@@ -42,7 +43,17 @@ public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
 
     public static ScheduleGeneralJpaEntity from(ScheduleGeneral scheduleGeneral) {
         ScheduleGeneralJpaEntity result = new ScheduleGeneralJpaEntity();
-        ArticleScheduleJpaEntity.from(scheduleGeneral, result);
+        result.id = scheduleGeneral.getId();
+        result.articleJpaEntity = ArticleJpaEntity.from(scheduleGeneral.getArticle());
+        result.visitedDate = scheduleGeneral.getVisitedDate();
+        result.visitedTime = scheduleGeneral.getVisitedTime();
+        result.sortOrder = scheduleGeneral.getSortOrder();
+        result.category = scheduleGeneral.getCategory();
+        result.durationTime = scheduleGeneral.getDurationTime();
+        result.expense = scheduleGeneral.getExpense();
+        result.memo = scheduleGeneral.getMemo();
+        result.status = scheduleGeneral.getStatus();
+        result.dtype = scheduleGeneral.getDtype();
         result.placeName = scheduleGeneral.getPlaceName();
         result.googleMapPlaceId = scheduleGeneral.getGoogleMapPlaceId();
         result.googleMapLatitude = scheduleGeneral.getGoogleMapLatitude();
@@ -53,6 +64,7 @@ public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
         return result;
     }
 
+    @Override
     public ScheduleGeneral toModel() {
         return ScheduleGeneral.builder()
             .id(this.getId())

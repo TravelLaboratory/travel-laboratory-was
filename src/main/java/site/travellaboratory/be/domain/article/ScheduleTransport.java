@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Getter
 public class ScheduleTransport extends ArticleSchedule {
@@ -53,6 +54,83 @@ public class ScheduleTransport extends ArticleSchedule {
         this.googleMapEndLongitude = googleMapEndLongitude;
     }
 
+    public static ScheduleTransport create(Article article, ArticleScheduleRequest request) {
+        return ScheduleTransport.builder()
+            .article(article)
+            .visitedDate(request.visitedDate())
+            .visitedTime(request.visitedTime())
+            .sortOrder(request.sortOrder())
+            .category(request.category())
+            .durationTime(request.durationTime())
+            .expense(request.expense())
+            .memo(request.memo())
+            .status(ArticleScheduleStatus.ACTIVE)
+            .dtype(request.dtype())
+            .transportation(request.scheduleTransport().transportation())
+            .startPlaceName(request.scheduleTransport().startPlaceName())
+            .googleMapStartPlaceAddress(request.scheduleTransport().googleMapStartPlaceAddress())
+            .googleMapStartLatitude(request.scheduleTransport().googleMapStartLatitude())
+            .googleMapStartLongitude(request.scheduleTransport().googleMapStartLongitude())
+            .endPlaceName(request.scheduleTransport().endPlaceName())
+            .googleMapEndPlaceAddress(request.scheduleTransport().googleMapEndPlaceAddress())
+            .googleMapEndLatitude(request.scheduleTransport().googleMapEndLatitude())
+            .googleMapEndLongitude(request.scheduleTransport().googleMapEndLongitude())
+            .build();
+    }
+
+    @Override
+    public ScheduleTransport update(ArticleScheduleRequest request) {
+        super.verifyArticleSchedule(request.scheduleId());
+        return ScheduleTransport.builder()
+            .id(request.scheduleId())
+            .article(this.getArticle())
+            .visitedDate(request.visitedDate())
+            .visitedTime(request.visitedTime())
+            .sortOrder(request.sortOrder())
+            .category(request.category())
+            .durationTime(request.durationTime())
+            .expense(request.expense())
+            .memo(request.memo())
+            .status(this.getStatus())
+            .dtype(request.dtype())
+            .dtype(request.dtype())
+            .transportation(request.scheduleTransport().transportation())
+            .startPlaceName(request.scheduleTransport().startPlaceName())
+            .googleMapStartPlaceAddress(request.scheduleTransport().googleMapStartPlaceAddress())
+            .googleMapStartLatitude(request.scheduleTransport().googleMapStartLatitude())
+            .googleMapStartLongitude(request.scheduleTransport().googleMapStartLongitude())
+            .endPlaceName(request.scheduleTransport().endPlaceName())
+            .googleMapEndPlaceAddress(request.scheduleTransport().googleMapEndPlaceAddress())
+            .googleMapEndLatitude(request.scheduleTransport().googleMapEndLatitude())
+            .googleMapEndLongitude(request.scheduleTransport().googleMapEndLongitude())
+            .build();
+    }
+
+    @Override
+    public ScheduleTransport delete() {
+        return ScheduleTransport.builder()
+            .id(this.getId())
+            .article(this.getArticle())
+            .visitedDate(this.getVisitedDate())
+            .visitedTime(this.getVisitedTime())
+            .sortOrder(this.getSortOrder())
+            .category(this.getCategory())
+            .durationTime(this.getDurationTime())
+            .expense(this.getExpense())
+            .memo(this.getMemo())
+            .status(ArticleScheduleStatus.INACTIVE)
+            .dtype(this.getDtype())
+            .transportation(this.transportation)
+            .startPlaceName(this.startPlaceName)
+            .googleMapStartPlaceAddress(this.googleMapStartPlaceAddress)
+            .googleMapStartLatitude(this.googleMapStartLatitude)
+            .googleMapStartLongitude(this.googleMapStartLongitude)
+            .endPlaceName(this.endPlaceName)
+            .googleMapEndPlaceAddress(this.googleMapEndPlaceAddress)
+            .googleMapEndLatitude(this.googleMapEndLatitude)
+            .googleMapEndLongitude(this.googleMapEndLongitude)
+            .build();
+    }
 
     //    public void update(ScheduleTransportRequest request) {
 //        this.transportation = request.transportation();

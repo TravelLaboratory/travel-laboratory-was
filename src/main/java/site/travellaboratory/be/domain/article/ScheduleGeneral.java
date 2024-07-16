@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Getter
 public class ScheduleGeneral extends ArticleSchedule {
@@ -45,6 +46,77 @@ public class ScheduleGeneral extends ArticleSchedule {
         this.googleMapAddress = googleMapAddress;
         this.googleMapPhoneNumber = googleMapPhoneNumber;
         this.googleMapHomePageUrl = googleMapHomePageUrl;
+    }
+
+    public static ScheduleGeneral create(
+        Article article, ArticleScheduleRequest request) {
+        return ScheduleGeneral.builder()
+            .article(article)
+            .visitedDate(request.visitedDate())
+            .visitedTime(request.visitedTime())
+            .sortOrder(request.sortOrder())
+            .category(request.category())
+            .durationTime(request.durationTime())
+            .expense(request.expense())
+            .memo(request.memo())
+            .status(ArticleScheduleStatus.ACTIVE)
+            .dtype(request.dtype())
+            .placeName(request.scheduleGeneral().placeName())
+            .googleMapPlaceId(request.scheduleGeneral().googleMapPlaceId())
+            .googleMapLatitude(request.scheduleGeneral().googleMapLatitude())
+            .googleMapLongitude(request.scheduleGeneral().googleMapLongitude())
+            .googleMapAddress(request.scheduleGeneral().googleMapAddress())
+            .googleMapPhoneNumber(request.scheduleGeneral().googleMapPhoneNumber())
+            .googleMapHomePageUrl(request.scheduleGeneral().googleMapHomePageUrl())
+            .build();
+    }
+
+    @Override
+    public ScheduleGeneral update(ArticleScheduleRequest request) {
+        super.verifyArticleSchedule(request.scheduleId());
+        return ScheduleGeneral.builder()
+            .id(request.scheduleId())
+            .article(this.getArticle())
+            .visitedDate(request.visitedDate())
+            .visitedTime(request.visitedTime())
+            .sortOrder(request.sortOrder())
+            .category(request.category())
+            .durationTime(request.durationTime())
+            .expense(request.expense())
+            .memo(request.memo())
+            .status(this.getStatus())
+            .dtype(request.dtype())
+            .googleMapPlaceId(request.scheduleGeneral().googleMapPlaceId())
+            .googleMapLatitude(request.scheduleGeneral().googleMapLatitude())
+            .googleMapLongitude(request.scheduleGeneral().googleMapLongitude())
+            .googleMapAddress(request.scheduleGeneral().googleMapAddress())
+            .googleMapPhoneNumber(request.scheduleGeneral().googleMapPhoneNumber())
+            .googleMapHomePageUrl(request.scheduleGeneral().googleMapHomePageUrl())
+            .build();
+    }
+
+    @Override
+    public ScheduleGeneral delete() {
+        return ScheduleGeneral.builder()
+            .id(this.getId())
+            .article(this.getArticle())
+            .visitedDate(this.getVisitedDate())
+            .visitedTime(this.getVisitedTime())
+            .sortOrder(this.getSortOrder())
+            .category(this.getCategory())
+            .durationTime(this.getDurationTime())
+            .expense(this.getExpense())
+            .memo(this.getMemo())
+            .status(ArticleScheduleStatus.INACTIVE)
+            .dtype(this.getDtype())
+            .placeName(this.placeName)
+            .googleMapPlaceId(this.googleMapPlaceId)
+            .googleMapLatitude(this.googleMapLatitude)
+            .googleMapLongitude(this.googleMapLongitude)
+            .googleMapAddress(this.googleMapAddress)
+            .googleMapPhoneNumber(this.googleMapPhoneNumber)
+            .googleMapHomePageUrl(this.googleMapHomePageUrl)
+            .build();
     }
 
     //    public void update(ScheduleGeneralRequest request) {
