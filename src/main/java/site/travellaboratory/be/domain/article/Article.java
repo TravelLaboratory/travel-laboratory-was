@@ -83,6 +83,22 @@ public class Article {
             .build();
     }
 
+    public Article delete() {
+        return Article.builder()
+            .id(this.id)
+            .user(this.user)
+            .title(this.title)
+            .locations(this.locations)
+            .startAt(this.startAt)
+            .endAt(this.endAt)
+            .expense(this.expense)
+            .travelCompanion(this.travelCompanion)
+            .travelStyles(this.travelStyles)
+            .status(ArticleStatus.INACTIVE)
+            .coverImageUrl(this.coverImageUrl)
+            .build();
+    }
+
     public void verifyOwner(User user) {
         if (!this.user.getId().equals(user.getId())) {
             throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);

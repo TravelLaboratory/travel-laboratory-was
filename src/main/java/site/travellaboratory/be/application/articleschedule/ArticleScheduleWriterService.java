@@ -90,6 +90,11 @@ public class ArticleScheduleWriterService {
 
     @Transactional
     public ArticleScheduleDeleteResponse deleteArticleSchedules(Long userId, Long articleId) {
+        // userId로 User 가져오기 - tokenId로 체크
+        User user = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
+                HttpStatus.NOT_FOUND)).toModel();
+
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
         ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                 List.of(
@@ -99,21 +104,23 @@ public class ArticleScheduleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
+        Article article = articleJpaEntity.toModel();
+        article.verifyOwner(user);
 
-        // todo : 초기 여행 계획 삭제 - 도메인 클래스에서
+        // 관련된 일정들
+        List<ArticleSchedule> articleSchedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
+            articleJpaEntity, ArticleScheduleStatus.ACTIVE).stream()
+            .map(ArticleScheduleJpaEntity::toModel)
+            .toList();
+
         // 초기 여행 계획 삭제
-        articleJpaEntity.delete();
+        article = article.delete();
+        articleJpaRepository.save(ArticleJpaEntity.from(article));
 
-        // todo : 관련 일정 삭제 - 도메인 클래스에서
         // 관련된 일정들 삭제
-        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
-            articleJpaEntity, ArticleScheduleStatus.ACTIVE);
-        for (ArticleScheduleJpaEntity schedule : schedules) {
-            schedule.delete();
+        for (ArticleSchedule articleSchedule : articleSchedules) {
+            articleSchedule = articleSchedule.delete();
+            articleScheduleJpaRepository.save(ArticleScheduleJpaEntity.from(articleSchedule));
         }
 
         return ArticleScheduleDeleteResponse.from(true);
