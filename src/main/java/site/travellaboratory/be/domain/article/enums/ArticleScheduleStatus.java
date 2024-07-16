@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.articleschedule;
+package site.travellaboratory.be.domain.article.enums;
 
 public enum ArticleScheduleStatus {
     ACTIVE,

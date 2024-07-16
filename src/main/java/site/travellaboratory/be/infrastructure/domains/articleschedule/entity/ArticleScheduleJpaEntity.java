@@ -1,4 +1,4 @@
-package site.travellaboratory.be.infrastructure.domains.articleschedule;
+package site.travellaboratory.be.infrastructure.domains.articleschedule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -18,74 +18,71 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.travellaboratory.be.domain.article.ArticleSchedule;
+import site.travellaboratory.be.domain.article.ScheduleEtc;
+import site.travellaboratory.be.domain.article.ScheduleGeneral;
+import site.travellaboratory.be.domain.article.ScheduleTransport;
+import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
-import site.travellaboratory.be.infrastructure.common.BaseEntity;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // 조인 전략
 @DiscriminatorColumn(name = "dtype") // 조인 전략은 default DTYPE을 만들지 않기에 명시
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class ArticleSchedule extends BaseEntity {
+public abstract class ArticleScheduleJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    private ArticleJpaEntity articleJpaEntity;
+    protected ArticleJpaEntity articleJpaEntity;
 
     @Column(nullable = false)
-    private LocalDate visitedDate;
+    protected LocalDate visitedDate;
 
     @Column(nullable = false, columnDefinition = "TIME(4)")
-    private Time visitedTime;
+    protected Time visitedTime;
 
     @Column(nullable = false, columnDefinition = "TINYINT")
-    private Integer sortOrder;
+    protected Integer sortOrder;
 
     @Column(nullable = false, length = 15)
-    private String category;
+    protected String category;
 
     @Column(nullable = false, columnDefinition = "TIME(4)")
-    private Time durationTime;
+    protected Time durationTime;
 
     @Column(nullable = false, length = 15)
-    private String expense;
+    protected String expense;
 
     @Column(length = 500)
-    private String memo;
+    protected String memo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ArticleScheduleStatus status;
+    protected ArticleScheduleStatus status;
 
     // insertable, updatable false 한 이유 : JPA 알아서 처리, 직접 조작하지 못하게 막기 위해
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
-    private String dtype;
+    protected String dtype;
 
-    protected ArticleSchedule(
-        ArticleJpaEntity articleJpaEntity,
-        LocalDate visitedDate,
-        Time visitedTime,
-        Integer sortOrder,
-        String category,
-        Time durationTime,
-        String expense,
-        String memo,
-        ArticleScheduleStatus status) {
-        this.articleJpaEntity = articleJpaEntity;
-        this.visitedDate = visitedDate;
-        this.visitedTime = visitedTime;
-        this.sortOrder = sortOrder;
-        this.category = category;
-        this.durationTime = durationTime;
-        this.expense = expense;
-        this.memo = memo;
-        this.status = status;
+    public static ArticleScheduleJpaEntity from(ArticleSchedule articleSchedule) {
+        ArticleScheduleJpaEntity result;
+        switch (articleSchedule.getDtype()) {
+            case "GENERAL" -> result = ScheduleGeneralJpaEntity.from((ScheduleGeneral) articleSchedule);
+            case "TRANSPORT" -> result = ScheduleTransportJpaEntity.from((ScheduleTransport) articleSchedule);
+            case "ETC" -> result = ScheduleEtcJpaEntity.from((ScheduleEtc) articleSchedule);
+            default -> throw new IllegalArgumentException("Unknown dtype: " + articleSchedule.getDtype());
+        }
+        return result;
     }
+
+    public abstract ArticleSchedule toModel();
 
     public void delete() {
         this.status = ArticleScheduleStatus.INACTIVE;

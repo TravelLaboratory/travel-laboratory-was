@@ -15,12 +15,12 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
 import site.travellaboratory.be.domain.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleSchedule;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleRepository;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.ArticleScheduleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleEtc;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleGeneral;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.dtype.ScheduleTransport;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.repository.ArticleScheduleJpaRepository;
+import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportJpaEntity;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
@@ -34,7 +34,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleS
 public class ArticleScheduleReaderService
 {
     private final ArticleJpaRepository articleJpaRepository;
-    private final ArticleScheduleRepository articleScheduleRepository;
+    private final ArticleScheduleJpaRepository articleScheduleJpaRepository;
     private final ReviewJpaRepository reviewJpaRepository;
 
     /*
@@ -66,7 +66,7 @@ public class ArticleScheduleReaderService
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
             articleJpaEntity, ArticleScheduleStatus.ACTIVE);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
@@ -99,7 +99,7 @@ public class ArticleScheduleReaderService
             });
 
         // 일정 리스트 조회
-        List<ArticleSchedule> schedules = articleScheduleRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
+        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
             articleJpaEntity,
             ArticleScheduleStatus.ACTIVE);
 
@@ -110,9 +110,9 @@ public class ArticleScheduleReaderService
         }
 
         // 1순위 방문날짜, 2순위 sortOrder로 정렬
-        List<ArticleSchedule> sortedSchedules = schedules.stream()
-            .sorted(Comparator.comparing(ArticleSchedule::getVisitedDate)
-                .thenComparing(ArticleSchedule::getSortOrder))
+        List<ArticleScheduleJpaEntity> sortedSchedules = schedules.stream()
+            .sorted(Comparator.comparing(ArticleScheduleJpaEntity::getVisitedDate)
+                .thenComparing(ArticleScheduleJpaEntity::getSortOrder))
             .toList();
 
         // 방문날짜별 그룹화
@@ -137,16 +137,16 @@ public class ArticleScheduleReaderService
 
     // GENERAL, ETC - 장소명만 존재
     // TRANSPORT - 출발지명, 도착지명이 존재
-    private Stream<String> getPlaceNames(ArticleSchedule schedule) {
-        if (schedule instanceof ScheduleGeneral) {
-            return Stream.of(((ScheduleGeneral) schedule).getPlaceName());
-        } else if (schedule instanceof ScheduleTransport) {
+    private Stream<String> getPlaceNames(ArticleScheduleJpaEntity schedule) {
+        if (schedule instanceof ScheduleGeneralJpaEntity) {
+            return Stream.of(((ScheduleGeneralJpaEntity) schedule).getPlaceName());
+        } else if (schedule instanceof ScheduleTransportJpaEntity) {
             return Stream.of(
-                ((ScheduleTransport) schedule).getStartPlaceName(),
-                ((ScheduleTransport) schedule).getEndPlaceName()
+                ((ScheduleTransportJpaEntity) schedule).getStartPlaceName(),
+                ((ScheduleTransportJpaEntity) schedule).getEndPlaceName()
             );
-        } else if (schedule instanceof ScheduleEtc) {
-            return Stream.of(((ScheduleEtc) schedule).getPlaceName());
+        } else if (schedule instanceof ScheduleEtcJpaEntity) {
+            return Stream.of(((ScheduleEtcJpaEntity) schedule).getPlaceName());
         }
         return Stream.empty();
     }
