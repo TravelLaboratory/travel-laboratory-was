@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.user.pw.PwQuestion;
@@ -15,6 +16,7 @@ import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
 
 @Entity
+@Table(name = "pw_question")
 @Getter
 @NoArgsConstructor
 public class PwQuestionJpaEntity extends BaseEntity {
