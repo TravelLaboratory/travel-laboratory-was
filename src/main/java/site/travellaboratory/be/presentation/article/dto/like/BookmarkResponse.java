@@ -9,7 +9,7 @@ import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 public record BookmarkResponse(
         Long articleId,
         String title,
-        List<ArticleLocationJpaEntity> locationJpaEntities,
+        List<ArticleLocationJpaEntity> location,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
