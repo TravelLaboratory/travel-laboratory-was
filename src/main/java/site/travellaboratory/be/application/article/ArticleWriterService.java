@@ -16,7 +16,7 @@ import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.presentation.article.dto.writer.ArticleRegisterRequest;
@@ -49,7 +49,7 @@ public class ArticleWriterService {
             TravelCompanion.from(request.travelCompanion()),
             TravelStyle.from(request.travelStyles()));
 
-        ArticleJpaEntity savedArticle = articleJpaRepository.save(ArticleJpaEntity.from(article));
+        ArticleEntity savedArticle = articleJpaRepository.save(ArticleEntity.from(article));
         return savedArticle.getId();
     }
 
@@ -57,13 +57,13 @@ public class ArticleWriterService {
     public ArticleUpdateCoverImageResponse updateCoverImage(
             final MultipartFile coverImage,
             final Long articleId) {
-        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
+        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         final String url = s3FileUploader.uploadFiles(coverImage);
 
-        articleJpaEntity.updateCoverImage(url);
+        articleEntity.updateCoverImage(url);
 
         return new ArticleUpdateCoverImageResponse(url);
     }
@@ -94,22 +94,22 @@ public class ArticleWriterService {
             TravelCompanion.from(request.travelCompanion()),
             TravelStyle.from(request.travelStyles()));
 
-        return articleJpaRepository.save(ArticleJpaEntity.from(updateArticle)).toModel();
+        return articleJpaRepository.save(ArticleEntity.from(updateArticle)).toModel();
     }
 
     // 아티클 삭제
     @Transactional
     public ArticleDeleteResponse deleteArticle(final Long userId, final Long articleId) {
-        final ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
+        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                         List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleEntity.getUserEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_DELETE_NOT_USER, HttpStatus.FORBIDDEN);
         }
 
-        articleJpaEntity.delete();
-        articleJpaRepository.save(articleJpaEntity);
+        articleEntity.delete();
+        articleJpaRepository.save(articleEntity);
         return ArticleDeleteResponse.from(true);
     }
 
@@ -117,23 +117,23 @@ public class ArticleWriterService {
     @Transactional
     public ArticleUpdatePrivacyResponse updateArticlePrivacy(Long userId, Long articleId) {
         // 유효하지 않은 초기 여행 계획(article_id) 의 수정(공개, 비공개)하려고 할 경우
-        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleEntity.getUserEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_PRIVACY_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 초기 여행 계획 비공개 여부 수정
-        articleJpaEntity.togglePrivacyStatus();
+        articleEntity.togglePrivacyStatus();
 
         // 비공개 true, 공개 false
-        boolean isPrivate = (articleJpaEntity.getStatus() == ArticleStatus.PRIVATE);
+        boolean isPrivate = (articleEntity.getStatus() == ArticleStatus.PRIVATE);
 
         return ArticleUpdatePrivacyResponse.from(isPrivate);
     }

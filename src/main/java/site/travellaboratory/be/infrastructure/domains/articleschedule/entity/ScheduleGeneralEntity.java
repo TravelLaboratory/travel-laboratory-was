@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleGeneral;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleGeneralRequest;
 
 @Entity
@@ -18,7 +18,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.Schedule
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
+public class ScheduleGeneralEntity extends ArticleScheduleEntity {
 
     @Column(nullable = false, length = 255)
     private String placeName;
@@ -41,10 +41,10 @@ public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
     @Column(length = 1000)
     private String googleMapHomePageUrl;
 
-    public static ScheduleGeneralJpaEntity from(ScheduleGeneral scheduleGeneral) {
-        ScheduleGeneralJpaEntity result = new ScheduleGeneralJpaEntity();
+    public static ScheduleGeneralEntity from(ScheduleGeneral scheduleGeneral) {
+        ScheduleGeneralEntity result = new ScheduleGeneralEntity();
         result.id = scheduleGeneral.getId();
-        result.articleJpaEntity = ArticleJpaEntity.from(scheduleGeneral.getArticle());
+        result.articleEntity = ArticleEntity.from(scheduleGeneral.getArticle());
         result.visitedDate = scheduleGeneral.getVisitedDate();
         result.visitedTime = scheduleGeneral.getVisitedTime();
         result.sortOrder = scheduleGeneral.getSortOrder();
@@ -68,7 +68,7 @@ public class ScheduleGeneralJpaEntity extends ArticleScheduleJpaEntity {
     public ScheduleGeneral toModel() {
         return ScheduleGeneral.builder()
             .id(this.getId())
-            .article(this.articleJpaEntity.toModel())
+            .article(this.articleEntity.toModel())
             .visitedDate(visitedDate)
             .visitedTime(visitedTime)
             .sortOrder(sortOrder)

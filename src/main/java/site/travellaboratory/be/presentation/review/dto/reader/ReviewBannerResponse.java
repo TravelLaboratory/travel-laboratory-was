@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.util.List;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 
 public record ReviewBannerResponse(
     Long reviewId,
@@ -11,14 +11,14 @@ public record ReviewBannerResponse(
     String nickname,
     String profileImgUrl
 ) {
-    public static ReviewBannerResponse from(ReviewJpaEntity reviewJpaEntity, List<BannerReviewLocation> locations) {
+    public static ReviewBannerResponse from(ReviewEntity reviewEntity, List<BannerReviewLocation> locations) {
         return new ReviewBannerResponse(
-            reviewJpaEntity.getId(),
-            reviewJpaEntity.getTitle(),
-            reviewJpaEntity.getRepresentativeImgUrl(),
+            reviewEntity.getId(),
+            reviewEntity.getTitle(),
+            reviewEntity.getRepresentativeImgUrl(),
             locations,
-            reviewJpaEntity.getUserJpaEntity().getNickname(),
-            reviewJpaEntity.getUserJpaEntity().getProfileImgUrl()
+            reviewEntity.getUserEntity().getNickname(),
+            reviewEntity.getUserEntity().getProfileImgUrl()
         );
     }
 }

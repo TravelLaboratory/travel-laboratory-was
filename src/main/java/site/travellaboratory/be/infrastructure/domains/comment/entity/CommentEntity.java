@@ -17,14 +17,14 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.comment.Comment;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 @Entity
 @Table(name = "comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentJpaEntity extends BaseEntity {
+public class CommentEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +32,11 @@ public class CommentJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserJpaEntity userJpaEntity;
+    private UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
-    private ReviewJpaEntity reviewJpaEntity;
+    private ReviewEntity reviewEntity;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String replyContent;
@@ -45,11 +45,11 @@ public class CommentJpaEntity extends BaseEntity {
     @Column(nullable = false)
     private CommentStatus status;
 
-    public static CommentJpaEntity from(Comment comment) {
-        CommentJpaEntity result = new CommentJpaEntity();
+    public static CommentEntity from(Comment comment) {
+        CommentEntity result = new CommentEntity();
         result.id = comment.getId();
-        result.userJpaEntity = UserJpaEntity.from(comment.getUser());
-        result.reviewJpaEntity = ReviewJpaEntity.from(comment.getReview());
+        result.userEntity = UserEntity.from(comment.getUser());
+        result.reviewEntity = ReviewEntity.from(comment.getReview());
         result.replyContent = comment.getReplyContent();
         result.status = comment.getStatus();
         return result;
@@ -58,8 +58,8 @@ public class CommentJpaEntity extends BaseEntity {
     public Comment toModel() {
         return Comment.builder()
             .id(this.id)
-            .user(this.userJpaEntity.toModel())
-            .review(this.reviewJpaEntity.toModel())
+            .user(this.userEntity.toModel())
+            .review(this.reviewEntity.toModel())
             .replyContent(this.replyContent)
             .status(this.status)
             .build();

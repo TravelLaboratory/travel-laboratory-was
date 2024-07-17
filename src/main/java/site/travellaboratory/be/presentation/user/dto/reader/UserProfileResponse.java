@@ -1,6 +1,6 @@
 package site.travellaboratory.be.presentation.user.dto.reader;
 
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 public record UserProfileResponse(
         String profileImgUrl,
@@ -8,7 +8,7 @@ public record UserProfileResponse(
         String introduce,
         boolean isEditable
 ) {
-    public static UserProfileResponse from(final UserJpaEntity userJpaEntity, boolean isEditable) {
-        return new UserProfileResponse(userJpaEntity.getProfileImgUrl(), userJpaEntity.getNickname(), userJpaEntity.getIntroduce(), isEditable);
+    public static UserProfileResponse from(final UserEntity userEntity, boolean isEditable) {
+        return new UserProfileResponse(userEntity.getProfileImgUrl(), userEntity.getNickname(), userEntity.getIntroduce(), isEditable);
     }
 }

@@ -25,7 +25,7 @@ import site.travellaboratory.be.domain.article.ScheduleGeneral;
 import site.travellaboratory.be.domain.article.ScheduleTransport;
 import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Entity
@@ -34,7 +34,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleS
 @DiscriminatorColumn(name = "dtype") // 조인 전략은 default DTYPE을 만들지 않기에 명시
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class ArticleScheduleJpaEntity extends BaseEntity {
+public abstract class ArticleScheduleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public abstract class ArticleScheduleJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    protected ArticleJpaEntity articleJpaEntity;
+    protected ArticleEntity articleEntity;
 
     @Column(nullable = false)
     protected LocalDate visitedDate;
@@ -73,12 +73,12 @@ public abstract class ArticleScheduleJpaEntity extends BaseEntity {
     @Column(name = "dtype", nullable = false, insertable = false, updatable = false)
     protected String dtype;
 
-    public static ArticleScheduleJpaEntity from(ArticleSchedule articleSchedule) {
-        ArticleScheduleJpaEntity result;
+    public static ArticleScheduleEntity from(ArticleSchedule articleSchedule) {
+        ArticleScheduleEntity result;
         switch (articleSchedule.getDtype()) {
-            case "GENERAL" -> result = ScheduleGeneralJpaEntity.from((ScheduleGeneral) articleSchedule);
-            case "TRANSPORT" -> result = ScheduleTransportJpaEntity.from((ScheduleTransport) articleSchedule);
-            case "ETC" -> result = ScheduleEtcJpaEntity.from((ScheduleEtc) articleSchedule);
+            case "GENERAL" -> result = ScheduleGeneralEntity.from((ScheduleGeneral) articleSchedule);
+            case "TRANSPORT" -> result = ScheduleTransportEntity.from((ScheduleTransport) articleSchedule);
+            case "ETC" -> result = ScheduleEtcEntity.from((ScheduleEtc) articleSchedule);
             default -> throw new IllegalArgumentException("Unknown dtype: " + articleSchedule.getDtype());
         }
         return result;

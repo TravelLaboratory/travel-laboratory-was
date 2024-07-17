@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewLocation;
 import site.travellaboratory.be.presentation.review.dto.reader.ProfileReviewPaginationResponse;
@@ -37,13 +37,13 @@ public class ReviewReaderService {
 
     public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 조회할 경우
-        ReviewJpaEntity reviewJpaEntity = reviewJpaRepository.findByIdAndStatusIn(reviewId,
+        ReviewEntity reviewEntity = reviewJpaRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_INVALID,
                 HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (reviewJpaEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewJpaEntity.getUserJpaEntity().getId()
+        if (reviewEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewEntity.getUserEntity().getId()
             .equals(userId))) {
             throw new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_NOT_AUTHORIZATION,
                 HttpStatus.FORBIDDEN);
@@ -51,19 +51,19 @@ public class ReviewReaderService {
 
         // 후기 조회
         // (1) 수정, 삭제 권한
-        boolean isEditable = reviewJpaEntity.getUserJpaEntity().getId().equals(userId);
+        boolean isEditable = reviewEntity.getUserEntity().getId().equals(userId);
 
         // (2) 좋아요
         boolean isLike = reviewLikeJpaRepository.findByUserIdAndReviewId(userId, reviewId)
-            .map(ReviewLikeJpaEntity::getStatus)
+            .map(ReviewLikeEntity::getStatus)
             .orElse(ReviewLikeStatus.INACTIVE) == ReviewLikeStatus.ACTIVE;
 
         // (3) 좋아요 개수
-        long likeCount = reviewLikeJpaRepository.countByReviewJpaEntityIdAndStatus(reviewId,
+        long likeCount = reviewLikeJpaRepository.countByReviewEntityIdAndStatus(reviewId,
             ReviewLikeStatus.ACTIVE);
 
         return ReviewReadDetailResponse.from(
-            reviewJpaEntity, isEditable, isLike, likeCount
+            reviewEntity, isEditable, isLike, likeCount
         );
     }
 
@@ -72,7 +72,7 @@ public class ReviewReaderService {
      * */
     public ProfileReviewPaginationResponse readProfileReviews(
         Long tokenUserId, Long userId, int page, int size) {
-        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PROFILE_REVIEW_READ_USER_NOT_FOUND,
                     HttpStatus.NOT_FOUND));
@@ -83,16 +83,16 @@ public class ReviewReaderService {
         // (1) 페이징 적용을 위한 Review Id 목록 가져와서
         if (tokenUserId.equals(userId)) {
             reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
-                userJpaEntity,
+                userEntity,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE), pageable);
         } else { // (2) 다를 경우에는 PRIVATE 제외
             reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
-                userJpaEntity,
+                userEntity,
                 List.of(ReviewStatus.ACTIVE), pageable);
         }
 
         // (2) id 목록으로 연관 엔티티 포함한 리뷰 목록 가져오기
-        List<ReviewJpaEntity> reviewJpaEntities = reviewJpaRepository.findReviewsWithArticlesAndLocationsByIds(
+        List<ReviewEntity> reviewJpaEntities = reviewJpaRepository.findReviewsWithArticlesAndLocationsByIds(
             reviewIdsPage.getContent());
 
         List<ProfileReviewResponse> reviewPage = reviewJpaEntities.stream()
@@ -112,7 +112,7 @@ public class ReviewReaderService {
         //(1) limit이 없기에 페이징을 적용해서 리뷰 id 목록 가져오기
         Page<Long> reviewIdsPage = reviewJpaRepository.findReviewIdsByStatusOrderByCreatedAt(pageable);
 
-        List<ReviewJpaEntity> reviewJpaEntities = reviewJpaRepository.findReviewsWithArticlesAndLocationsByIdsAndUserStatus(reviewIdsPage.getContent());
+        List<ReviewEntity> reviewJpaEntities = reviewJpaRepository.findReviewsWithArticlesAndLocationsByIdsAndUserStatus(reviewIdsPage.getContent());
 
         List<ReviewBannerResponse> list = reviewJpaEntities.stream()
             .map(this::toReviewBannerResponse)
@@ -121,17 +121,17 @@ public class ReviewReaderService {
         return ReviewBannerListResponse.from(list);
     }
 
-    private ProfileReviewResponse toProfileReviewResponse(ReviewJpaEntity reviewJpaEntity) {
-        List<ProfileReviewLocation> locations = reviewJpaEntity.getArticleJpaEntity().getLocationJpaEntities().stream()
+    private ProfileReviewResponse toProfileReviewResponse(ReviewEntity reviewEntity) {
+        List<ProfileReviewLocation> locations = reviewEntity.getArticleEntity().getLocationEntities().stream()
             .map(ProfileReviewLocation::from)
             .collect(Collectors.toList());
-        return ProfileReviewResponse.from(reviewJpaEntity, locations);
+        return ProfileReviewResponse.from(reviewEntity, locations);
     }
 
-    private ReviewBannerResponse toReviewBannerResponse(ReviewJpaEntity reviewJpaEntity) {
-        List<BannerReviewLocation> locations = reviewJpaEntity.getArticleJpaEntity().getLocationJpaEntities().stream()
+    private ReviewBannerResponse toReviewBannerResponse(ReviewEntity reviewEntity) {
+        List<BannerReviewLocation> locations = reviewEntity.getArticleEntity().getLocationEntities().stream()
             .map(BannerReviewLocation::from)
             .collect(Collectors.toList());
-        return ReviewBannerResponse.from(reviewJpaEntity, locations);
+        return ReviewBannerResponse.from(reviewEntity, locations);
     }
 }

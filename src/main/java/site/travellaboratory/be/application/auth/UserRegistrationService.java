@@ -14,10 +14,10 @@ import site.travellaboratory.be.domain.user.pw.PwQuestion;
 import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
 import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.PwAnswerJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswerJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.auth.pwanswer.entity.PwAnswerEntity;
 import site.travellaboratory.be.infrastructure.domains.auth.pwquestion.PwQuestionJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.presentation.auth.dto.userregistration.UserJoinRequest;
 
 @Service
@@ -50,7 +50,7 @@ public class UserRegistrationService {
 
         // 새로운 유저 생성
         User user = User.create(request.nickname());
-        User savedUser = userJpaRepository.save(UserJpaEntity.from(user, userAuth)).toModel();
+        User savedUser = userJpaRepository.save(UserEntity.from(user, userAuth)).toModel();
 
         //비번 질문 조회
         PwQuestion pwQuestion = pwQuestionJpaRepository.findByIdAndStatus(
@@ -61,7 +61,7 @@ public class UserRegistrationService {
 
         // 비번 답변 저장
         PwAnswer pwAnswer = PwAnswer.create(savedUser.getId(), pwQuestion.getId(), request.pwAnswer());
-        pwAnswerJpaRepository.save(PwAnswerJpaEntity.from(pwAnswer));
+        pwAnswerJpaRepository.save(PwAnswerEntity.from(pwAnswer));
         return savedUser;
     }
 }

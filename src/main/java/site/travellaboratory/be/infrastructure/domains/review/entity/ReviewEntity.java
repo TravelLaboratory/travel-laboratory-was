@@ -16,15 +16,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.review.Review;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
-import site.travellaboratory.be.infrastructure.common.BaseJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.common.BaseEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 @Entity
 @Table(name = "review")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReviewJpaEntity extends BaseJpaEntity {
+public class ReviewEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +32,12 @@ public class ReviewJpaEntity extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserJpaEntity userJpaEntity;
+    private UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     // todo : 여행 계획의 status 만 확인하면 되기에 어찌보면 굳이 Article로 객체를 가지고 있을 필요가 없을 수 있다.
-    private ArticleJpaEntity articleJpaEntity;
+    private ArticleEntity articleEntity;
 
     @Column(nullable = false, length = 150)
     private String title;
@@ -52,11 +52,11 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     @Column(nullable = false)
     private ReviewStatus status;
 
-    public static ReviewJpaEntity from(Review review) {
-        ReviewJpaEntity result = new ReviewJpaEntity();
+    public static ReviewEntity from(Review review) {
+        ReviewEntity result = new ReviewEntity();
         result.id = review.getId();
-        result.userJpaEntity = UserJpaEntity.from(review.getUser());
-        result.articleJpaEntity = ArticleJpaEntity.from(review.getArticle());
+        result.userEntity = UserEntity.from(review.getUser());
+        result.articleEntity = ArticleEntity.from(review.getArticle());
         result.title = review.getTitle();
         result.representativeImgUrl = review.getRepresentativeImgUrl();
         result.description = review.getDescription();
@@ -67,8 +67,8 @@ public class ReviewJpaEntity extends BaseJpaEntity {
     public Review toModel() {
         return Review.builder()
             .id(this.id)
-            .user(this.userJpaEntity.toModel())
-            .article(this.articleJpaEntity.toModel())
+            .user(this.userEntity.toModel())
+            .article(this.articleEntity.toModel())
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)

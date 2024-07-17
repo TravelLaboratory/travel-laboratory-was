@@ -2,23 +2,23 @@ package site.travellaboratory.be.presentation.articleschedule.dto.reader;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportEntity;
 
 public record ArticleScheduleReadDetailResponse(
     Long reviewId,
     boolean isEditable,
     List<ArticleScheduleResponse> schedules
 ) {
-    public static ArticleScheduleReadDetailResponse from(Long reviewId, boolean isEditable, List<ArticleScheduleJpaEntity> schedules) {
+    public static ArticleScheduleReadDetailResponse from(Long reviewId, boolean isEditable, List<ArticleScheduleEntity> schedules) {
         return new ArticleScheduleReadDetailResponse(
             reviewId,
             isEditable,
             schedules.stream().map(schedule -> {
 
-                if (schedule instanceof ScheduleGeneralJpaEntity general) {
+                if (schedule instanceof ScheduleGeneralEntity general) {
                     return new ArticleScheduleResponse(
                         schedule.getId(),
                         schedule.getVisitedDate(),
@@ -41,7 +41,7 @@ public record ArticleScheduleReadDetailResponse(
                         null,
                         null
                     );
-                } else if (schedule instanceof ScheduleTransportJpaEntity transport) {
+                } else if (schedule instanceof ScheduleTransportEntity transport) {
                     return new ArticleScheduleResponse(
                         schedule.getId(),
                         schedule.getVisitedDate(),
@@ -66,7 +66,7 @@ public record ArticleScheduleReadDetailResponse(
                         ),
                         null
                     );
-                } else if (schedule instanceof ScheduleEtcJpaEntity etc) {
+                } else if (schedule instanceof ScheduleEtcEntity etc) {
                     return new ArticleScheduleResponse(
                         schedule.getId(),
                         schedule.getVisitedDate(),

@@ -11,7 +11,7 @@ import site.travellaboratory.be.domain.user.auth.UserAuth;
 import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.application.auth.manager.JwtTokenManager;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userauthentication.LoginRequest;
 import site.travellaboratory.be.application.auth.command.LoginCommand;
@@ -29,13 +29,13 @@ public class UserAuthenticationService {
     @Transactional
     public LoginCommand login(LoginRequest request) {
         // 회원가입 여부 체크
-        UserJpaEntity userJpaEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
+        UserEntity userEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
                 request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        UserAuth userAuth = userJpaEntity.toModelUserAuth();
-        User user = userJpaEntity.toModel();
+        UserAuth userAuth = userEntity.toModelUserAuth();
+        User user = userEntity.toModel();
 
         // 비밀번호 체크
         if (!encoder.matches(request.password(), userAuth.getPassword())) {

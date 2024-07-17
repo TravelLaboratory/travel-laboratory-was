@@ -2,7 +2,7 @@ package site.travellaboratory.be.presentation.comment.dto.reader;
 
 import java.util.List;
 import org.springframework.data.domain.Page;
-import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentEntity;
 
 public record CommentReadPaginationResponse(
     String profileImgUrl,
@@ -16,7 +16,7 @@ public record CommentReadPaginationResponse(
     public static CommentReadPaginationResponse from(
         String profileImgUrl,
         List<CommentReadResponse> comments,
-        Page<CommentJpaEntity> commentPage
+        Page<CommentEntity> commentPage
     ) {
         return new CommentReadPaginationResponse(
             profileImgUrl,
