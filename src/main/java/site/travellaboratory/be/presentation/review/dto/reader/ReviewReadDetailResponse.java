@@ -1,7 +1,7 @@
 package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 
 public record ReviewReadDetailResponse(
     Long userId,
@@ -17,20 +17,20 @@ public record ReviewReadDetailResponse(
     boolean isLike,
     long likeCount
 ) {
-    public static ReviewReadDetailResponse from(ReviewJpaEntity reviewJpaEntity,
+    public static ReviewReadDetailResponse from(ReviewEntity reviewEntity,
         boolean isEditable,boolean isLike,long likeCount
         ) {
         return new ReviewReadDetailResponse(
-            reviewJpaEntity.getUserJpaEntity().getId(),
-            reviewJpaEntity.getUserJpaEntity().getProfileImgUrl(),
-            reviewJpaEntity.getUserJpaEntity().getNickname(),
+            reviewEntity.getUserEntity().getId(),
+            reviewEntity.getUserEntity().getProfileImgUrl(),
+            reviewEntity.getUserEntity().getNickname(),
             isEditable,
-            reviewJpaEntity.getArticleJpaEntity().getId(),
-            reviewJpaEntity.getId(),
-            reviewJpaEntity.getTitle(),
-            reviewJpaEntity.getRepresentativeImgUrl(),
-            reviewJpaEntity.getDescription(),
-            reviewJpaEntity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            reviewEntity.getArticleEntity().getId(),
+            reviewEntity.getId(),
+            reviewEntity.getTitle(),
+            reviewEntity.getRepresentativeImgUrl(),
+            reviewEntity.getDescription(),
+            reviewEntity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             isLike,
             likeCount
             );

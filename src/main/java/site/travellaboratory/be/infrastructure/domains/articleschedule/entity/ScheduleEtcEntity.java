@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleEtc;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleEtcRequest;
 
 @Entity
@@ -18,15 +18,15 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.Schedule
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleEtcJpaEntity extends ArticleScheduleJpaEntity {
+public class ScheduleEtcEntity extends ArticleScheduleEntity {
 
     @Column(nullable = false, length = 255)
     private String placeName;
 
-    public static ScheduleEtcJpaEntity from(ScheduleEtc scheduleEtc) {
-        ScheduleEtcJpaEntity result = new ScheduleEtcJpaEntity();
+    public static ScheduleEtcEntity from(ScheduleEtc scheduleEtc) {
+        ScheduleEtcEntity result = new ScheduleEtcEntity();
         result.id = scheduleEtc.getId();
-        result.articleJpaEntity = ArticleJpaEntity.from(scheduleEtc.getArticle());
+        result.articleEntity = ArticleEntity.from(scheduleEtc.getArticle());
         result.visitedDate = scheduleEtc.getVisitedDate();
         result.visitedTime = scheduleEtc.getVisitedTime();
         result.sortOrder = scheduleEtc.getSortOrder();
@@ -44,7 +44,7 @@ public class ScheduleEtcJpaEntity extends ArticleScheduleJpaEntity {
     public ScheduleEtc toModel() {
         return ScheduleEtc.builder()
             .id(this.getId())
-            .article(this.articleJpaEntity.toModel())
+            .article(this.articleEntity.toModel())
             .visitedDate(visitedDate)
             .visitedTime(visitedTime)
             .sortOrder(sortOrder)

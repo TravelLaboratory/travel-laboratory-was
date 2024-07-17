@@ -14,8 +14,8 @@ import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.presentation.review.dto.writer.ReviewSaveRequest;
@@ -39,7 +39,8 @@ public class ReviewWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleJpaEntityAndStatusInOrderByArticleJpaEntityDesc(ArticleJpaEntity.from(article),
+        reviewJpaRepository.findByArticleEntityAndStatusInOrderByArticleEntityDesc(
+                ArticleEntity.from(article),
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST,
@@ -55,7 +56,7 @@ public class ReviewWriterService {
             request.title(), request.representativeImgUrl(),
             request.description(), request.status());
 
-        Review saveReview = reviewJpaRepository.save(ReviewJpaEntity.from(review)).toModel();
+        Review saveReview = reviewJpaRepository.save(ReviewEntity.from(review)).toModel();
         return saveReview.getId();
     }
 
@@ -77,7 +78,7 @@ public class ReviewWriterService {
             request.description(), request.status());
 
         // 후기 업데이트
-        return reviewJpaRepository.save(ReviewJpaEntity.from(updatedReview)).toModel().getId();
+        return reviewJpaRepository.save(ReviewEntity.from(updatedReview)).toModel().getId();
     }
 
     @Transactional
@@ -94,7 +95,7 @@ public class ReviewWriterService {
 
         // 삭제
         Review deletedReview = review.withInactiveStatus(user);
-        Review result = reviewJpaRepository.save(ReviewJpaEntity.from(deletedReview)).toModel();
+        Review result = reviewJpaRepository.save(ReviewEntity.from(deletedReview)).toModel();
         return result.getStatus() == ReviewStatus.INACTIVE;
     }
 }

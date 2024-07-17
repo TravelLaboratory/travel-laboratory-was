@@ -13,9 +13,9 @@ import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentJpaRepository;
 import site.travellaboratory.be.domain.comment.enums.CommentStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.infrastructure.domains.comment.repository.CommentLikeJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.comment.entity.CommentLikeEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 
 @Service
@@ -34,22 +34,22 @@ public class CommentLikeService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        CommentLikeJpaEntity commentLikeJpaEntity = commentLikeJpaRepository.findByUserIdAndCommentId(userId,
+        CommentLikeEntity commentLikeEntity = commentLikeJpaRepository.findByUserIdAndCommentId(userId,
                 commentId)
             .orElse(null);
 
         // 좋아요 누른 유저 가져오기
-        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         CommentLike commentLike;
-        if (commentLikeJpaEntity != null) {
-            commentLike = commentLikeJpaEntity.toModel().withToggleStatus();
+        if (commentLikeEntity != null) {
+            commentLike = commentLikeEntity.toModel().withToggleStatus();
         } else {
-            commentLike = CommentLike.create(userJpaEntity.toModel(), comment);
+            commentLike = CommentLike.create(userEntity.toModel(), comment);
         }
-        CommentLikeJpaEntity saveCommentLike = commentLikeJpaRepository.save(CommentLikeJpaEntity.from(commentLike));
+        CommentLikeEntity saveCommentLike = commentLikeJpaRepository.save(CommentLikeEntity.from(commentLike));
         return saveCommentLike.getStatus();
     }
 }

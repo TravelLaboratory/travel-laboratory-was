@@ -19,7 +19,7 @@ import site.travellaboratory.be.infrastructure.common.BaseEntity;
 @Table(name = "pw_answer")
 @Getter
 @NoArgsConstructor
-public class PwAnswerJpaEntity extends BaseEntity {
+public class PwAnswerEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +37,8 @@ public class PwAnswerJpaEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PwAnswerStatus status;
 
-    public static PwAnswerJpaEntity from(PwAnswer pwAnswer) {
-        PwAnswerJpaEntity result = new PwAnswerJpaEntity();
+    public static PwAnswerEntity from(PwAnswer pwAnswer) {
+        PwAnswerEntity result = new PwAnswerEntity();
         result.id = pwAnswer.getId();
         result.userId = pwAnswer.getUserId();
         result.pwQuestionId = pwAnswer.getPwQuestionId();

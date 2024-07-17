@@ -16,8 +16,8 @@ import site.travellaboratory.be.domain.article.enums.ArticleStatus;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.domain.user.user.User;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleEntity;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.repository.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleDeleteResponse;
@@ -41,7 +41,7 @@ public class ArticleScheduleWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 유효하지 않은 여행 계획에 대한 상세 일정을 수정할 경우
-        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                 List.of(
                     ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
@@ -49,13 +49,13 @@ public class ArticleScheduleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획이 아닌 경우
-        Article article = articleJpaEntity.toModel();
+        Article article = articleEntity.toModel();
         article.verifyOwner(user);
 
         // (0) 기존 일정들 불러오기 (삭제된 건 제외 + sortOrder로 내림차순) (N+1을 막기 위해 FETCH JOIN)
-        List<ArticleSchedule> existingSchedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
-                articleJpaEntity, ArticleScheduleStatus.ACTIVE).stream()
-            .map(ArticleScheduleJpaEntity::toModel)
+        List<ArticleSchedule> existingSchedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
+                articleEntity, ArticleScheduleStatus.ACTIVE).stream()
+            .map(ArticleScheduleEntity::toModel)
             .toList();
 
         // (1) 일정 수정 - id o , 일정 생성 - id x -> 이를 분리
@@ -82,10 +82,10 @@ public class ArticleScheduleWriterService {
                 // id o -> 기존 일정 수정
                 articleSchedule = getExistingScheduleById(existingSchedules, request.scheduleId()).update(request);
             }
-            articleScheduleJpaRepository.save(ArticleScheduleJpaEntity.from(articleSchedule));
+            articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
         }
 
-        return ArticleScheduleUpdateResponse.from(articleJpaEntity.getId());
+        return ArticleScheduleUpdateResponse.from(articleEntity.getId());
     }
 
     @Transactional
@@ -96,7 +96,7 @@ public class ArticleScheduleWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
-        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
                 List.of(
                     ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
@@ -104,23 +104,23 @@ public class ArticleScheduleWriterService {
                     HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
-        Article article = articleJpaEntity.toModel();
+        Article article = articleEntity.toModel();
         article.verifyOwner(user);
 
         // 관련된 일정들
-        List<ArticleSchedule> articleSchedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderByIdDesc(
-            articleJpaEntity, ArticleScheduleStatus.ACTIVE).stream()
-            .map(ArticleScheduleJpaEntity::toModel)
+        List<ArticleSchedule> articleSchedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderByIdDesc(
+                articleEntity, ArticleScheduleStatus.ACTIVE).stream()
+            .map(ArticleScheduleEntity::toModel)
             .toList();
 
         // 초기 여행 계획 삭제
         article = article.delete();
-        articleJpaRepository.save(ArticleJpaEntity.from(article));
+        articleJpaRepository.save(ArticleEntity.from(article));
 
         // 관련된 일정들 삭제
         for (ArticleSchedule articleSchedule : articleSchedules) {
             articleSchedule = articleSchedule.delete();
-            articleScheduleJpaRepository.save(ArticleScheduleJpaEntity.from(articleSchedule));
+            articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
         }
 
         return ArticleScheduleDeleteResponse.from(true);
