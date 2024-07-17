@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.article.ScheduleTransport;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ScheduleTransportRequest;
 
 @Entity
@@ -18,7 +18,7 @@ import site.travellaboratory.be.presentation.articleschedule.dto.writer.Schedule
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
+public class ScheduleTransportEntity extends ArticleScheduleEntity {
 
     @Column(nullable = false, length = 20)
     private String transportation;
@@ -47,10 +47,10 @@ public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
     @Column(nullable = false, columnDefinition = "DECIMAL(11,8)")
     private Double googleMapEndLongitude;
 
-    public static ScheduleTransportJpaEntity from(ScheduleTransport scheduleTransport) {
-        ScheduleTransportJpaEntity result = new ScheduleTransportJpaEntity();
+    public static ScheduleTransportEntity from(ScheduleTransport scheduleTransport) {
+        ScheduleTransportEntity result = new ScheduleTransportEntity();
         result.id = scheduleTransport.getId();
-        result.articleJpaEntity = ArticleJpaEntity.from(scheduleTransport.getArticle());
+        result.articleEntity = ArticleEntity.from(scheduleTransport.getArticle());
         result.visitedDate = scheduleTransport.getVisitedDate();
         result.visitedTime = scheduleTransport.getVisitedTime();
         result.sortOrder = scheduleTransport.getSortOrder();
@@ -76,7 +76,7 @@ public class ScheduleTransportJpaEntity extends ArticleScheduleJpaEntity {
     public ScheduleTransport toModel() {
         return ScheduleTransport.builder()
             .id(this.getId())
-            .article(this.articleJpaEntity.toModel())
+            .article(this.articleEntity.toModel())
             .visitedDate(visitedDate)
             .visitedTime(visitedTime)
             .sortOrder(sortOrder)

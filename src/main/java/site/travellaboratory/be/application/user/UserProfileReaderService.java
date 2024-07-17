@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.user.dto.reader.UserProfileResponse;
 
@@ -19,13 +19,13 @@ public class UserProfileReaderService {
     private final UserJpaRepository userJpaRepository;
 
     public UserProfileResponse findByUserProfile(final Long userId, final Long id) {
-        final UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
+        final UserEntity userEntity = userJpaRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
                         HttpStatus.BAD_REQUEST)
                 );
 
-        final boolean isEditable = userJpaEntity.getId().equals(userId);
+        final boolean isEditable = userEntity.getId().equals(userId);
 
-        return UserProfileResponse.from(userJpaEntity, isEditable);
+        return UserProfileResponse.from(userEntity, isEditable);
     }
 }

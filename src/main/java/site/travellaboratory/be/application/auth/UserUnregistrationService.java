@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.domain.article.enums.ArticleStatus;
 import site.travellaboratory.be.infrastructure.domains.bookmark.BookmarkRepository;
 import site.travellaboratory.be.infrastructure.domains.bookmark.entity.Bookmark;
 import site.travellaboratory.be.infrastructure.domains.bookmark.enums.BookmarkStatus;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 import site.travellaboratory.be.presentation.auth.dto.userunregistration.UserUnregisterResponse;
 
@@ -29,17 +29,18 @@ public class UserUnregistrationService {
 
     @Transactional
     public UserUnregisterResponse unregister(final Long userId) {
-        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<ArticleJpaEntity> articleJpaEntities = articleJpaRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
+        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findByUserEntityAndStatusIn(
+                userEntity,
                 List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         articleJpaEntities.forEach(article -> article.updateStatus(ArticleStatus.INACTIVE));
         articleJpaRepository.saveAll(articleJpaEntities);
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserJpaEntityAndStatusIn(userJpaEntity,
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatusIn(userEntity,
                 List.of(BookmarkStatus.ACTIVE, BookmarkStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
@@ -47,8 +48,8 @@ public class UserUnregistrationService {
         bookmarkRepository.saveAll(bookmarks);
 
         // 사용자 삭제 처리
-        userJpaEntity.delete();
-        userJpaRepository.save(userJpaEntity);
+        userEntity.delete();
+        userJpaRepository.save(userEntity);
 
         return UserUnregisterResponse.from(true);
     }

@@ -13,16 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.infrastructure.domains.article.ArticleJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
 import site.travellaboratory.be.domain.article.enums.ArticleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ArticleScheduleEntity;
 import site.travellaboratory.be.infrastructure.domains.articleschedule.repository.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.domain.article.enums.ArticleScheduleStatus;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleEtcEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleGeneralEntity;
+import site.travellaboratory.be.infrastructure.domains.articleschedule.entity.ScheduleTransportEntity;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.presentation.articleschedule.dto.reader.PlaceName;
@@ -44,30 +44,30 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadDetailResponse readSchedulesDetail(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
                     HttpStatus.NOT_FOUND));
 
         // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (articleJpaEntity.getStatus() == ArticleStatus.PRIVATE && !articleJpaEntity.getUserJpaEntity().getId()
+        if (articleEntity.getStatus() == ArticleStatus.PRIVATE && !articleEntity.getUserEntity().getId()
             .equals(userId)) {
             throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // reviewId 찾아오기 없다면 null
-        Long reviewId = reviewJpaRepository.findByArticleJpaEntityAndStatus(articleJpaEntity, ReviewStatus.ACTIVE)
-            .map(ReviewJpaEntity::getId)
+        Long reviewId = reviewJpaRepository.findByArticleEntityAndStatus(articleEntity, ReviewStatus.ACTIVE)
+            .map(ReviewEntity::getId)
             .orElse(null);
 
-        boolean isEditable = articleJpaEntity.getUserJpaEntity().getId().equals(userId);
+        boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
 
         System.out.println("조회 시작");
         // 일정 리스트 조회
-        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
-            articleJpaEntity, ArticleScheduleStatus.ACTIVE);
+        List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
+            articleEntity, ArticleScheduleStatus.ACTIVE);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
     }
@@ -79,19 +79,20 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleJpaEntity articleJpaEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
                 ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
         // 유저가 작성한 article_id이 아닌 경우
-        if (!articleJpaEntity.getUserJpaEntity().getId().equals(userId)) {
+        if (!articleEntity.getUserEntity().getId().equals(userId)) {
             throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_NOT_USER,
                 HttpStatus.FORBIDDEN);
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleJpaEntityAndStatusInOrderByArticleJpaEntityDesc(articleJpaEntity,
+        reviewJpaRepository.findByArticleEntityAndStatusInOrderByArticleEntityDesc(
+                articleEntity,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
@@ -99,8 +100,8 @@ public class ArticleScheduleReaderService
             });
 
         // 일정 리스트 조회
-        List<ArticleScheduleJpaEntity> schedules = articleScheduleJpaRepository.findByArticleJpaEntityAndStatusOrderBySortOrderAsc(
-            articleJpaEntity,
+        List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
+            articleEntity,
             ArticleScheduleStatus.ACTIVE);
 
         // 초기 여행 계획만 있어서, 상세 일정이 빈 리스트인 경우
@@ -110,9 +111,9 @@ public class ArticleScheduleReaderService
         }
 
         // 1순위 방문날짜, 2순위 sortOrder로 정렬
-        List<ArticleScheduleJpaEntity> sortedSchedules = schedules.stream()
-            .sorted(Comparator.comparing(ArticleScheduleJpaEntity::getVisitedDate)
-                .thenComparing(ArticleScheduleJpaEntity::getSortOrder))
+        List<ArticleScheduleEntity> sortedSchedules = schedules.stream()
+            .sorted(Comparator.comparing(ArticleScheduleEntity::getVisitedDate)
+                .thenComparing(ArticleScheduleEntity::getSortOrder))
             .toList();
 
         // 방문날짜별 그룹화
@@ -137,16 +138,16 @@ public class ArticleScheduleReaderService
 
     // GENERAL, ETC - 장소명만 존재
     // TRANSPORT - 출발지명, 도착지명이 존재
-    private Stream<String> getPlaceNames(ArticleScheduleJpaEntity schedule) {
-        if (schedule instanceof ScheduleGeneralJpaEntity) {
-            return Stream.of(((ScheduleGeneralJpaEntity) schedule).getPlaceName());
-        } else if (schedule instanceof ScheduleTransportJpaEntity) {
+    private Stream<String> getPlaceNames(ArticleScheduleEntity schedule) {
+        if (schedule instanceof ScheduleGeneralEntity) {
+            return Stream.of(((ScheduleGeneralEntity) schedule).getPlaceName());
+        } else if (schedule instanceof ScheduleTransportEntity) {
             return Stream.of(
-                ((ScheduleTransportJpaEntity) schedule).getStartPlaceName(),
-                ((ScheduleTransportJpaEntity) schedule).getEndPlaceName()
+                ((ScheduleTransportEntity) schedule).getStartPlaceName(),
+                ((ScheduleTransportEntity) schedule).getEndPlaceName()
             );
-        } else if (schedule instanceof ScheduleEtcJpaEntity) {
-            return Stream.of(((ScheduleEtcJpaEntity) schedule).getPlaceName());
+        } else if (schedule instanceof ScheduleEtcEntity) {
+            return Stream.of(((ScheduleEtcEntity) schedule).getPlaceName());
         }
         return Stream.empty();
     }

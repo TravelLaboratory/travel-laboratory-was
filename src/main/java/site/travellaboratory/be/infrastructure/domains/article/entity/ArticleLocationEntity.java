@@ -9,7 +9,7 @@ import site.travellaboratory.be.domain.article.Location;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ArticleLocationJpaEntity {
+public class ArticleLocationEntity {
 
     private String placeId;
 
@@ -17,8 +17,8 @@ public class ArticleLocationJpaEntity {
 
     private String city;
 
-    public static ArticleLocationJpaEntity from(Location location) {
-        ArticleLocationJpaEntity result = new ArticleLocationJpaEntity();
+    public static ArticleLocationEntity from(Location location) {
+        ArticleLocationEntity result = new ArticleLocationEntity();
         result.placeId = location.getPlaceId();
         result.address = location.getAddress();
         result.city = location.getCity();

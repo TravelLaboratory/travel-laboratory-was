@@ -13,9 +13,9 @@ import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 import site.travellaboratory.be.domain.review.enums.ReviewStatus;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewJpaRepository;
 import site.travellaboratory.be.infrastructure.domains.review.repository.ReviewLikeJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewLikeEntity;
 import site.travellaboratory.be.infrastructure.domains.user.UserJpaRepository;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
 
 @Service
@@ -34,22 +34,22 @@ public class ReviewLikeService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
                 HttpStatus.NOT_FOUND)).toModel();
 
-        ReviewLikeJpaEntity reviewLikeJpaEntity = reviewLikeJpaRepository.findByUserIdAndReviewId(userId,
+        ReviewLikeEntity reviewLikeEntity = reviewLikeJpaRepository.findByUserIdAndReviewId(userId,
                 reviewId)
             .orElse(null);
 
         // 좋아요 누른 유저 가져오기
-        UserJpaEntity userJpaEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
+        UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         ReviewLike reviewLike;
-        if (reviewLikeJpaEntity != null) {
-            reviewLike = reviewLikeJpaEntity.toModel().withToggleStatus();
+        if (reviewLikeEntity != null) {
+            reviewLike = reviewLikeEntity.toModel().withToggleStatus();
         } else {
-            reviewLike = ReviewLike.create(userJpaEntity.toModel(), review);
+            reviewLike = ReviewLike.create(userEntity.toModel(), review);
         }
-        ReviewLike saveReviewLike = reviewLikeJpaRepository.save(ReviewLikeJpaEntity.from(reviewLike)).toModel();
+        ReviewLike saveReviewLike = reviewLikeJpaRepository.save(ReviewLikeEntity.from(reviewLike)).toModel();
         return saveReviewLike.getStatus();
     }
 }

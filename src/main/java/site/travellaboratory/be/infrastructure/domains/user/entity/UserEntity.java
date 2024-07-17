@@ -21,7 +21,7 @@ import site.travellaboratory.be.domain.user.enums.UserStatus;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserJpaEntity extends BaseEntity {
+public class UserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +46,12 @@ public class UserJpaEntity extends BaseEntity {
     private UserStatus status;
 
     // 후기 좋아요를 위한 생성자
-    private UserJpaEntity(Long id) {
+    private UserEntity(Long id) {
         this.id = id;
     }
 
-    public static UserJpaEntity from(User user) {
-        UserJpaEntity result = new UserJpaEntity();
+    public static UserEntity from(User user) {
+        UserEntity result = new UserEntity();
         result.id = user.getId();
         result.nickname = user.getNickname();
         result.profileImgUrl = user.getProfileImgUrl();
@@ -60,8 +60,8 @@ public class UserJpaEntity extends BaseEntity {
         return result;
     }
 
-    public static UserJpaEntity from(User user, UserAuth userAuth) {
-        UserJpaEntity result = new UserJpaEntity();
+    public static UserEntity from(User user, UserAuth userAuth) {
+        UserEntity result = new UserEntity();
         result.id = user.getId();
         result.username = userAuth.getUsername();
         result.password = userAuth.getPassword();
@@ -75,19 +75,19 @@ public class UserJpaEntity extends BaseEntity {
     }
 
     // 소셜 로그인 시
-    public static UserJpaEntity socialOf(String email, String profileImgUrl, String nickname,
+    public static UserEntity socialOf(String email, String profileImgUrl, String nickname,
         Boolean isAgreement) {
-        UserJpaEntity userJpaEntity = new UserJpaEntity();
-        userJpaEntity.setUsername(email);
-        userJpaEntity.setProfileImgUrl(profileImgUrl);
-        userJpaEntity.setNickname(nickname);
-        userJpaEntity.setIsAgreement(isAgreement);
-        return userJpaEntity;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(email);
+        userEntity.setProfileImgUrl(profileImgUrl);
+        userEntity.setNickname(nickname);
+        userEntity.setIsAgreement(isAgreement);
+        return userEntity;
     }
 
     // 후기 좋아요를 위한 of
-    public static UserJpaEntity of(Long userId) {
-        return new UserJpaEntity(userId);
+    public static UserEntity of(Long userId) {
+        return new UserEntity(userId);
     }
 
     @PrePersist

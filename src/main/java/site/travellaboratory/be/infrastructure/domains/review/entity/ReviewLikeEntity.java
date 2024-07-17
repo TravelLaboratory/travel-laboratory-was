@@ -16,14 +16,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.review.ReviewLike;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 import site.travellaboratory.be.domain.review.enums.ReviewLikeStatus;
 
 @Entity
 @Table(name = "review_like")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReviewLikeJpaEntity extends BaseEntity {
+public class ReviewLikeEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,21 +31,21 @@ public class ReviewLikeJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserJpaEntity userJpaEntity;
+    private UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
-    private ReviewJpaEntity reviewJpaEntity;
+    private ReviewEntity reviewEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReviewLikeStatus status;
 
-    public static ReviewLikeJpaEntity from(ReviewLike reviewLike) {
-        ReviewLikeJpaEntity result = new ReviewLikeJpaEntity();
+    public static ReviewLikeEntity from(ReviewLike reviewLike) {
+        ReviewLikeEntity result = new ReviewLikeEntity();
         result.id = reviewLike.getId();
-        result.userJpaEntity = UserJpaEntity.from(reviewLike.getUser());
-        result.reviewJpaEntity = ReviewJpaEntity.from(reviewLike.getReview());
+        result.userEntity = UserEntity.from(reviewLike.getUser());
+        result.reviewEntity = ReviewEntity.from(reviewLike.getReview());
         result.status = reviewLike.getStatus();
         return result;
     }
@@ -53,8 +53,8 @@ public class ReviewLikeJpaEntity extends BaseEntity {
     public ReviewLike toModel() {
         return ReviewLike.builder()
             .id(this.getId())
-            .user(this.getUserJpaEntity().toModel())
-            .review(this.getReviewJpaEntity().toModel())
+            .user(this.getUserEntity().toModel())
+            .review(this.getReviewEntity().toModel())
             .status(this.getStatus())
             .build();
     }

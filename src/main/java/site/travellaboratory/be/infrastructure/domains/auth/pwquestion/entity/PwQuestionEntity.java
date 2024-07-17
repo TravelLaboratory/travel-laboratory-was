@@ -19,7 +19,7 @@ import site.travellaboratory.be.domain.user.pw.enums.PwQuestionStatus;
 @Table(name = "pw_question")
 @Getter
 @NoArgsConstructor
-public class PwQuestionJpaEntity extends BaseEntity {
+public class PwQuestionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +37,8 @@ public class PwQuestionJpaEntity extends BaseEntity {
         this.status = PwQuestionStatus.ACTIVE;
     }
 
-    public static PwQuestionJpaEntity from(PwQuestion pwQuestion) {
-        PwQuestionJpaEntity result = new PwQuestionJpaEntity();
+    public static PwQuestionEntity from(PwQuestion pwQuestion) {
+        PwQuestionEntity result = new PwQuestionEntity();
         result.question = pwQuestion.getQuestion();
         return result;
     }

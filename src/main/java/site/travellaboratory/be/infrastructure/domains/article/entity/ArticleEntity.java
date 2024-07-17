@@ -26,13 +26,13 @@ import site.travellaboratory.be.domain.article.enums.TravelStyle;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelCompanionConverter;
 import site.travellaboratory.be.infrastructure.domains.article.converter.TravelStyleConverter;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 @Entity
 @Table(name = "article")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ArticleJpaEntity extends BaseEntity {
+public class ArticleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,13 +40,13 @@ public class ArticleJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserJpaEntity userJpaEntity;
+    private UserEntity userEntity;
 
     private String title;
 
     @ElementCollection
     @CollectionTable(name = "article_location", joinColumns = @JoinColumn(name = "article_id"))
-    private List<ArticleLocationJpaEntity> locationJpaEntities = new ArrayList<>();
+    private List<ArticleLocationEntity> locationEntities = new ArrayList<>();
 
     private LocalDate startAt;
 
@@ -67,13 +67,13 @@ public class ArticleJpaEntity extends BaseEntity {
 
     private String coverImageUrl;
 
-    public static ArticleJpaEntity from(Article article) {
-        ArticleJpaEntity result = new ArticleJpaEntity();
+    public static ArticleEntity from(Article article) {
+        ArticleEntity result = new ArticleEntity();
         result.id = article.getId();
-        result.userJpaEntity = UserJpaEntity.from(article.getUser());
+        result.userEntity = UserEntity.from(article.getUser());
         result.title = article.getTitle();
-        result.locationJpaEntities = article.getLocations().stream()
-            .map(ArticleLocationJpaEntity::from)
+        result.locationEntities = article.getLocations().stream()
+            .map(ArticleLocationEntity::from)
             .toList();
         result.startAt = article.getStartAt();
         result.endAt = article.getEndAt();
@@ -88,10 +88,10 @@ public class ArticleJpaEntity extends BaseEntity {
     public Article toModel() {
         return Article.builder()
             .id(this.id)
-            .user(this.userJpaEntity.toModel())
+            .user(this.userEntity.toModel())
             .title(this.title)
-            .locations(this.locationJpaEntities.stream()
-                .map(ArticleLocationJpaEntity::toModel).toList())
+            .locations(this.locationEntities.stream()
+                .map(ArticleLocationEntity::toModel).toList())
             .startAt(this.startAt)
             .endAt(this.endAt)
             .expense(this.expense)
@@ -125,6 +125,6 @@ public class ArticleJpaEntity extends BaseEntity {
     }
 
     public String getNickname() {
-        return userJpaEntity.getNickname();
+        return userEntity.getNickname();
     }
 }

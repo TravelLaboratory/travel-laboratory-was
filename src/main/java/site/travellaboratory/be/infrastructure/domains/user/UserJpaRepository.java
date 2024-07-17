@@ -4,10 +4,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.domain.user.enums.UserStatus;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 @Repository
-public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
+public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
     // todo: 수정 요망
 //    default User getById(final Long id) {
@@ -15,8 +15,8 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 //    }
 
     // todo : 이걸로
-    Optional<UserJpaEntity> findByIdAndStatus(Long userId, UserStatus status);
+    Optional<UserEntity> findByIdAndStatus(Long userId, UserStatus status);
 
-    Optional<UserJpaEntity> findByUsernameAndStatusOrderByIdDesc(String username, UserStatus status);
-    Optional<UserJpaEntity> findByNickname(String nickname);
+    Optional<UserEntity> findByUsernameAndStatusOrderByIdDesc(String username, UserStatus status);
+    Optional<UserEntity> findByNickname(String nickname);
 }

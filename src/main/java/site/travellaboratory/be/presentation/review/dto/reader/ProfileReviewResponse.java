@@ -2,7 +2,7 @@ package site.travellaboratory.be.presentation.review.dto.reader;
 
 import java.time.LocalDate;
 import java.util.List;
-import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.review.entity.ReviewEntity;
 
 public record ProfileReviewResponse(
     Long reviewId,
@@ -12,14 +12,14 @@ public record ProfileReviewResponse(
     LocalDate startAt,
     LocalDate endAt
 ) {
-    public static ProfileReviewResponse from(ReviewJpaEntity reviewJpaEntity, List<ProfileReviewLocation> locations) {
+    public static ProfileReviewResponse from(ReviewEntity reviewEntity, List<ProfileReviewLocation> locations) {
         return new ProfileReviewResponse(
-            reviewJpaEntity.getId(),
-            reviewJpaEntity.getTitle(),
-            reviewJpaEntity.getRepresentativeImgUrl(),
+            reviewEntity.getId(),
+            reviewEntity.getTitle(),
+            reviewEntity.getRepresentativeImgUrl(),
             locations,
-            reviewJpaEntity.getArticleJpaEntity().getStartAt(),
-            reviewJpaEntity.getArticleJpaEntity().getEndAt());
+            reviewEntity.getArticleEntity().getStartAt(),
+            reviewEntity.getArticleEntity().getEndAt());
     }
 }
 

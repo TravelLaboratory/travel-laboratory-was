@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.domain.comment.CommentLike;
 import site.travellaboratory.be.domain.comment.enums.CommentLikeStatus;
 import site.travellaboratory.be.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.infrastructure.domains.user.entity.UserJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.user.entity.UserEntity;
 
 @Entity
 @Table(name = "comment_like")
 @Getter
 @NoArgsConstructor
-public class CommentLikeJpaEntity extends BaseEntity {
+public class CommentLikeEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,21 +30,21 @@ public class CommentLikeJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserJpaEntity userJpaEntity;
+    private UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    private CommentJpaEntity commentJpaEntity;
+    private CommentEntity commentEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CommentLikeStatus status;
 
-    public static CommentLikeJpaEntity from(CommentLike commentLike) {
-        CommentLikeJpaEntity result = new CommentLikeJpaEntity();
+    public static CommentLikeEntity from(CommentLike commentLike) {
+        CommentLikeEntity result = new CommentLikeEntity();
         result.id = commentLike.getId();
-        result.userJpaEntity = UserJpaEntity.from(commentLike.getUser());
-        result.commentJpaEntity = CommentJpaEntity.from(commentLike.getComment());
+        result.userEntity = UserEntity.from(commentLike.getUser());
+        result.commentEntity = CommentEntity.from(commentLike.getComment());
         result.status = commentLike.getStatus();
         return result;
     }
@@ -52,8 +52,8 @@ public class CommentLikeJpaEntity extends BaseEntity {
     public CommentLike toModel() {
         return CommentLike.builder()
             .id(this.getId())
-            .user(this.getUserJpaEntity().toModel())
-            .comment(this.getCommentJpaEntity().toModel())
+            .user(this.getUserEntity().toModel())
+            .comment(this.getCommentEntity().toModel())
             .status(this.getStatus())
             .build();
     }

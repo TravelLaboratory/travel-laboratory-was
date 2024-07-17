@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import site.travellaboratory.be.domain.article.enums.TravelStyle;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpaEntity;
-import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleLocationJpaEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleEntity;
+import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleLocationEntity;
 
 public record ArticleTotalResponse(
     Long articleId,
     String title,
-    List<ArticleLocationJpaEntity> location,
+    List<ArticleLocationEntity> location,
     LocalDate startAt,
     LocalDate endAt,
     String expense,
@@ -25,27 +25,27 @@ public record ArticleTotalResponse(
 
 ) {
     public static ArticleTotalResponse of(
-            final ArticleJpaEntity articleJpaEntity,
+            final ArticleEntity articleEntity,
             final Long bookmarkCount,
             final Boolean isBookmarked,
             final Boolean isEditable
     ) {
-        List<String> travelStyleNames = articleJpaEntity.getTravelStyles().stream()
+        List<String> travelStyleNames = articleEntity.getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .collect(Collectors.toList());
 
         return new ArticleTotalResponse(
-                articleJpaEntity.getId(),
-                articleJpaEntity.getTitle(),
-                articleJpaEntity.getLocationJpaEntities(),
-                articleJpaEntity.getStartAt(),
-                articleJpaEntity.getEndAt(),
-                articleJpaEntity.getExpense(),
-                articleJpaEntity.getUserJpaEntity().getProfileImgUrl(),
-                articleJpaEntity.getCoverImageUrl(),
-                articleJpaEntity.getTravelCompanion().getName(),
+                articleEntity.getId(),
+                articleEntity.getTitle(),
+                articleEntity.getLocationEntities(),
+                articleEntity.getStartAt(),
+                articleEntity.getEndAt(),
+                articleEntity.getExpense(),
+                articleEntity.getUserEntity().getProfileImgUrl(),
+                articleEntity.getCoverImageUrl(),
+                articleEntity.getTravelCompanion().getName(),
                 travelStyleNames,
-                articleJpaEntity.getUserJpaEntity().getNickname(),
+                articleEntity.getUserEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
                 isEditable
