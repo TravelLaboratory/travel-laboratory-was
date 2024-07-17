@@ -9,7 +9,7 @@ import site.travellaboratory.be.domain.article.enums.TravelStyle;
 
 public record ArticleOneResponse(
         String title,
-        List<ArticleLocationJpaEntity> locationJpaEntities,
+        List<ArticleLocationJpaEntity> location,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
