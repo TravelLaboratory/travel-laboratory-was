@@ -13,6 +13,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.sql.Time;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ import site.travellaboratory.be.infrastructure.domains.article.entity.ArticleJpa
 import site.travellaboratory.be.presentation.articleschedule.dto.writer.ArticleScheduleRequest;
 
 @Entity
+@Table(name = "article_schedule")
 @Inheritance(strategy = InheritanceType.JOINED) // 조인 전략
 @DiscriminatorColumn(name = "dtype") // 조인 전략은 default DTYPE을 만들지 않기에 명시
 @Getter
