@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.comment.application.CommentWriterService;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentDeleteResponse;
-import site.travellaboratory.be.comment.presentation.response.writer.CommentSaveRequest;
+import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentSaveResponse;
-import site.travellaboratory.be.comment.presentation.response.writer.CommentUpdateRequest;
+import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentUpdateResponse;
 
 @RestController

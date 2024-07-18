@@ -1,4 +1,4 @@
-package site.travellaboratory.be.comment.presentation.response.writer;
+package site.travellaboratory.be.comment.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

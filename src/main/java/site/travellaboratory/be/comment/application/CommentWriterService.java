@@ -17,8 +17,8 @@ import site.travellaboratory.be.comment.infrastructure.persistence.entity.Commen
 import site.travellaboratory.be.comment.infrastructure.persistence.repository.CommentJpaRepository;
 import site.travellaboratory.be.review.infrastructure.persistence.ReviewJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.comment.presentation.response.writer.CommentSaveRequest;
-import site.travellaboratory.be.comment.presentation.response.writer.CommentUpdateRequest;
+import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
+import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class CommentWriterService {
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND)).toModel();
 
         // 댓글 작성
-        Comment saveComment = Comment.create(user, review, request.replyComment());
+        Comment saveComment = Comment.create(user, review, request);
         CommentEntity savedEntity = commentJpaRepository.save(CommentEntity.from(saveComment));
         return savedEntity.getId();
     }
@@ -61,7 +61,7 @@ public class CommentWriterService {
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND)).toModel();
 
-        Comment updateComment = comment.withUpdatedReplyContent(user, request.replyComment());
+        Comment updateComment = comment.withUpdatedReplyContent(user, request);
         CommentEntity savedEntity = commentJpaRepository.save(CommentEntity.from(updateComment));
         return savedEntity.getId();
     }
@@ -78,9 +78,9 @@ public class CommentWriterService {
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND)).toModel();
 
-        Comment deletedComment = comment.withInactiveStatus(user);
 
         // 댓글 삭제
+        Comment deletedComment = comment.withInactiveStatus(user);
         CommentEntity result = commentJpaRepository.save(CommentEntity.from(deletedComment));
         return result.getStatus() == CommentStatus.INACTIVE;
     }

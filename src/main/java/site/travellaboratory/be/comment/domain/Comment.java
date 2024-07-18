@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.comment.domain.enums.CommentStatus;
+import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
+import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.user.domain.User;
 
@@ -18,28 +20,26 @@ public class Comment {
     private final Long id;
     private final User user;
     private final Review review;
-    private final String replyContent;
+    private final String replyComment;
     private final CommentStatus status;
 
-    public static Comment create(User user, Review review, String replyContent) {
-
+    public static Comment create(User user, Review review, CommentSaveRequest saveRequest) {
         return Comment.builder()
             .user(user)
             .review(review)
-            .replyContent(replyContent)
+            .replyComment(saveRequest.replyComment())
             .status(CommentStatus.ACTIVE)
             .build();
     }
 
-    public Comment withUpdatedReplyContent(User user, String replyContent) {
+    public Comment withUpdatedReplyContent(User user, CommentUpdateRequest updateRequest) {
         // 유저가 작성한 댓글이 아닌 경우
         verifyOwner(user);
-
         return Comment.builder()
             .id(this.id)
             .user(this.user)
             .review(this.review)
-            .replyContent(replyContent)
+            .replyComment(updateRequest.replyComment())
             .status(this.status)
             .build();
     }
@@ -47,12 +47,11 @@ public class Comment {
     public Comment withInactiveStatus(User user) {
         // 유저가 작성한 댓글이 아닌 경우
         verifyOwner(user);
-
         return Comment.builder()
             .id(this.id)
             .user(this.user)
             .review(this.review)
-            .replyContent(this.replyContent)
+            .replyComment(this.replyComment)
             .status(CommentStatus.INACTIVE)
             .build();
     }

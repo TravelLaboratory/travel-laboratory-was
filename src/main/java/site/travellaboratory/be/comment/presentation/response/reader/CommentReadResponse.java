@@ -23,7 +23,7 @@ public record CommentReadResponse(
             commentEntity.getUserEntity().getNickname(),
             isEditable,
             commentEntity.getId(),
-            commentEntity.getReplyContent(),
+            commentEntity.getReplyComment(),
             commentEntity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             isLike,
             likeCount
