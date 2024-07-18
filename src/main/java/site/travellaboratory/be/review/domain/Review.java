@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
+import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
+import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;
 import site.travellaboratory.be.user.domain.User;
 
 @Getter
@@ -23,23 +25,21 @@ public class Review {
     private final String description;
     private final ReviewStatus status;
 
-    public static Review create(User user, Article article, String title,
-        String representativeImgUrl, String description, ReviewStatus status) {
+    public static Review create(User user, Article article, ReviewSaveRequest saveRequest) {
         // 유저가 작성한 article_id이 아닌 경우
         article.verifyOwner(user);
 
         return Review.builder()
             .user(user)
             .article(article)
-            .title(title)
-            .representativeImgUrl(representativeImgUrl)
-            .description(description)
-            // todo: 공개 비공개를 따로 만들어서 status 대신 공개여부를 받도록 수정
-            .status(status)
+            .title(saveRequest.title())
+            .representativeImgUrl(saveRequest.representativeImgUrl())
+            .description(saveRequest.description())
+            .status(saveRequest.status())
             .build();
     }
 
-    public Review withUpdatedContent(User user, String title, String representativeImgUrl, String description, ReviewStatus status) {
+    public Review withUpdatedContent(User user, ReviewUpdateRequest updatedContent) {
         // 유저가 작성한 후기가 아닌 경우
         verifyOwner(user);
 
@@ -47,10 +47,10 @@ public class Review {
             .id(this.id)
             .user(this.user)
             .article(this.article)
-            .title(title)
-            .representativeImgUrl(representativeImgUrl)
-            .description(description)
-            .status(status)
+            .title(updatedContent.title())
+            .representativeImgUrl(updatedContent.representativeImgUrl())
+            .description(updatedContent.description())
+            .status(updatedContent.status())
             .build();
     }
 
@@ -65,7 +65,7 @@ public class Review {
             .title(this.title)
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)
-            .status(ReviewStatus.INACTIVE)
+            .status(ReviewStatus.INACTIVE) // ACTIVE -> INACTIVE
             .build();
     }
 
