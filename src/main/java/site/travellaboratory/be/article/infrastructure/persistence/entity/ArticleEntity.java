@@ -65,7 +65,7 @@ public class ArticleEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 
-    private String coverImageUrl;
+    private String coverImgUrl;
 
     public static ArticleEntity from(Article article) {
         ArticleEntity result = new ArticleEntity();
@@ -81,7 +81,7 @@ public class ArticleEntity extends BaseEntity {
         result.travelCompanion = article.getTravelCompanion();
         result.travelStyles = article.getTravelStyles();
         result.status = article.getStatus();
-        result.coverImageUrl = article.getCoverImageUrl();
+        result.coverImgUrl = article.getCoverImgUrl();
         return result;
     }
 
@@ -98,12 +98,12 @@ public class ArticleEntity extends BaseEntity {
             .travelCompanion(this.travelCompanion)
             .travelStyles(this.travelStyles)
             .status(this.status)
-            .coverImageUrl(this.coverImageUrl)
+            .coverImgUrl(this.coverImgUrl)
             .build();
     }
 
-    public void updateCoverImage(final String coverImageUrl) {
-        this.coverImageUrl = coverImageUrl;
+    public void updateCoverImage(final String coverImgUrl) {
+        this.coverImgUrl = coverImgUrl;
     }
 
     // 지우지 마세요!!! [상권] - 초기 여행 계획 + 일정 리스트 삭제 시 사용중

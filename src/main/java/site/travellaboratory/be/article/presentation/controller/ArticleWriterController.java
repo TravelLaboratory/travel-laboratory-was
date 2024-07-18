@@ -39,9 +39,9 @@ public class ArticleWriterController {
         return ResponseEntity.ok(ArticleRegisterResponse.from(result));
     }
 
-    @PutMapping("/article/{articleId}/coverImage")
+    @PutMapping("/article/{articleId}/coverImg")
     public ResponseEntity<ArticleUpdateCoverImageResponse> updateCoverImage(
-        @RequestPart("coverImage") final MultipartFile coverImage,
+        @RequestPart("cover_image") final MultipartFile coverImage,
         @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleUpdateCoverImageResponse articleUpdateCoverImageResponse = articleWriterService.updateCoverImage(

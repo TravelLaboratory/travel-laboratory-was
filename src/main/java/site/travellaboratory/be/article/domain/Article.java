@@ -35,7 +35,7 @@ public class Article {
     @Builder.Default
     private final List<TravelStyle> travelStyles  = new ArrayList<>();
     private final ArticleStatus status;
-    private final String coverImageUrl;
+    private final String coverImgUrl;
 
     public static Article create(User user, ArticleRegisterRequest registerRequest) {
         return Article.builder()
@@ -48,7 +48,7 @@ public class Article {
             .travelCompanion(TravelCompanion.from(registerRequest.travelCompanion()))
             .travelStyles(TravelStyle.from(registerRequest.travelStyles()))
             .status(ArticleStatus.ACTIVE) // 기본 상태를 ACTIVE로 설정
-            .coverImageUrl(null) // 여행 생성 시에는 coverImgUrl 받지 않음
+            .coverImgUrl(null) // 여행 생성 시에는 coverImgUrl 받지 않음
             .build();
     }
 
@@ -66,7 +66,7 @@ public class Article {
             .travelCompanion(TravelCompanion.from(updateRequest.travelCompanion()))
             .travelStyles(TravelStyle.from(updateRequest.travelStyles()))
             .status(this.status) // 기본 상태를 ACTIVE로 설정
-            .coverImageUrl(this.coverImageUrl)
+            .coverImgUrl(this.coverImgUrl)
             .build();
     }
 
@@ -84,7 +84,7 @@ public class Article {
             .travelCompanion(this.travelCompanion)
             .travelStyles(this.travelStyles)
             .status(ArticleStatus.INACTIVE)
-            .coverImageUrl(this.coverImageUrl)
+            .coverImgUrl(this.coverImgUrl)
             .build();
     }
 
