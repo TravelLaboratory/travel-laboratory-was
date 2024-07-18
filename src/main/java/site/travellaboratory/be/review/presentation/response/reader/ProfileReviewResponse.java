@@ -8,7 +8,7 @@ public record ProfileReviewResponse(
     Long reviewId,
     String title,
     String representativeImgUrl,
-    List<ProfileReviewLocation> location,
+    List<ProfileReviewLocation> locations,
     LocalDate startAt,
     LocalDate endAt
 ) {

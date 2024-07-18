@@ -10,7 +10,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity.Articl
 public record ArticleTotalResponse(
     Long articleId,
     String title,
-    List<ArticleLocationEntity> location,
+    List<ArticleLocationEntity> locations,
     LocalDate startAt,
     LocalDate endAt,
     String expense,
