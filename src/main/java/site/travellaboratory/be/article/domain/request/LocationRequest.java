@@ -1,20 +1,12 @@
-package site.travellaboratory.be.article.presentation.response.writer;
+package site.travellaboratory.be.article.domain.request;
 
 import site.travellaboratory.be.article.domain.Location;
 
-public record LocationDto (
+public record LocationRequest(
     String placeId,
     String address,
     String city
 ) {
-    public static LocationDto from(Location location) {
-        return new LocationDto(
-            location.getPlaceId(),
-            location.getAddress(),
-            location.getCity()
-        );
-    }
-
     public Location toModel() {
         return Location.builder()
             .placeId(this.placeId)

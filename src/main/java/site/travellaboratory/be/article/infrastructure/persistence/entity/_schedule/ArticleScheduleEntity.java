@@ -26,7 +26,7 @@ import site.travellaboratory.be.article.domain._schedule.ScheduleTransport;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.common.infrastructure.common.BaseEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
 
 @Entity
 @Table(name = "article_schedule")

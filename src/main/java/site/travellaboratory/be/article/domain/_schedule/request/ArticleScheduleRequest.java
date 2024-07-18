@@ -1,10 +1,9 @@
-package site.travellaboratory.be.article.presentation.response._schedule.writer;
+package site.travellaboratory.be.article.domain._schedule.request;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 public record ArticleScheduleRequest(
-    // 수정 시 사용 todo: 리팩토링 시 id 때문에 분리 예정
     Long scheduleId,
     LocalDate visitedDate,
     Time visitedTime,

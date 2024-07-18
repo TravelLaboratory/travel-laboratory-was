@@ -16,11 +16,11 @@ import site.travellaboratory.be.article.application.ArticleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleRegisterRequest;
+import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleRegisterResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateRequest;
+import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateResponse;
 
 @RestController

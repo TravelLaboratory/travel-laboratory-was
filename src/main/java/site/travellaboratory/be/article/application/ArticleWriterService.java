@@ -6,24 +6,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.domain.enums.TravelCompanion;
 import site.travellaboratory.be.article.domain.enums.TravelStyle;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleRegisterRequest;
+import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateRequest;
-import site.travellaboratory.be.article.presentation.response.writer.LocationDto;
+import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
+import site.travellaboratory.be.article.domain.request.LocationRequest;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
+import site.travellaboratory.be.user.domain.User;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class ArticleWriterService {
 
         Article article = Article.create(user,
             request.title(),
-            request.locations().stream().map(LocationDto::toModel).toList(),
+            request.locations().stream().map(LocationRequest::toModel).toList(),
             request.startAt(),
             request.endAt(),
             request.expense(),
@@ -87,7 +87,7 @@ public class ArticleWriterService {
 
         Article updateArticle = article.update(user,
             request.title(),
-            request.locations().stream().map(LocationDto::toModel).toList(),
+            request.locations().stream().map(LocationRequest::toModel).toList(),
             request.startAt(),
             request.endAt(),
             request.expense(),

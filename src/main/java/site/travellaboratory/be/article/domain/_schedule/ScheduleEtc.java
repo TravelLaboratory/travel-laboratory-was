@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
 
 @Getter
 public class ScheduleEtc extends ArticleSchedule {

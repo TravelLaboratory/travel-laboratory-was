@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.article.application._schedule.ArticleScheduleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleDeleteResponse;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleUpdateRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleUpdateRequest;
 import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleUpdateResponse;
 
 @RestController

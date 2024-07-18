@@ -7,7 +7,7 @@ import site.travellaboratory.be.article.domain.enums.TravelStyle;
 
 public record ArticleUpdateResponse(
     String title,
-    List<LocationDto> location,
+    List<LocationResponse> location,
     LocalDate startAt,
     LocalDate endAt,
     String expense,
@@ -23,7 +23,7 @@ public record ArticleUpdateResponse(
         return new ArticleUpdateResponse(
             article.getTitle(),
             article.getLocations().stream()
-                .map(LocationDto::from)
+                .map(LocationResponse::from)
                 .toList(),
             article.getStartAt(),
             article.getEndAt(),

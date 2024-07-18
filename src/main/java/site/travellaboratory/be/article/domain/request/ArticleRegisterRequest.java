@@ -1,11 +1,11 @@
-package site.travellaboratory.be.article.presentation.response.writer;
+package site.travellaboratory.be.article.domain.request;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public record ArticleRegisterRequest(
     String title,
-    List<LocationDto> locations,
+    List<LocationRequest> locations,
     LocalDate startAt,
     LocalDate endAt,
     String expense,

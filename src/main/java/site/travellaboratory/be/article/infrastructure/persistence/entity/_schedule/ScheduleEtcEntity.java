@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.article.domain._schedule.ScheduleEtc;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ScheduleEtcRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ScheduleEtcRequest;
 
 @Entity
 @Table(name = "schedule_etc")

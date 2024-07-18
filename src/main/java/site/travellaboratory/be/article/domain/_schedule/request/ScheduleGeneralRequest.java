@@ -1,4 +1,4 @@
-package site.travellaboratory.be.article.presentation.response._schedule.writer;
+package site.travellaboratory.be.article.domain._schedule.request;
 
 public record ScheduleGeneralRequest(
     String placeName,

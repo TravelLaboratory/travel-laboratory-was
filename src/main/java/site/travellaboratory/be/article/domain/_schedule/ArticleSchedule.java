@@ -9,7 +9,7 @@ import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,14 +30,14 @@ public abstract class ArticleSchedule{
     public static ArticleSchedule create(Article article, ArticleScheduleRequest request) {
         switch (request.dtype()) {
             case "GENERAL" -> {
-                return create(article, request);
+                return ScheduleGeneral.create(article, request);
             }
             // dtype - transport
             case "TRANSPORT" -> {
-                return create(article, request);
+                return ScheduleTransport.create(article, request);
             }
             case "ETC" -> {
-                return create(article, request);
+                return ScheduleEtc.create(article, request);
             }
             // dtype 에 general, transport, etc 외에 다른 값이 포함되어 있는 경우
             default -> throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_POST_NOT_DTYPE,

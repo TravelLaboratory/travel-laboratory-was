@@ -21,7 +21,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity._sched
 import site.travellaboratory.be.article.infrastructure.persistence.repository._schedule.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleDeleteResponse;
-import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleRequest;
+import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
 import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleUpdateResponse;
 
 @Service
