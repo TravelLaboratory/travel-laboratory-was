@@ -13,7 +13,7 @@ import site.travellaboratory.be.user.application._auth.manager.JwtTokenManager;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginRequest;
+import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AccessTokenResponse;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AuthTokenResponse;

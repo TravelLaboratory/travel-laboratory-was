@@ -15,10 +15,10 @@ import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.PwAnswerJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryEmailRequest;
+import site.travellaboratory.be.user.presentation._auth.request.PwInquiryEmailRequest;
 import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryEmailResponse;
-import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryRenewalRequest;
-import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryVerificationRequest;
+import site.travellaboratory.be.user.presentation._auth.request.PwInquiryRenewalRequest;
+import site.travellaboratory.be.user.presentation._auth.request.PwInquiryVerificationRequest;
 import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryVerificationResponse;
 
 @Service

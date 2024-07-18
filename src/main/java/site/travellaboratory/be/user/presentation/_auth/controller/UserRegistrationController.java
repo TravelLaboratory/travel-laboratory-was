@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.user.application._auth.UserRegistrationService;
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.presentation._auth.response.userregistration.UserJoinRequest;
+import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 import site.travellaboratory.be.user.presentation._auth.response.userregistration.UserRegisterResponse;
 
 @RestController

@@ -18,7 +18,7 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.PwAnswerE
 import site.travellaboratory.be.user.infrastructure.persistence.repository.PwQuestionJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.presentation._auth.response.userregistration.UserJoinRequest;
+import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,8 @@ public class UserRegistrationService {
     @Transactional
     public User register(UserJoinRequest request) {
 
-        UserAuth userAuth = UserAuth.create(request.username(), encoder.encode(
-            request.password()), request.isAgreement());
+        String encodePassword = encoder.encode(request.password());
+        UserAuth userAuth = UserAuth.create(encodePassword, request);
 
         // 닉네임 중복 체크
         userJpaRepository.findByNickname(request.nickname()).ifPresent(it -> {

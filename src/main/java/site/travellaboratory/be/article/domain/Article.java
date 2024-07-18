@@ -7,11 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.domain.enums.TravelCompanion;
 import site.travellaboratory.be.article.domain.enums.TravelStyle;
+import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
+import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
+import site.travellaboratory.be.article.domain.request.LocationRequest;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 
 @Getter
@@ -32,58 +35,44 @@ public class Article {
     @Builder.Default
     private final List<TravelStyle> travelStyles  = new ArrayList<>();
     private final ArticleStatus status;
-    private final String coverImageUrl;
+    private final String coverImgUrl;
 
-    public static Article create(
-        User user,
-        String title,
-        List<Location> locations,
-        LocalDate startAt,
-        LocalDate endAt,
-        String expense,
-        TravelCompanion travelCompanion,
-        List<TravelStyle> travelStyles
-    ) {
+    public static Article create(User user, ArticleRegisterRequest registerRequest) {
         return Article.builder()
             .user(user)
-            .title(title)
-            .locations(locations)
-            .startAt(startAt)
-            .endAt(endAt)
-            .expense(expense)
-            .travelCompanion(travelCompanion)
-            .travelStyles(travelStyles)
+            .title(registerRequest.title())
+            .locations(registerRequest.locations().stream().map(LocationRequest::toModel).toList())
+            .startAt(registerRequest.startAt())
+            .endAt(registerRequest.endAt())
+            .expense(registerRequest.expense())
+            .travelCompanion(TravelCompanion.from(registerRequest.travelCompanion()))
+            .travelStyles(TravelStyle.from(registerRequest.travelStyles()))
             .status(ArticleStatus.ACTIVE) // 기본 상태를 ACTIVE로 설정
-            .coverImageUrl(null) // 여행 생성 시에는 coverImgUrl 받지 않음
+            .coverImgUrl(null) // 여행 생성 시에는 coverImgUrl 받지 않음
             .build();
     }
 
-    public Article update(
-        User user,
-        String title,
-        List<Location> locations,
-        LocalDate startAt,
-        LocalDate endAt,
-        String expense,
-        TravelCompanion travelCompanion,
-        List<TravelStyle> travelStyles
-    ) {
+    public Article update(User user, ArticleUpdateRequest updateRequest) {
+        verifyOwner(user);
+
         return Article.builder()
-            .id(id)
-            .user(user)
-            .title(title)
-            .locations(locations)
-            .startAt(startAt)
-            .endAt(endAt)
-            .expense(expense)
-            .travelCompanion(travelCompanion)
-            .travelStyles(travelStyles)
-            .status(status) // 기본 상태를 ACTIVE로 설정
-            .coverImageUrl(coverImageUrl)
+            .id(this.id)
+            .user(this.user)
+            .title(updateRequest.title())
+            .locations(updateRequest.locations().stream().map(LocationRequest::toModel).toList())
+            .startAt(updateRequest.startAt())
+            .endAt(updateRequest.endAt())
+            .expense(updateRequest.expense())
+            .travelCompanion(TravelCompanion.from(updateRequest.travelCompanion()))
+            .travelStyles(TravelStyle.from(updateRequest.travelStyles()))
+            .status(this.status) // 기본 상태를 ACTIVE로 설정
+            .coverImgUrl(this.coverImgUrl)
             .build();
     }
 
-    public Article delete() {
+    public Article delete(User user) {
+        verifyOwner(user);
+
         return Article.builder()
             .id(this.id)
             .user(this.user)
@@ -95,7 +84,7 @@ public class Article {
             .travelCompanion(this.travelCompanion)
             .travelStyles(this.travelStyles)
             .status(ArticleStatus.INACTIVE)
-            .coverImageUrl(this.coverImageUrl)
+            .coverImgUrl(this.coverImgUrl)
             .build();
     }
 

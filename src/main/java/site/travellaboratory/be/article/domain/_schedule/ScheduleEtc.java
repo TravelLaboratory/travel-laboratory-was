@@ -7,6 +7,7 @@ import lombok.Getter;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
+import site.travellaboratory.be.user.domain.User;
 
 @Getter
 public class ScheduleEtc extends ArticleSchedule {
@@ -32,8 +33,9 @@ public class ScheduleEtc extends ArticleSchedule {
         this.placeName = placeName;
     }
 
-    public static ScheduleEtc create(
-        Article article, ArticleScheduleRequest request) {
+    public static ScheduleEtc create(User user, Article article, ArticleScheduleRequest request) {
+        // 유저의 여행계획이 맞는지
+        article.verifyOwner(user);
         return ScheduleEtc.builder()
             .article(article)
             .visitedDate(request.visitedDate())
@@ -50,8 +52,11 @@ public class ScheduleEtc extends ArticleSchedule {
     }
 
     @Override
-    public ScheduleEtc update(ArticleScheduleRequest request) {
-        super.verifyArticleSchedule(request.scheduleId());
+    public ScheduleEtc update(User user, ArticleScheduleRequest request) {
+        // 유저의 여행계획이 맞는지
+        this.getArticle().verifyOwner(user);
+        // 유효하지 않은 일정을 수정하려는 경우 (삭제 혹은 임의의 scheduleId를 넣어서 요청한 경우)
+        super.verifyArticleScheduleId(request.scheduleId());
         return ScheduleEtc.builder()
             .id(request.scheduleId())
             .article(this.getArticle())
@@ -69,7 +74,9 @@ public class ScheduleEtc extends ArticleSchedule {
     }
 
     @Override
-    public ScheduleEtc delete() {
+    public ScheduleEtc delete(User user) {
+        // 유저의 여행계획이 맞는지
+        this.getArticle().verifyOwner(user);
         return ScheduleEtc.builder()
             .id(this.getId())
             .article(this.getArticle())
@@ -85,8 +92,4 @@ public class ScheduleEtc extends ArticleSchedule {
             .placeName(this.getPlaceName())
             .build();
     }
-
-    //    public void update(ScheduleEtcRequest request) {
-//        this.placeName = request.placeName();
-//    }
 }

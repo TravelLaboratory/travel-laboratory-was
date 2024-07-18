@@ -7,7 +7,7 @@ public record ReviewBannerResponse(
     Long reviewId,
     String title,
     String representativeImgUrl,
-    List<BannerReviewLocation> location,
+    List<BannerReviewLocation> locations,
     String nickname,
     String profileImgUrl
 ) {

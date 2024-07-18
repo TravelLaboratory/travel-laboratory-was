@@ -9,11 +9,11 @@ import site.travellaboratory.be.article.domain.enums.TravelStyle;
 
 public record ArticleOneResponse(
         String title,
-        List<ArticleLocationEntity> location,
+        List<ArticleLocationEntity> locations,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
-        String coverImage,
+        String coverImgUrl,
         String travelCompanion,
         List<String> travelStyles,
         String name,
@@ -40,7 +40,7 @@ public record ArticleOneResponse(
                 articleEntity.getStartAt(),
                 articleEntity.getEndAt(),
                 articleEntity.getExpense(),
-                articleEntity.getCoverImageUrl(),
+                articleEntity.getCoverImgUrl(),
                 articleEntity.getTravelCompanion().getName(),
                 travelStyleNames,
                 articleEntity.getUserEntity().getNickname(),

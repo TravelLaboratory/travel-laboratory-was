@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.review.application.ReviewWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewDeleteResponse;
-import site.travellaboratory.be.review.presentation.response.writer.ReviewSaveRequest;
+import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewSaveResponse;
-import site.travellaboratory.be.review.presentation.response.writer.ReviewUpdateRequest;
+import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewUpdateResponse;
 
 @RestController

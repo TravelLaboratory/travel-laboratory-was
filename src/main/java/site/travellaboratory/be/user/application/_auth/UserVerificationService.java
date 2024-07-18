@@ -7,8 +7,8 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.presentation._auth.response.userverification.UserNicknameRequest;
-import site.travellaboratory.be.user.presentation._auth.response.userverification.UsernameRequest;
+import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
+import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
 
 @Service
 @RequiredArgsConstructor

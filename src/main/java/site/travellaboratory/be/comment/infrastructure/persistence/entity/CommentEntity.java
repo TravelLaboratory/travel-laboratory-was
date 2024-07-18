@@ -39,7 +39,7 @@ public class CommentEntity extends BaseEntity {
     private ReviewEntity reviewEntity;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String replyContent;
+    private String replyComment;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,7 +50,7 @@ public class CommentEntity extends BaseEntity {
         result.id = comment.getId();
         result.userEntity = UserEntity.from(comment.getUser());
         result.reviewEntity = ReviewEntity.from(comment.getReview());
-        result.replyContent = comment.getReplyContent();
+        result.replyComment = comment.getReplyComment();
         result.status = comment.getStatus();
         return result;
     }
@@ -60,7 +60,7 @@ public class CommentEntity extends BaseEntity {
             .id(this.id)
             .user(this.userEntity.toModel())
             .review(this.reviewEntity.toModel())
-            .replyContent(this.replyContent)
+            .replyComment(this.replyComment)
             .status(this.status)
             .build();
     }

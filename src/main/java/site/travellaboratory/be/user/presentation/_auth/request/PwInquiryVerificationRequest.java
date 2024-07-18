@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.presentation._auth.response.pwinquiry;
+package site.travellaboratory.be.user.presentation._auth.request;
 
 public record PwInquiryVerificationRequest(
     String username,

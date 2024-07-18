@@ -7,6 +7,7 @@ import lombok.Getter;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
+import site.travellaboratory.be.user.domain.User;
 
 @Getter
 public class ScheduleTransport extends ArticleSchedule {
@@ -55,7 +56,9 @@ public class ScheduleTransport extends ArticleSchedule {
         this.googleMapEndLongitude = googleMapEndLongitude;
     }
 
-    public static ScheduleTransport create(Article article, ArticleScheduleRequest request) {
+    public static ScheduleTransport create(User user, Article article, ArticleScheduleRequest request) {
+        // 유저의 여행계획이 맞는지
+        article.verifyOwner(user);
         return ScheduleTransport.builder()
             .article(article)
             .visitedDate(request.visitedDate())
@@ -80,8 +83,11 @@ public class ScheduleTransport extends ArticleSchedule {
     }
 
     @Override
-    public ScheduleTransport update(ArticleScheduleRequest request) {
-        super.verifyArticleSchedule(request.scheduleId());
+    public ScheduleTransport update(User user, ArticleScheduleRequest request) {
+        // 유저의 여행계획이 맞는지
+        this.getArticle().verifyOwner(user);
+        // 유효하지 않은 일정을 수정하려는 경우 (삭제 혹은 임의의 scheduleId를 넣어서 요청한 경우)
+        super.verifyArticleScheduleId(request.scheduleId());
         return ScheduleTransport.builder()
             .id(request.scheduleId())
             .article(this.getArticle())
@@ -108,7 +114,9 @@ public class ScheduleTransport extends ArticleSchedule {
     }
 
     @Override
-    public ScheduleTransport delete() {
+    public ScheduleTransport delete(User user) {
+        // 유저의 여행계획이 맞는지
+        this.getArticle().verifyOwner(user);
         return ScheduleTransport.builder()
             .id(this.getId())
             .article(this.getArticle())
@@ -132,16 +140,4 @@ public class ScheduleTransport extends ArticleSchedule {
             .googleMapEndLongitude(this.googleMapEndLongitude)
             .build();
     }
-
-    //    public void update(ScheduleTransportRequest request) {
-//        this.transportation = request.transportation();
-//        this.startPlaceName = request.startPlaceName();
-//        this.googleMapStartPlaceAddress = request.googleMapStartPlaceAddress();
-//        this.googleMapStartLatitude = request.googleMapStartLatitude();
-//        this.googleMapStartLongitude = request.googleMapStartLongitude();
-//        this.endPlaceName = request.endPlaceName();
-//        this.googleMapEndPlaceAddress = request.googleMapEndPlaceAddress();
-//        this.googleMapEndLatitude = request.googleMapEndLatitude();
-//        this.googleMapEndLongitude = request.googleMapEndLongitude();
-//    }
 }

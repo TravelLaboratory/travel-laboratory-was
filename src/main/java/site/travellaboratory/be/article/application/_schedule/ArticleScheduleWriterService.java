@@ -42,15 +42,11 @@ public class ArticleScheduleWriterService {
 
         // 유효하지 않은 여행 계획에 대한 상세 일정을 수정할 경우
         ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
-                List.of(
-                    ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(
-                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
-                    HttpStatus.NOT_FOUND));
+                List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
+                HttpStatus.NOT_FOUND));
 
-        // 유저가 작성한 초기 여행 계획이 아닌 경우
         Article article = articleEntity.toModel();
-        article.verifyOwner(user);
 
         // (0) 기존 일정들 불러오기 (삭제된 건 제외 + sortOrder로 내림차순) (N+1을 막기 위해 FETCH JOIN)
         List<ArticleSchedule> existingSchedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
@@ -68,7 +64,7 @@ public class ArticleScheduleWriterService {
         for (ArticleSchedule existingSchedule : existingSchedules) {
             // 기존 일정에는 있는데 요청에 없다면? 삭제 처리
             if (!requestMap.containsKey(existingSchedule.getId())) {
-                existingSchedule.delete();
+                existingSchedule.delete(user);
             }
         }
 
@@ -77,10 +73,10 @@ public class ArticleScheduleWriterService {
             ArticleSchedule articleSchedule;
             if (request.scheduleId() == null) {
                 // id x -> 새로운 일정 생성
-                articleSchedule = ArticleSchedule.create(article, request);
+                articleSchedule = ArticleSchedule.create(user, article, request);
             } else {
                 // id o -> 기존 일정 수정
-                articleSchedule = getExistingScheduleById(existingSchedules, request.scheduleId()).update(request);
+                articleSchedule = getExistingScheduleById(existingSchedules, request.scheduleId()).update(user, request);
             }
             articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
         }
@@ -105,7 +101,6 @@ public class ArticleScheduleWriterService {
 
         // 유저가 작성한 초기 여행 계획(article_id)이 아닌 경우
         Article article = articleEntity.toModel();
-        article.verifyOwner(user);
 
         // 관련된 일정들
         List<ArticleSchedule> articleSchedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderByIdDesc(
@@ -114,12 +109,12 @@ public class ArticleScheduleWriterService {
             .toList();
 
         // 초기 여행 계획 삭제
-        article = article.delete();
+        article = article.delete(user);
         articleJpaRepository.save(ArticleEntity.from(article));
 
         // 관련된 일정들 삭제
         for (ArticleSchedule articleSchedule : articleSchedules) {
-            articleSchedule = articleSchedule.delete();
+            articleSchedule = articleSchedule.delete(user);
             articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
         }
 
