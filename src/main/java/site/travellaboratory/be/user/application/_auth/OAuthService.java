@@ -8,7 +8,7 @@ import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.application._auth.manager.JwtTokenManager;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.presentation._auth.response.oauth.OAuthJoinRequest;
+import site.travellaboratory.be.user.domain._auth.request.OAuthJoinRequest;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AuthTokenResponse;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 

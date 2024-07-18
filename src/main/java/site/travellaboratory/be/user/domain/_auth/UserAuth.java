@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
+import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 
 @Builder
 @Getter
@@ -19,16 +20,16 @@ public class UserAuth {
     private final UserRole role;
     private final Boolean isAgreement;
 
-    public static UserAuth create(String username, String password, Boolean isAgreement) {
+    public static UserAuth create(String encodedPassword, UserJoinRequest joinRequest) {
         // 개인정보 미동의 시 에러 반환
-        if (!isAgreement) {
+        if (!joinRequest.isAgreement()) {
             throw new BeApplicationException(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT,
                 HttpStatus.BAD_REQUEST);
         }
 
         return UserAuth.builder()
-            .username(username)
-            .password(password)
+            .username(joinRequest.username())
+            .password(encodedPassword)
             .isAgreement(true)
             .build();
     }

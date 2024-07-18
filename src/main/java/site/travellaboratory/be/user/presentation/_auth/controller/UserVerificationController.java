@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.user.application._auth.UserVerificationService;
-import site.travellaboratory.be.user.presentation._auth.response.userverification.UserNicknameRequest;
+import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
 import site.travellaboratory.be.user.presentation._auth.response.userverification.UserNicknameResponse;
-import site.travellaboratory.be.user.presentation._auth.response.userverification.UsernameRequest;
+import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
 import site.travellaboratory.be.user.presentation._auth.response.userverification.UsernameResponse;
 
 @RestController

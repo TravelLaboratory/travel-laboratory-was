@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.presentation.response.writer;
+package site.travellaboratory.be.user.domain.request;
 
 public record UserProfileUpdateRequest(
         String nickname,

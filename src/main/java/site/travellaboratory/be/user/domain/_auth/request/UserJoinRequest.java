@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.presentation._auth.response.userregistration;
+package site.travellaboratory.be.user.domain._auth.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

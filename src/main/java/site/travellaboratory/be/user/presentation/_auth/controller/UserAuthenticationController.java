@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.user.application._auth.UserAuthenticationService;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginResponse;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginRequest;
+import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AccessTokenResponse;
 

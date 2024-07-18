@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.presentation._auth.response.oauth;
+package site.travellaboratory.be.user.domain._auth.request;
 
 public record OAuthJoinRequest (
         String profileNickname,

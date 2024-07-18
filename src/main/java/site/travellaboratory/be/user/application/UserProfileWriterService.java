@@ -11,7 +11,7 @@ import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.presentation.response.writer.UserProfileUpdateRequest;
+import site.travellaboratory.be.user.domain.request.UserProfileUpdateRequest;
 import site.travellaboratory.be.user.presentation.response.writer.UserProfileUpdateResponse;
 
 @Service
