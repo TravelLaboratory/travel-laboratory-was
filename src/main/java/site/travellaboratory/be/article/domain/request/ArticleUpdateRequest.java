@@ -2,7 +2,7 @@ package site.travellaboratory.be.article.domain.request;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import lombok.Builder;
 
 public record ArticleUpdateRequest(
         String title,
@@ -13,4 +13,8 @@ public record ArticleUpdateRequest(
         String travelCompanion,
         List<String> travelStyles
 ) {
+
+    @Builder
+    public ArticleUpdateRequest {
+    }
 }

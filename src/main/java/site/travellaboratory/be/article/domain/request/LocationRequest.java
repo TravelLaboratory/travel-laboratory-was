@@ -1,6 +1,8 @@
 package site.travellaboratory.be.article.domain.request;
 
+import lombok.Builder;
 import site.travellaboratory.be.article.domain.Location;
+
 
 public record LocationRequest(
     String placeId,
@@ -14,4 +16,7 @@ public record LocationRequest(
             .city(this.city)
             .build();
     }
+
+    @Builder
+    public LocationRequest {}
 }
