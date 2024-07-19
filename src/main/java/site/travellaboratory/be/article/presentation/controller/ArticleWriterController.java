@@ -41,7 +41,7 @@ public class ArticleWriterController {
 
     @PutMapping("/article/{articleId}/coverImg")
     public ResponseEntity<ArticleUpdateCoverImageResponse> updateCoverImage(
-        @RequestPart("cover_image") final MultipartFile coverImage,
+        @RequestPart("cover_img") final MultipartFile coverImage,
         @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleUpdateCoverImageResponse articleUpdateCoverImageResponse = articleWriterService.updateCoverImage(
