@@ -49,7 +49,7 @@ public class UserRegistrationService {
         });
 
         // 새로운 유저 생성
-        User user = User.create(request.nickname());
+        User user = User.register(request.nickname());
         User savedUser = userJpaRepository.save(UserEntity.from(user, userAuth)).toModel();
 
         //비번 질문 조회

@@ -92,6 +92,7 @@ public class ScheduleGeneral extends ArticleSchedule {
             .memo(request.memo())
             .status(this.getStatus())
             .dtype(request.dtype())
+            .placeName(request.scheduleGeneral().placeName())
             .googleMapPlaceId(request.scheduleGeneral().googleMapPlaceId())
             .googleMapLatitude(request.scheduleGeneral().googleMapLatitude())
             .googleMapLongitude(request.scheduleGeneral().googleMapLongitude())

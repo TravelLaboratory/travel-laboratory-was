@@ -20,7 +20,7 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
-public class ArticleTest {
+class ArticleTest {
 
     private User writer;
 

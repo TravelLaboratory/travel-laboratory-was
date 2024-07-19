@@ -24,7 +24,7 @@ public class User {
         this.status = status;
     }
 
-    public static User create(String nickname) {
+    public static User register(String nickname) {
         return User.builder()
             .nickname(nickname)
             .status(UserStatus.ACTIVE)
