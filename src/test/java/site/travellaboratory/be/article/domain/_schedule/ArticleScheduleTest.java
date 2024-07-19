@@ -270,4 +270,117 @@ class ArticleScheduleTest {
             assertEquals(scheduleSaveRequest.scheduleEtc().placeName(), scheduleEtc.getPlaceName());
         }
     }
+
+    @Nested
+    class updateSchedule {
+
+    }
+
+    @Nested
+    class deleteSchedule {
+        private final Long existingScheduleId = 1L;
+
+        @DisplayName("ScheduleGeneral- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
+        @Test
+        void test1() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ScheduleGeneral scheduleGeneral = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("GENERAL")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                scheduleGeneral.delete(otherUser));
+        }
+
+        @DisplayName("ScheduleTransport- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
+        @Test
+        void test2() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ScheduleTransport scheduleTransport = ScheduleTransport.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("TRANSPORT")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                scheduleTransport.delete(otherUser));
+        }
+
+        @DisplayName("ScheduleEtc- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
+        @Test
+        void test3() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ScheduleEtc scheduleEtc = ScheduleEtc.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("ETC")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                scheduleEtc.delete(otherUser));
+        }
+
+        @DisplayName("성공 - GENERAL_Transport_ETC_3가지_일정_삭제_완료")
+        @Test
+        void test1000() {
+            //given
+            ScheduleGeneral scheduleGeneral = ScheduleGeneral.builder()
+                .id(1L)
+                .article(article1)
+                .dtype("GENERAL")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+
+            ScheduleTransport scheduleTransport = ScheduleTransport.builder()
+                .id(2L)
+                .article(article1)
+                .dtype("TRANSPORT")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ScheduleEtc scheduleEtc = ScheduleEtc.builder()
+                .id(3L)
+                .article(article1)
+                .dtype("ETC")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            //when
+            ScheduleGeneral deleteScheduleGeneral = scheduleGeneral.delete(writer1);
+            ScheduleTransport deleteScheduleTransport = scheduleTransport.delete(writer1);
+            ScheduleEtc deleteScheduleEtc = scheduleEtc.delete(writer1);
+
+            //then
+            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleGeneral.getStatus());
+            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleTransport.getStatus());
+            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleEtc.getStatus());
+        }
+    }
 }
