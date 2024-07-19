@@ -353,6 +353,66 @@ class ArticleScheduleTest {
                 articleSchedule.update(otherUser, scheduleUpdateRequest));
         }
 
+        @DisplayName("ScheduleGeneral- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test4() {
+            //given
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("GENERAL")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .dtype("GENERAL")
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(writer1, scheduleUpdateRequest));
+        }
+
+        @DisplayName("ScheduleTransport- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test5() {
+            //given
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("TRANSPORT")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .dtype("TRANSPORT")
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(writer1, scheduleUpdateRequest));
+        }
+
+        @DisplayName("ScheduleEtc- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test6() {
+            //given
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("ETC")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .dtype("ETC")
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(writer1, scheduleUpdateRequest));
+        }
+
         @DisplayName("성공 - GENERAL_타입_일정_수정_완료")
         @Test
         void test1000() {
