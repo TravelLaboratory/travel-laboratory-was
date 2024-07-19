@@ -145,19 +145,19 @@ public class ArticleTest {
 
         @BeforeEach
         void setUp() {
-            article = Article.create(writer,
-                ArticleRegisterRequest.builder()
-                    .title("title")
-                    .locations(List.of(
-                        LocationRequest.builder().placeId("123.1234").address("xx구 yy동").city("서울")
-                            .build()))
-                    .startAt(LocalDate.now())
-                    .endAt(LocalDate.now().plusDays(5))
-                    .expense("10000원")
-                    .travelCompanion(TravelCompanion.ALONE.getName())
-                    .travelStyles(
-                        List.of(TravelStyle.ACTIVITY.getName(), TravelStyle.HOCANCE.getName()))
-                    .build());
+            article = Article.builder()
+                .id(1L)
+                .user(writer)
+                .title("title")
+                .locations(List.of(LocationRequest.builder().placeId("123.1234").address("xx구 yy동").city("서울").build().toModel()))
+                .startAt(LocalDate.now())
+                .endAt(LocalDate.now().plusDays(5))
+                .expense("10000원")
+                .travelCompanion(TravelCompanion.from(TravelCompanion.ALONE.getName()))
+                .travelStyles(TravelStyle.from(List.of(TravelStyle.ACTIVITY.getName(), TravelStyle.HOCANCE.getName())))
+                .status(ArticleStatus.ACTIVE)
+                .coverImgUrl(null)
+                .build();
         }
 
         @DisplayName("유효하지_않은_travelCompanion_값을_입력한_경우_예외_반환")
@@ -252,30 +252,36 @@ public class ArticleTest {
         @Test
         void test1000() {
             //given
-            LocationRequest updateLocation = new LocationRequest("456.5678", "aa구 bb동", "부산");
-            LocalDate updateStartAt = LocalDate.now().plusDays(10);
-            LocalDate updateEndAt = LocalDate.now().plusDays(15);
-
-            ArticleUpdateRequest update = new ArticleUpdateRequest(
-                "updateTitle", List.of(updateLocation), updateStartAt, updateEndAt, "15000원",
-                TravelCompanion.ACTOR.getName(),
-                List.of(TravelStyle.HOT_PLACE.getName(), TravelStyle.WITH_NATURE.getName(),
-                    TravelStyle.CAFE_TOUR.getName()));
+            ArticleUpdateRequest articleUpdateRequest = ArticleUpdateRequest.builder()
+                .title("updateTitle")
+                .locations(List.of(
+                    LocationRequest.builder().placeId("456.5678").address("aa구 bb동").city("부산")
+                        .build()))
+                .startAt(LocalDate.now().plusDays(10))
+                .endAt(LocalDate.now().plusDays(15))
+                .expense("10000원")
+                .travelCompanion(TravelCompanion.PARENTS.getName())
+                .travelStyles(
+                    List.of(TravelStyle.HOT_PLACE.getName(), TravelStyle.WITH_NATURE.getName(),
+                        TravelStyle.CAFE_TOUR.getName()))
+                .build();
 
             //when
-            Article updateArticle = article.update(writer, update);
+            Article updateArticle = article.update(writer, articleUpdateRequest);
 
             //then
             assertNotNull(updateArticle);
-            assertEquals(update.title(), updateArticle.getTitle());
-            assertEquals(update.locations().size(), updateArticle.getLocations().size());
-            assertEquals(update.startAt(), updateArticle.getStartAt());
-            assertEquals(update.endAt(), updateArticle.getEndAt());
-            assertEquals(update.endAt(), updateArticle.getEndAt());
-            assertEquals(update.expense(), updateArticle.getExpense());
-            assertEquals(TravelCompanion.from(update.travelCompanion()),
-                updateArticle.getTravelCompanion());
-            assertEquals(TravelStyle.from(update.travelStyles()), updateArticle.getTravelStyles());
+            assertEquals(updateArticle.getId(), article.getId());
+            assertEquals(updateArticle.getUser(), article.getUser());
+            assertEquals(articleUpdateRequest.title(), updateArticle.getTitle());
+            assertEquals(articleUpdateRequest.locations().size(), updateArticle.getLocations().size());
+            assertEquals(articleUpdateRequest.startAt(), updateArticle.getStartAt());
+            assertEquals(articleUpdateRequest.endAt(), updateArticle.getEndAt());
+            assertEquals(articleUpdateRequest.expense(), updateArticle.getExpense());
+            assertEquals(TravelCompanion.from(articleUpdateRequest.travelCompanion()), updateArticle.getTravelCompanion());
+            assertEquals(TravelStyle.from(articleUpdateRequest.travelStyles()), updateArticle.getTravelStyles());
+            assertEquals(updateArticle.getStatus(), article.getStatus());
+            assertEquals(updateArticle.getCoverImgUrl(), article.getCoverImgUrl());
         }
     }
 
@@ -286,19 +292,19 @@ public class ArticleTest {
 
         @BeforeEach
         void setUp() {
-            article = Article.create(writer,
-                ArticleRegisterRequest.builder()
-                    .title("title")
-                    .locations(List.of(
-                        LocationRequest.builder().placeId("123.1234").address("xx구 yy동").city("서울")
-                            .build()))
-                    .startAt(LocalDate.now())
-                    .endAt(LocalDate.now().plusDays(5))
-                    .expense("10000원")
-                    .travelCompanion(TravelCompanion.ALONE.getName())
-                    .travelStyles(
-                        List.of(TravelStyle.ACTIVITY.getName(), TravelStyle.HOCANCE.getName()))
-                    .build());
+            article = Article.builder()
+                .id(1L)
+                .user(writer)
+                .title("title")
+                .locations(List.of(LocationRequest.builder().placeId("123.1234").address("xx구 yy동").city("서울").build().toModel()))
+                .startAt(LocalDate.now())
+                .endAt(LocalDate.now().plusDays(5))
+                .expense("10000원")
+                .travelCompanion(TravelCompanion.from(TravelCompanion.ALONE.getName()))
+                .travelStyles(TravelStyle.from(List.of(TravelStyle.ACTIVITY.getName(), TravelStyle.HOCANCE.getName())))
+                .status(ArticleStatus.ACTIVE)
+                .coverImgUrl(null)
+                .build();
         }
 
         @DisplayName("글쓴이가_아닌_다른_유저가_삭제하려고_하는_경우_예외_반환")

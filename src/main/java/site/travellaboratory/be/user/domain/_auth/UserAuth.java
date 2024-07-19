@@ -20,7 +20,7 @@ public class UserAuth {
     private final UserRole role;
     private final Boolean isAgreement;
 
-    public static UserAuth create(String encodedPassword, UserJoinRequest joinRequest) {
+    public static UserAuth register(String encodedPassword, UserJoinRequest joinRequest) {
         // 개인정보 미동의 시 에러 반환
         if (!joinRequest.isAgreement()) {
             throw new BeApplicationException(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT,
@@ -31,6 +31,7 @@ public class UserAuth {
             .username(joinRequest.username())
             .password(encodedPassword)
             .isAgreement(true)
+            .role(UserRole.USER)
             .build();
     }
 
