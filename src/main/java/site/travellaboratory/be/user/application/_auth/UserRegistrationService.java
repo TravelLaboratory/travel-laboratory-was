@@ -33,7 +33,7 @@ public class UserRegistrationService {
     public User register(UserJoinRequest request) {
 
         String encodePassword = encoder.encode(request.password());
-        UserAuth userAuth = UserAuth.create(encodePassword, request);
+        UserAuth userAuth = UserAuth.register(encodePassword, request);
 
         // 닉네임 중복 체크
         userJpaRepository.findByNickname(request.nickname()).ifPresent(it -> {

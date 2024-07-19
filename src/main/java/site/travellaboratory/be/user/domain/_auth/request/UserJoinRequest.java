@@ -2,6 +2,7 @@ package site.travellaboratory.be.user.domain._auth.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 public record UserJoinRequest(
     @NotBlank
@@ -17,5 +18,9 @@ public record UserJoinRequest(
     @NotNull
     Boolean isAgreement
 ) {
+
+    @Builder
+    public UserJoinRequest {
+    }
 }
 
