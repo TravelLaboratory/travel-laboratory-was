@@ -273,8 +273,262 @@ class ArticleScheduleTest {
 
     @Nested
     class updateSchedule {
+        private final Long existingScheduleId = 1L;
 
+        @DisplayName("ScheduleGeneral- 본인이_작성하지_않은_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test1() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("GENERAL")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(otherUser, scheduleUpdateRequest));
+        }
+
+        @DisplayName("ScheduleTransport- 본인이_작성하지_않은_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test2() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ArticleSchedule articleSchedule = ScheduleTransport.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("TRANSPORT")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(otherUser, scheduleUpdateRequest));
+        }
+
+        @DisplayName("ScheduleEtc- 본인이_작성하지_않은_여행계획의_일정을_수정하려는_경우_예외_반환")
+        @Test
+        void test3() {
+            //given
+            User otherUser = User.builder()
+                .id(2L)
+                .nickname("otherUser")
+                .status(UserStatus.ACTIVE)
+                .build();
+
+            ArticleSchedule articleSchedule = ScheduleEtc.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("ETC")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateRequest = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .build();
+
+            //when & then
+            assertThrows(BeApplicationException.class, () ->
+                articleSchedule.update(otherUser, scheduleUpdateRequest));
+        }
+
+        @DisplayName("성공 - GENERAL_타입_일정_수정_완료")
+        @Test
+        void test1000() {
+            //given
+            LocalDate visitedDate = LocalDate.now();
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("GENERAL")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+            ArticleScheduleRequest scheduleUpdateGeneral = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .visitedDate(visitedDate)
+                .visitedTime(Time.valueOf("10:00:00"))
+                .sortOrder(1)
+                .category("액티비티")
+                .durationTime(Time.valueOf("02:00:00"))
+                .expense("1000원")
+                .memo("memo")
+                .dtype("GENERAL")
+                .scheduleGeneral(ScheduleGeneralRequest.builder()
+                    .placeName("placeName")
+                    .googleMapPlaceId("googleMapPlaceId")
+                    .googleMapLatitude(37.5665)
+                    .googleMapLongitude(126.9780)
+                    .googleMapAddress("googleMapAddress")
+                    .googleMapPhoneNumber("googleMapPhoneNumber")
+                    .googleMapHomePageUrl("googleMapHomePageUrl")
+                    .build())
+                .scheduleTransport(null)
+                .scheduleEtc(null)
+                .build();
+
+            //when
+            ArticleSchedule updateArticleSchedule = articleSchedule.update(writer1, scheduleUpdateGeneral);
+
+            //then
+            assertNotNull(updateArticleSchedule);
+            assertEquals(visitedDate, updateArticleSchedule.getVisitedDate());
+            assertEquals(scheduleUpdateGeneral.visitedTime(), updateArticleSchedule.getVisitedTime());
+            assertEquals(scheduleUpdateGeneral.sortOrder(), updateArticleSchedule.getSortOrder());
+            assertEquals(scheduleUpdateGeneral.category(), updateArticleSchedule.getCategory());
+            assertEquals(scheduleUpdateGeneral.durationTime(), updateArticleSchedule.getDurationTime());
+            assertEquals(scheduleUpdateGeneral.expense(), updateArticleSchedule.getExpense());
+            assertEquals(scheduleUpdateGeneral.memo(), updateArticleSchedule.getMemo());
+            assertEquals(ArticleScheduleStatus.ACTIVE, updateArticleSchedule.getStatus());
+            assertEquals(scheduleUpdateGeneral.dtype(), updateArticleSchedule.getDtype());
+
+            ScheduleGeneral updateScheduleGeneral = (ScheduleGeneral) updateArticleSchedule;
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().placeName(), updateScheduleGeneral.getPlaceName());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapPlaceId(), updateScheduleGeneral.getGoogleMapPlaceId());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapLatitude(), updateScheduleGeneral.getGoogleMapLatitude());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapLongitude(), updateScheduleGeneral.getGoogleMapLongitude());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapAddress(), updateScheduleGeneral.getGoogleMapAddress());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapPhoneNumber(), updateScheduleGeneral.getGoogleMapPhoneNumber());
+            assertEquals(scheduleUpdateGeneral.scheduleGeneral().googleMapHomePageUrl(), updateScheduleGeneral.getGoogleMapHomePageUrl());
+        }
+
+        @DisplayName("성공 - TRANSPORT_타입_일정_수정_완료")
+        @Test
+        void test1001() {
+            //given
+            LocalDate visitedDate = LocalDate.now();
+            ArticleSchedule articleSchedule = ScheduleTransport.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("TRANSPORT")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+
+            ArticleScheduleRequest scheduleUpdateTransport = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .visitedDate(visitedDate)
+                .visitedTime(Time.valueOf("10:00:00"))
+                .sortOrder(1)
+                .category("이동")
+                .durationTime(Time.valueOf("02:00:00"))
+                .expense("1000원")
+                .memo("memo")
+                .dtype("TRANSPORT")
+                .scheduleGeneral(null)
+                .scheduleTransport(ScheduleTransportRequest.builder()
+                    .transportation("Bus")
+                    .startPlaceName("Start Place")
+                    .googleMapStartPlaceAddress("Start Address")
+                    .googleMapStartLatitude(37.5665)
+                    .googleMapStartLongitude(126.9780)
+                    .endPlaceName("End Place")
+                    .googleMapEndPlaceAddress("End Address")
+                    .googleMapEndLatitude(37.5651)
+                    .googleMapEndLongitude(126.9784)
+                    .build())
+                .scheduleEtc(null)
+                .build();
+
+            //when
+            ArticleSchedule updateArticleSchedule = articleSchedule.update(writer1, scheduleUpdateTransport);
+
+            //then
+            assertNotNull(updateArticleSchedule);
+            assertEquals(visitedDate, updateArticleSchedule.getVisitedDate());
+            assertEquals(scheduleUpdateTransport.visitedTime(), updateArticleSchedule.getVisitedTime());
+            assertEquals(scheduleUpdateTransport.sortOrder(), updateArticleSchedule.getSortOrder());
+            assertEquals(scheduleUpdateTransport.category(), updateArticleSchedule.getCategory());
+            assertEquals(scheduleUpdateTransport.durationTime(), updateArticleSchedule.getDurationTime());
+            assertEquals(scheduleUpdateTransport.expense(), updateArticleSchedule.getExpense());
+            assertEquals(scheduleUpdateTransport.memo(), updateArticleSchedule.getMemo());
+            assertEquals(ArticleScheduleStatus.ACTIVE, updateArticleSchedule.getStatus());
+            assertEquals(scheduleUpdateTransport.dtype(), updateArticleSchedule.getDtype());
+
+            ScheduleTransport updateScheduleTransport = (ScheduleTransport) updateArticleSchedule;
+            assertEquals(scheduleUpdateTransport.scheduleTransport().transportation(), updateScheduleTransport.getTransportation());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().startPlaceName(), updateScheduleTransport.getStartPlaceName());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapStartPlaceAddress(), updateScheduleTransport.getGoogleMapStartPlaceAddress());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapStartLatitude(), updateScheduleTransport.getGoogleMapStartLatitude());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapStartLongitude(), updateScheduleTransport.getGoogleMapStartLongitude());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().endPlaceName(), updateScheduleTransport.getEndPlaceName());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapEndPlaceAddress(), updateScheduleTransport.getGoogleMapEndPlaceAddress());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapEndLatitude(), updateScheduleTransport.getGoogleMapEndLatitude());
+            assertEquals(scheduleUpdateTransport.scheduleTransport().googleMapEndLongitude(), updateScheduleTransport.getGoogleMapEndLongitude());
+        }
+
+        @DisplayName("성공 - ETC_타입_일정_수정_완료")
+        @Test
+        void test1002() {
+            //given
+            LocalDate visitedDate = LocalDate.now();
+            ArticleSchedule articleSchedule = ScheduleEtc.builder()
+                .id(existingScheduleId)
+                .article(article1)
+                .dtype("ETC")
+                .status(ArticleScheduleStatus.ACTIVE)
+                .build();
+
+
+            ArticleScheduleRequest scheduleUpdateEtc = ArticleScheduleRequest.builder()
+                .scheduleId(existingScheduleId)
+                .visitedDate(visitedDate)
+                .visitedTime(Time.valueOf("10:00:00"))
+                .sortOrder(1)
+                .category("기타")
+                .durationTime(Time.valueOf("02:00:00"))
+                .expense("1000원")
+                .memo("memo")
+                .dtype("ETC")
+                .scheduleGeneral(null)
+                .scheduleTransport(null)
+                .scheduleEtc(ScheduleEtcRequest.builder()
+                    .placeName("Etc Place")
+                    .build())
+                .build();
+
+            //when
+            ArticleSchedule updateArticleSchedule = articleSchedule.update(writer1, scheduleUpdateEtc);
+
+            //then
+            assertNotNull(updateArticleSchedule);
+            assertEquals(visitedDate, updateArticleSchedule.getVisitedDate());
+            assertEquals(scheduleUpdateEtc.visitedTime(), updateArticleSchedule.getVisitedTime());
+            assertEquals(scheduleUpdateEtc.sortOrder(), updateArticleSchedule.getSortOrder());
+            assertEquals(scheduleUpdateEtc.category(), updateArticleSchedule.getCategory());
+            assertEquals(scheduleUpdateEtc.durationTime(), updateArticleSchedule.getDurationTime());
+            assertEquals(scheduleUpdateEtc.expense(), updateArticleSchedule.getExpense());
+            assertEquals(scheduleUpdateEtc.memo(), updateArticleSchedule.getMemo());
+            assertEquals(ArticleScheduleStatus.ACTIVE, updateArticleSchedule.getStatus());
+            assertEquals(scheduleUpdateEtc.dtype(), updateArticleSchedule.getDtype());
+
+            ScheduleEtc updateScheduleEtc = (ScheduleEtc) updateArticleSchedule;
+            assertEquals(scheduleUpdateEtc.scheduleEtc().placeName(), updateScheduleEtc.getPlaceName());
+        }
     }
+
+
 
     @Nested
     class deleteSchedule {
@@ -290,7 +544,7 @@ class ArticleScheduleTest {
                 .status(UserStatus.ACTIVE)
                 .build();
 
-            ScheduleGeneral scheduleGeneral = ScheduleGeneral.builder()
+            ArticleSchedule articleSchedule = ScheduleGeneral.builder()
                 .id(existingScheduleId)
                 .article(article1)
                 .dtype("GENERAL")
@@ -299,7 +553,7 @@ class ArticleScheduleTest {
 
             //when & then
             assertThrows(BeApplicationException.class, () ->
-                scheduleGeneral.delete(otherUser));
+                articleSchedule.delete(otherUser));
         }
 
         @DisplayName("ScheduleTransport- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
@@ -312,7 +566,7 @@ class ArticleScheduleTest {
                 .status(UserStatus.ACTIVE)
                 .build();
 
-            ScheduleTransport scheduleTransport = ScheduleTransport.builder()
+            ArticleSchedule articleSchedule = ScheduleTransport.builder()
                 .id(existingScheduleId)
                 .article(article1)
                 .dtype("TRANSPORT")
@@ -321,7 +575,7 @@ class ArticleScheduleTest {
 
             //when & then
             assertThrows(BeApplicationException.class, () ->
-                scheduleTransport.delete(otherUser));
+                articleSchedule.delete(otherUser));
         }
 
         @DisplayName("ScheduleEtc- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
@@ -334,7 +588,7 @@ class ArticleScheduleTest {
                 .status(UserStatus.ACTIVE)
                 .build();
 
-            ScheduleEtc scheduleEtc = ScheduleEtc.builder()
+            ArticleSchedule articleSchedule  = ScheduleEtc.builder()
                 .id(existingScheduleId)
                 .article(article1)
                 .dtype("ETC")
@@ -343,7 +597,7 @@ class ArticleScheduleTest {
 
             //when & then
             assertThrows(BeApplicationException.class, () ->
-                scheduleEtc.delete(otherUser));
+                articleSchedule.delete(otherUser));
         }
 
         @DisplayName("성공 - GENERAL_Transport_ETC_3가지_일정_삭제_완료")
@@ -373,14 +627,14 @@ class ArticleScheduleTest {
                 .build();
 
             //when
-            ScheduleGeneral deleteScheduleGeneral = scheduleGeneral.delete(writer1);
-            ScheduleTransport deleteScheduleTransport = scheduleTransport.delete(writer1);
-            ScheduleEtc deleteScheduleEtc = scheduleEtc.delete(writer1);
+            ArticleSchedule articleScheduleGeneral = scheduleGeneral.delete(writer1);
+            ArticleSchedule articleScheduleTransport = scheduleTransport.delete(writer1);
+            ArticleSchedule articleScheduleEtc = scheduleEtc.delete(writer1);
 
             //then
-            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleGeneral.getStatus());
-            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleTransport.getStatus());
-            assertEquals(ArticleScheduleStatus.INACTIVE, deleteScheduleEtc.getStatus());
+            assertEquals(ArticleScheduleStatus.INACTIVE, articleScheduleGeneral.getStatus());
+            assertEquals(ArticleScheduleStatus.INACTIVE, articleScheduleTransport.getStatus());
+            assertEquals(ArticleScheduleStatus.INACTIVE, articleScheduleEtc.getStatus());
         }
     }
 }
