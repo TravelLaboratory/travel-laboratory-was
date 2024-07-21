@@ -1,4 +1,4 @@
-package site.travellaboratory.be.review.infrastructure.persistence;
+package site.travellaboratory.be.review.infrastructure.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,7 +1,7 @@
 package site.travellaboratory.be.review.presentation.response.reader;
 
 import java.time.format.DateTimeFormatter;
-import site.travellaboratory.be.review.infrastructure.persistence.ReviewEntity;
+import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
 
 public record ReviewReadDetailResponse(
     Long userId,
