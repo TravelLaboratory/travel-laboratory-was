@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.domain._auth.UserAuth;
 import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
 import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -69,7 +68,7 @@ class UserVerificationServiceTest {
         void test1() {
             //given
             String existingUsername = "existing_username";
-            UserEntity userEntity = UserEntity.from(User.builder().build(), UserAuth.builder().username(existingUsername).build());
+            UserEntity userEntity = UserEntity.from(User.builder().username(existingUsername).build());
             UsernameRequest invalidRequest = UsernameRequest.builder().username(existingUsername).build();
             when(userJpaRepository.findByUsernameAndStatusOrderByIdDesc(existingUsername, UserStatus.ACTIVE))
                 .thenReturn(Optional.of(userEntity));
