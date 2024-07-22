@@ -26,7 +26,7 @@ public class FakeTokenManager implements TokenManager {
         String reIssueTokenExpiredAt = LocalDateTime.now().plusHours(1).toString();
 
         return AccessToken.builder()
-            .accessToken(refreshToken)
+            .accessToken(reIssueToken)
             .expiredAt(reIssueTokenExpiredAt)
             .build();
     }
