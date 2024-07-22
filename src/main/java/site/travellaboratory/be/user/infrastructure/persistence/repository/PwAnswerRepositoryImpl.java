@@ -23,4 +23,9 @@ public class PwAnswerRepositoryImpl implements PwAnswerRepository {
     public Optional<PwAnswer> findByUserIdAndPwQuestionIdAndAnswerAndStatus(Long userId, Long pwQuestionId, String answer, PwAnswerStatus status) {
         return pwAnswerJpaRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(userId, pwQuestionId, answer, status).map(PwAnswerEntity::toModel);
     }
+
+    @Override
+    public PwAnswer save(PwAnswer pwAnswer) {
+        return pwAnswerJpaRepository.save(PwAnswerEntity.from(pwAnswer)).toModel();
+    }
 }
