@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.infrastructure.jwt.helper.JwtTokenVerifier;
+import site.travellaboratory.be.user.infrastructure.jwt.manager.JwtTokenVerifier;
 
 @Slf4j
 @RequiredArgsConstructor

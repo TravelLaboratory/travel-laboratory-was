@@ -5,7 +5,7 @@ import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
 public interface UserRepository {
-    Optional<User> findByIdAndStatus(Long userId, UserStatus status);
+    User getByIdAndStatus(Long userId, UserStatus status);
     Optional<User> findByUsernameAndStatusOrderByIdDesc(String username, UserStatus status);
     Optional<User> findByNickname(String nickname);
     User save(User user);

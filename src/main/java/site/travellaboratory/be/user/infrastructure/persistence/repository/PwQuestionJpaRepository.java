@@ -6,6 +6,5 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.PwQuestio
 import site.travellaboratory.be.user.domain._pw.enums.PwQuestionStatus;
 
 public interface PwQuestionJpaRepository extends JpaRepository<PwQuestionEntity, Long> {
-
     Optional<PwQuestionEntity> findByIdAndStatus(Long pwQuestionId, PwQuestionStatus status);
 }

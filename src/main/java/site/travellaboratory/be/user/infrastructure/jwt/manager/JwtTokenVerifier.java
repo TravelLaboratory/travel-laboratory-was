@@ -1,7 +1,9 @@
-package site.travellaboratory.be.user.infrastructure.jwt.helper;
+package site.travellaboratory.be.user.infrastructure.jwt.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenParser;
+import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenValidator;
 
 @Component
 @RequiredArgsConstructor

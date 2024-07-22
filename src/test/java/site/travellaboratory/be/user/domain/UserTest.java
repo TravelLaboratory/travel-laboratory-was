@@ -17,7 +17,7 @@ import site.travellaboratory.be.user.domain.enums.UserStatus;
 class UserTest {
 
     @Nested
-    class registerUser {
+    class register {
 
         @DisplayName("회원가입시_개인정보_미동의할_경우_예외_반환")
         @Test
@@ -63,7 +63,7 @@ class UserTest {
     }
 
     @Nested
-    class changePassword {
+    class withPassword {
 
         @DisplayName("성공 - 새로운_비밀번호를_가진_UserAuth_객체_생성")
         @Test

@@ -2,7 +2,10 @@ package site.travellaboratory.be.user.infrastructure.persistence.repository;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -15,8 +18,10 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<User> findByIdAndStatus(Long userId, UserStatus status) {
-        return userJpaRepository.findByIdAndStatus(userId, status).map(UserEntity::toModel);
+    public User getByIdAndStatus(Long userId, UserStatus status) {
+        return userJpaRepository.findByIdAndStatus(userId, status)
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND))
+            .toModel();
     }
 
     @Override

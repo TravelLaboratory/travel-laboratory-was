@@ -1,5 +1,8 @@
 package site.travellaboratory.be.mock.user;
 
+import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -16,10 +19,11 @@ public class FakeUserRepository implements UserRepository {
     private final List<User> data = new ArrayList<>();
 
     @Override
-    public Optional<User> findByIdAndStatus(Long userId, UserStatus status) {
+    public User getByIdAndStatus(Long userId, UserStatus status) {
         return data.stream()
             .filter(user -> Objects.equals(user.getId(), userId) && user.getStatus() == status)
-            .findFirst();
+            .findFirst()
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     @Override
