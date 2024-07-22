@@ -11,6 +11,7 @@ import site.travellaboratory.be.user.domain.enums.UserStatus;
 
 
 @Getter
+@Builder
 public class User {
 
     private final Long id;
