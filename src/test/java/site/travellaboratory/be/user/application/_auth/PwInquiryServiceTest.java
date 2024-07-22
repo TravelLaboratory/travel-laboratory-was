@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.mock.user.FakePwAnswerRepository;
+import site.travellaboratory.be.mock.user._auth.FakePwAnswerRepository;
 import site.travellaboratory.be.mock.user.FakeUserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._pw.PwAnswer;
