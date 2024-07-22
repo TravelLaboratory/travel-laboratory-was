@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.application;
+package site.travellaboratory.be.user.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

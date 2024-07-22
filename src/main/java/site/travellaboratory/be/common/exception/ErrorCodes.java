@@ -125,8 +125,12 @@ public enum ErrorCodes {
     public final @NotNull String message;
     public final @NotNull Long code;
 
-    ErrorCodes(@NotNull String message, @NotNull Long code) {
+    ErrorCodes(String message, Long code) {
         this.message = message;
         this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

@@ -1,4 +1,4 @@
-package site.travellaboratory.be.review.infrastructure.persistence;
+package site.travellaboratory.be.review.infrastructure.persistence.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
+import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 

@@ -15,7 +15,7 @@ import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.comment.infrastructure.persistence.entity.CommentEntity;
 import site.travellaboratory.be.comment.infrastructure.persistence.repository.CommentJpaRepository;
-import site.travellaboratory.be.review.infrastructure.persistence.ReviewJpaRepository;
+import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;

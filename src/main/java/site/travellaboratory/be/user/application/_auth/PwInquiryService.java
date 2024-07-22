@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.domain._auth.UserAuth;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.domain._pw.PwAnswer;
 import site.travellaboratory.be.user.domain._pw.enums.PwAnswerStatus;
@@ -30,33 +29,34 @@ public class PwInquiryService {
     private final PwAnswerJpaRepository pwAnswerJpaRepository;
 
     public PwInquiryEmailResponse pwInquiryEmail(PwInquiryEmailRequest request) {
-        UserAuth userAuth = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(),
+        User user = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(),
                 UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
-                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModelUserAuth();
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModel();
 
         // 기획상 Optional 일 수 없다.
-        PwAnswer pwAnswer = pwAnswerJpaRepository.findByUserIdAndStatus(userAuth.getId(),
+        PwAnswer pwAnswer = pwAnswerJpaRepository.findByUserIdAndStatus(user.getId(),
             PwAnswerStatus.ACTIVE).toModel();
 
-        return PwInquiryEmailResponse.from(userAuth.getUsername(), pwAnswer.getPwQuestionId());
+        return PwInquiryEmailResponse.from(user.getUsername(), pwAnswer.getPwQuestionId());
     }
 
 
     public PwInquiryVerificationResponse pwInquiryVerification(final PwInquiryVerificationRequest request) {
         // 해당 이메일의 유저가 존재하는지
-        UserAuth userAuth = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE)
+        User user = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(),
+                UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
-                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModelUserAuth();
+                ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND)).toModel();
 
         // 답변이 일치한지 판단
         PwAnswer pwAnswer = pwAnswerJpaRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                userAuth.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED)).toModel();
 
-        return PwInquiryVerificationResponse.from(userAuth.getUsername(), pwAnswer.getPwQuestionId(),
+        return PwInquiryVerificationResponse.from(user.getUsername(), pwAnswer.getPwQuestionId(),
             pwAnswer.getAnswer());
     }
 
@@ -69,18 +69,17 @@ public class PwInquiryService {
                 ErrorCodes.PASSWORD_INVALID_EMAIL, HttpStatus.NOT_FOUND));
 
         User user = userEntity.toModel();
-        UserAuth userAuth = userEntity.toModelUserAuth();
 
         // 답변이 일치한지 판단
         pwAnswerJpaRepository.findByUserIdAndPwQuestionIdAndAnswerAndStatus(
-                userAuth.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
+                user.getId(), request.pwQuestionId(), request.answer(), PwAnswerStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER,
                     HttpStatus.UNAUTHORIZED));
 
         // 비밀번호 암호화 및 업데이트 - 저장
         String newPassword = encoder.encode(request.password());
-        UserAuth newUserAuth = userAuth.withPassword(newPassword);
-        userJpaRepository.save(UserEntity.from(user, newUserAuth));
+        User newUser = user.withPassword(newPassword);
+        userJpaRepository.save(UserEntity.from(newUser));
     }
 }

@@ -5,20 +5,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
+import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
 import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
 
 @Service
 @RequiredArgsConstructor
 public class UserVerificationService {
 
-    private final UserJpaRepository userJpaRepository;
+    private final UserRepository userRepository;
 
     public Boolean isNicknameAvailable(UserNicknameRequest request) {
         // 닉네임 중복 체크
-        userJpaRepository.findByNickname(request.nickname()).ifPresent(it -> {
+        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME,
                 HttpStatus.CONFLICT);
         });
@@ -28,7 +28,7 @@ public class UserVerificationService {
 
     public Boolean isUsernameAvailable(final UsernameRequest request) {
         // (회원아이디) 이메일 중복 체크
-        userJpaRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE).ifPresent(it -> {
+        userRepository.findByUsernameAndStatusOrderByIdDesc(request.username(), UserStatus.ACTIVE).ifPresent(it -> {
             throw new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
                 HttpStatus.CONFLICT);
         });

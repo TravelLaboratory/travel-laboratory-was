@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.domain._auth.UserAuth;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.application._auth.manager.JwtTokenManager;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
@@ -34,16 +33,15 @@ public class UserAuthenticationService {
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        UserAuth userAuth = userEntity.toModelUserAuth();
         User user = userEntity.toModel();
 
         // 비밀번호 체크
-        if (!encoder.matches(request.password(), userAuth.getPassword())) {
+        if (!encoder.matches(request.password(), user.getPassword())) {
             throw new BeApplicationException(ErrorCodes.AUTH_INVALID_PASSWORD,
                 HttpStatus.UNAUTHORIZED);
         }
 
-        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(userAuth.getId());
+        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(user.getId());
         return LoginCommand.from(user, authTokenResponse);
     }
 

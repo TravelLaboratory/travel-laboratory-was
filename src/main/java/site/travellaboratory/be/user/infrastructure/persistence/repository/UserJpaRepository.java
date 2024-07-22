@@ -9,14 +9,8 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntit
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
-    // todo: 수정 요망
-//    default User getById(final Long id) {
-//        return findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다."));
-//    }
-
-    // todo : 이걸로
+    // todo: 리팩토링 완료 후 메서드 지울 것
     Optional<UserEntity> findByIdAndStatus(Long userId, UserStatus status);
-
     Optional<UserEntity> findByUsernameAndStatusOrderByIdDesc(String username, UserStatus status);
     Optional<UserEntity> findByNickname(String nickname);
 }

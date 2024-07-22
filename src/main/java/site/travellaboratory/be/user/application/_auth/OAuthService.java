@@ -2,7 +2,6 @@ package site.travellaboratory.be.user.application._auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.travellaboratory.be.user.domain._auth.UserAuth;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.application._auth.manager.JwtTokenManager;
@@ -28,10 +27,9 @@ public class OAuthService {
                         oAuthJoinRequest.profileNickname(), oAuthJoinRequest.isAgreement()));
                 });
 
-        UserAuth userAuth = userEntity.toModelUserAuth();
         User user = userEntity.toModel();
 
-        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(userAuth.getId());
+        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(user.getId());
         return LoginCommand.from(user, authTokenResponse);
     }
 }

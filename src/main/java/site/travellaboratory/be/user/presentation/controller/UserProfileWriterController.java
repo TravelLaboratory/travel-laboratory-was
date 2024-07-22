@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import site.travellaboratory.be.user.application.UserProfileWriterService;
+import site.travellaboratory.be.user.application.service.UserProfileWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.user.domain.request.UserProfileUpdateRequest;
 import site.travellaboratory.be.user.presentation.response.writer.UserProfileUpdateResponse;

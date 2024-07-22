@@ -30,7 +30,7 @@ public class ReviewWriterController {
         @UserId Long userId,
         @Valid @RequestBody ReviewSaveRequest reviewSaveRequest
     ) {
-        Long reviewId = reviewWriterService.saveReview(userId, reviewSaveRequest);
+        Long reviewId = reviewWriterService.save(userId, reviewSaveRequest);
 
         ReviewSaveResponse response = ReviewSaveResponse.from(reviewId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -42,7 +42,7 @@ public class ReviewWriterController {
         @PathVariable(name = "reviewId") Long reviewId,
         @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
     ) {
-        Long updateReviewId = reviewWriterService.updateReview(userId, reviewId, reviewUpdateRequest);
+        Long updateReviewId = reviewWriterService.update(userId, reviewId, reviewUpdateRequest);
 
         ReviewUpdateResponse response = ReviewUpdateResponse.from(updateReviewId);
         return ResponseEntity.ok(response);
@@ -53,7 +53,7 @@ public class ReviewWriterController {
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
-        boolean result = reviewWriterService.deleteReview(userId, reviewId);
+        boolean result = reviewWriterService.delete(userId, reviewId);
         ReviewDeleteResponse response = ReviewDeleteResponse.from(result);
         return ResponseEntity.ok(response);
     }
