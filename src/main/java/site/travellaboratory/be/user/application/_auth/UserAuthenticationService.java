@@ -7,33 +7,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.application._auth.manager.JwtTokenManager;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AccessTokenResponse;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AuthTokenResponse;
+import site.travellaboratory.be.user.application.port.TokenManager;
+import site.travellaboratory.be.user.application.port.UserRepository;
+import site.travellaboratory.be.user.domain.User;
+import site.travellaboratory.be.user.domain._auth.AccessToken;
+import site.travellaboratory.be.user.domain._auth.AuthTokens;
+import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
 
 @Service
 @RequiredArgsConstructor
 public class UserAuthenticationService {
 
     private final BCryptPasswordEncoder encoder;
-    private final JwtTokenManager jwtTokenManager;
-    private final UserJpaRepository userJpaRepository;
+    private final TokenManager tokenManager;
+    private final UserRepository userRepository;
 
     @Transactional
     public LoginCommand login(LoginRequest request) {
         // 회원가입 여부 체크
-        UserEntity userEntity = userJpaRepository.findByUsernameAndStatusOrderByIdDesc(
+        User user = userRepository.findByUsernameAndStatusOrderByIdDesc(
                 request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
                 ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        User user = userEntity.toModel();
 
         // 비밀번호 체크
         if (!encoder.matches(request.password(), user.getPassword())) {
@@ -41,11 +38,11 @@ public class UserAuthenticationService {
                 HttpStatus.UNAUTHORIZED);
         }
 
-        AuthTokenResponse authTokenResponse = jwtTokenManager.generateTokens(user.getId());
-        return LoginCommand.from(user, authTokenResponse);
+        AuthTokens authTokens = tokenManager.generateTokens(user.getId());
+        return LoginCommand.from(user, authTokens);
     }
 
-    public AccessTokenResponse reIssueAccessToken(String accessToken, String refreshToken) {
-        return jwtTokenManager.reIssueAccessToken(accessToken, refreshToken);
+    public AccessToken reIssueAccessToken(String accessToken, String refreshToken) {
+        return tokenManager.reIssueAccessToken(accessToken, refreshToken);
     }
 }

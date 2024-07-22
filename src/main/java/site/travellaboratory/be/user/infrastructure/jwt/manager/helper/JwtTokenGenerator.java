@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.infrastructure.jwt.helper;
+package site.travellaboratory.be.user.infrastructure.jwt.manager.helper;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.user.application._auth.UserAuthenticationService;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginResponse;
-import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AccessTokenResponse;
+import site.travellaboratory.be.user.domain._auth.AccessToken;
+import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
+import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginResponse;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -43,12 +43,12 @@ public class UserAuthenticationController {
         @RequestHeader("refresh-token") String refreshToken,
         HttpServletResponse response
     ) {
-        System.out.println("refreshToken = " + refreshToken);
         // 쿠키에서 리프레시 토큰 값 추출
-        AccessTokenResponse accessTokenResponse = userAuthenticationService.reIssueAccessToken(accessToken, refreshToken);
+        AccessToken result = userAuthenticationService.reIssueAccessToken(accessToken,
+            refreshToken);
 
-        response.setHeader("authorization-token", accessTokenResponse.accessToken());
-        response.setHeader("authorization-token-expired-at", accessTokenResponse.expiredAt());
+        response.setHeader("authorization-token", result.getAccessToken());
+        response.setHeader("authorization-token-expired-at", result.getExpiredAt());
 
         return ResponseEntity.ok().build();
     }

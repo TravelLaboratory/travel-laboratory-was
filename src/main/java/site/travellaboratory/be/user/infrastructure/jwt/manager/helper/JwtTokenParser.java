@@ -1,4 +1,4 @@
-package site.travellaboratory.be.user.infrastructure.jwt.helper;
+package site.travellaboratory.be.user.infrastructure.jwt.manager.helper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenParser {
-
     private final Key key;
     private final JwtParser parser;
 
