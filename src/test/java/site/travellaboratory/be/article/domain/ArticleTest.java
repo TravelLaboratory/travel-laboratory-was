@@ -17,6 +17,7 @@ import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.domain.request.LocationRequest;
 import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
@@ -67,14 +68,16 @@ class ArticleTest {
                         List.of(TravelStyle.ACTIVITY.getName(), TravelStyle.HOCANCE.getName()))
                     .build();
 
-            //when, then
-            assertThrows(BeApplicationException.class, () -> {
-                TravelCompanion.from(invalidRegister.travelCompanion());
-            });
+            //when
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelCompanion.from(invalidRegister.travelCompanion()));
 
-            assertThrows(BeApplicationException.class, () -> {
-                Article.create(writer, invalidRegister);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> Article.create(writer, invalidRegister));
+
+            //then
+            assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception1.getErrorCodes());
+            assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception2.getErrorCodes());
         }
 
         @DisplayName("유효하지_않은_travelStyles_값을_입력한_경우_예외_반환")
@@ -94,14 +97,16 @@ class ArticleTest {
                     .travelStyles(List.of(invalidTravelStyle))
                     .build();
 
-            //when, then
-            assertThrows(BeApplicationException.class, () -> {
-                TravelStyle.from(invalidRegister.travelStyles());
-            });
+            //when
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelStyle.from(invalidRegister.travelStyles()));
 
-            assertThrows(BeApplicationException.class, () -> {
-                Article.create(writer, invalidRegister);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> Article.create(writer, invalidRegister));
+
+            //then
+            assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception1.getErrorCodes());
+            assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception2.getErrorCodes());
         }
 
         @DisplayName("성공 - ArticleRegisterRequest_으로_Article_객체_생성")
@@ -178,14 +183,17 @@ class ArticleTest {
                 .travelStyles(List.of(TravelStyle.HEALING.getName()))
                 .build();
 
-            //when, then
-            assertThrows(BeApplicationException.class, () -> {
-                TravelCompanion.from(invalidUpdate.travelCompanion());
-            });
+            //when
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () ->
+                TravelCompanion.from(invalidUpdate.travelCompanion()));
 
-            assertThrows(BeApplicationException.class, () -> {
-                article.update(writer, invalidUpdate);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> article.update(writer, invalidUpdate));
+
+            //then
+            assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception1.getErrorCodes());
+            assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception2.getErrorCodes());
         }
 
         @DisplayName("유효하지_않은_travelStyles_값을_입력한_경우_예외_반환")
@@ -206,14 +214,16 @@ class ArticleTest {
                 .travelStyles(List.of(invalidTravelStyle))
                 .build();
 
-            //when, then
-            assertThrows(BeApplicationException.class, () -> {
-                TravelStyle.from(invalidUpdate.travelStyles());
-            });
+            //when
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelStyle.from(invalidUpdate.travelStyles()));
 
-            assertThrows(BeApplicationException.class, () -> {
-                article.update(writer, invalidUpdate);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> article.update(writer, invalidUpdate));
+
+            //then
+            assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception1.getErrorCodes());
+            assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception2.getErrorCodes());
         }
 
         @DisplayName("작성자가_아닌_다른_유저가_수정하려고하는_경우_예외_반환")
@@ -242,10 +252,12 @@ class ArticleTest {
                         TravelStyle.CAFE_TOUR.getName()))
                 .build();
 
-            // when & then
-            assertThrows(BeApplicationException.class, () -> {
-                article.update(notWriter, articleUpdateRequest);
-            });
+            // when
+            BeApplicationException exception = assertThrows(BeApplicationException.class,
+                () -> article.update(notWriter, articleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - ArticleUpdateRequest_으로_Article_객체_수정")
@@ -319,10 +331,12 @@ class ArticleTest {
                 .status(UserStatus.ACTIVE)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () -> {
-                article.delete(notWriter);
-            });
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class,
+                () -> article.delete(notWriter));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 글쓴이가_삭제하려고_하는_경우")

@@ -3,6 +3,7 @@ package site.travellaboratory.be.user.application._auth;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ class UserAuthenticationServiceTest {
         private final String correctPassword = "correct_password";
 
         @BeforeEach
-        void setUP() {
+        void setUp() {
             User user = User.builder()
                 .username(existingUsername)
                 .password(encoder.encode(correctPassword))
@@ -60,9 +61,10 @@ class UserAuthenticationServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.login(invalidRequest), ErrorCodes.AUTH_USER_NOT_FOUND.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.login(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_USER_NOT_FOUND, exception.getErrorCodes());
         }
 
         @DisplayName("유저가_존재하지만_비밀번호가_틀린_경우")
@@ -75,22 +77,23 @@ class UserAuthenticationServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.login(invalidRequest), ErrorCodes.AUTH_INVALID_PASSWORD.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.login(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_INVALID_PASSWORD, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 유효한_이메일이고_비밀번호가_일치하는_경우_로그인_성공")
         @Test
         void test1000() {
             //given
-            LoginRequest invalidRequest = LoginRequest.builder()
+            LoginRequest validRequest = LoginRequest.builder()
                 .username(existingUsername)
                 .password(correctPassword)
                 .build();
 
             //when
-            LoginCommand result = sut.login(invalidRequest);
+            LoginCommand result = sut.login(validRequest);
 
             //then
             assertNotNull(result);

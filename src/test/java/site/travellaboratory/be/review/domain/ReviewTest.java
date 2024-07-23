@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
 import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;
@@ -56,8 +57,9 @@ class ReviewTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 Review.create(otherUser, article1, saveRequest));
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - ReviewSaveRequest_로_Review_객체_생성_(feat.본인의_여행계획에_대한_후기_작성)")
@@ -122,8 +124,9 @@ class ReviewTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 review.withUpdatedContent(otherUser, updateRequest));
+            assertEquals(ErrorCodes.REVIEW_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - ReviewUpdateRequest_로_새로운_Review_객체_생성_(feat.본인의_여행계획에_대한_후기_수정)")
@@ -180,8 +183,9 @@ class ReviewTest {
                 .build();
 
             // when & then
-            assertThrows(BeApplicationException.class, () ->
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 review.withInactiveStatus(otherUser));
+            assertEquals(ErrorCodes.REVIEW_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 본인의_여행계획에_대한_후기_삭제")

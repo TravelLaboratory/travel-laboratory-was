@@ -67,9 +67,10 @@ class PwInquiryServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.pwInquiryEmail(invalidRequest), ErrorCodes.PASSWORD_INVALID_EMAIL.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.pwInquiryEmail(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INVALID_EMAIL, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 비밀번호_찾기_시에_유효한_이메일에_대해_비밀번호찾기용_질문_반환")
@@ -122,10 +123,10 @@ class PwInquiryServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                    sut.pwInquiryVerification(invalidRequest),
-                ErrorCodes.PASSWORD_INVALID_EMAIL.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.pwInquiryVerification(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INVALID_EMAIL, exception.getErrorCodes());
         }
 
         @DisplayName("비밀번호_검증_시에_유효하지_않는_답변인_경우")
@@ -139,10 +140,10 @@ class PwInquiryServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                    sut.pwInquiryVerification(invalidRequest),
-                ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.pwInquiryVerification(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 비밀번호_검증_시에_유효한_이메일과_답변이_일치하는_경우")
@@ -202,9 +203,10 @@ class PwInquiryServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.pwInquiryRenewal(invalidRequest), ErrorCodes.PASSWORD_INVALID_EMAIL.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.pwInquiryRenewal(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INVALID_EMAIL, exception.getErrorCodes());
         }
 
         @DisplayName("비밀번호_재설정_시에_유효하지_않는_답변인_경우")
@@ -219,17 +221,16 @@ class PwInquiryServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                    sut.pwInquiryRenewal(invalidRequest),
-                ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.pwInquiryRenewal(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INQUIRY_INVALID_ANSWER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 비밀번호_재설정_시에_유효한_이메일과_답변이_일치하는_경우")
         @Test
         void test1000() {
             //given
-            String encodePassword = encoder.encode(newPassword);
             PwInquiryRenewalRequest request = PwInquiryRenewalRequest.builder()
                 .username(existingUsername)
                 .pwQuestionId(pwQuestionId)
@@ -242,7 +243,7 @@ class PwInquiryServiceTest {
 
             //then
             assertEquals(existingUsername, updatedUser.getUsername());
-            assertTrue(encoder.matches(newPassword, encodePassword));
+            assertTrue(encoder.matches(newPassword, updatedUser.getPassword()));
         }
     }
 }
