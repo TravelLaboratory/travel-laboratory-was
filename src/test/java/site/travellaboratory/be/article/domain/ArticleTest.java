@@ -69,13 +69,11 @@ class ArticleTest {
                     .build();
 
             //when
-            BeApplicationException exception1 = assertThrows(BeApplicationException.class, () -> {
-                TravelCompanion.from(invalidRegister.travelCompanion());
-            });
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelCompanion.from(invalidRegister.travelCompanion()));
 
-            BeApplicationException exception2 = assertThrows(BeApplicationException.class, () -> {
-                Article.create(writer, invalidRegister);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> Article.create(writer, invalidRegister));
 
             //then
             assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception1.getErrorCodes());
@@ -100,13 +98,11 @@ class ArticleTest {
                     .build();
 
             //when
-            BeApplicationException exception1 = assertThrows(BeApplicationException.class, () -> {
-                TravelStyle.from(invalidRegister.travelStyles());
-            });
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelStyle.from(invalidRegister.travelStyles()));
 
-            BeApplicationException exception2 = assertThrows(BeApplicationException.class, () -> {
-                Article.create(writer, invalidRegister);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> Article.create(writer, invalidRegister));
 
             //then
             assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception1.getErrorCodes());
@@ -188,13 +184,12 @@ class ArticleTest {
                 .build();
 
             //when
-            BeApplicationException exception1 = assertThrows(BeApplicationException.class, () -> {
-                TravelCompanion.from(invalidUpdate.travelCompanion());
-            });
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () ->
+                TravelCompanion.from(invalidUpdate.travelCompanion()));
 
-            BeApplicationException exception2 = assertThrows(BeApplicationException.class, () -> {
-                article.update(writer, invalidUpdate);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> article.update(writer, invalidUpdate));
 
             //then
             assertEquals(ErrorCodes.COMPANION_NOT_FOUND, exception1.getErrorCodes());
@@ -220,13 +215,11 @@ class ArticleTest {
                 .build();
 
             //when
-            BeApplicationException exception1 = assertThrows(BeApplicationException.class, () -> {
-                TravelStyle.from(invalidUpdate.travelStyles());
-            });
+            BeApplicationException exception1 = assertThrows(BeApplicationException.class,
+                () -> TravelStyle.from(invalidUpdate.travelStyles()));
 
-            BeApplicationException exception2 = assertThrows(BeApplicationException.class, () -> {
-                article.update(writer, invalidUpdate);
-            });
+            BeApplicationException exception2 = assertThrows(BeApplicationException.class,
+                () -> article.update(writer, invalidUpdate));
 
             //then
             assertEquals(ErrorCodes.STYLE_NOT_FOUND, exception1.getErrorCodes());
@@ -260,9 +253,8 @@ class ArticleTest {
                 .build();
 
             // when
-            BeApplicationException exception = assertThrows(BeApplicationException.class, () -> {
-                article.update(notWriter, articleUpdateRequest);
-            });
+            BeApplicationException exception = assertThrows(BeApplicationException.class,
+                () -> article.update(notWriter, articleUpdateRequest));
 
             // then
             assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
@@ -340,9 +332,8 @@ class ArticleTest {
                 .build();
 
             //when
-            BeApplicationException exception = assertThrows(BeApplicationException.class, () -> {
-                article.delete(notWriter);
-            });
+            BeApplicationException exception = assertThrows(BeApplicationException.class,
+                () -> article.delete(notWriter));
 
             // then
             assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());

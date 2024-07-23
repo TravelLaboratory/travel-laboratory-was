@@ -231,7 +231,6 @@ class PwInquiryServiceTest {
         @Test
         void test1000() {
             //given
-            String encodePassword = encoder.encode(newPassword);
             PwInquiryRenewalRequest request = PwInquiryRenewalRequest.builder()
                 .username(existingUsername)
                 .pwQuestionId(pwQuestionId)

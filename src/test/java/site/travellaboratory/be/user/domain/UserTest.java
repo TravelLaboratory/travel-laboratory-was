@@ -30,9 +30,8 @@ class UserTest {
                 .build();
 
             //when
-            BeApplicationException exception = assertThrows(BeApplicationException.class, () -> {
-                User.register(encodedPassword, validRequest);
-            });
+            BeApplicationException exception = assertThrows(BeApplicationException.class,
+                () -> User.register(encodedPassword, validRequest));
 
             // then
             assertEquals(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT, exception.getErrorCodes());
