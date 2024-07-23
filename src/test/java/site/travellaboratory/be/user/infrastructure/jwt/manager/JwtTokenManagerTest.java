@@ -1,8 +1,12 @@
 package site.travellaboratory.be.user.infrastructure.jwt.manager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -14,7 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import site.travellaboratory.be.common.exception.NotImplementedTestException;
+import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.user.domain._auth.AccessToken;
 import site.travellaboratory.be.user.domain._auth.AuthTokens;
 import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenGenerator;
 import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenParser;
@@ -73,35 +80,57 @@ class JwtTokenManagerTest {
         @Test
         void test1() {
             //given
-            throw new NotImplementedTestException();
-            //when
+            String accessToken = "access_token";
+            String refreshToken = "refresh_token";
 
-            //then
+            when(jwtTokenValidator.isValidExpiredWithThrow(eq(accessToken))).thenReturn(false);
 
+            // when & then
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.reIssueAccessToken(accessToken, refreshToken)
+            );
+            assertEquals(ErrorCodes.TOKEN_NOT_EXPIRED_ACCESS_TOKEN, exception.getErrorCodes());
         }
 
         @DisplayName("유효하지_않거나_만료된_리프레시_토큰일_경우_예외_반환")
         @Test
         void test2() {
             //given
-            throw new NotImplementedTestException();
+            String accessToken = "access_token";
+            String refreshToken = "refresh_token";
 
-            //when
+            when(jwtTokenValidator.isValidExpiredWithThrow(eq(accessToken))).thenReturn(true);
+            doThrow(new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST))
+                .when(jwtTokenValidator).validRefreshTokenWithThrow(eq(refreshToken));
 
-            //then
-
+            // when & then
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.reIssueAccessToken(accessToken, refreshToken)
+            );
+            assertEquals(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 리프레시_토큰을_통해_새로운_액세스_토큰_재발급")
         @Test
         void test1000() {
             //given
-            throw new NotImplementedTestException();
+            String accessToken = "access_token";
+            String refreshToken = "refresh_token";
+            Long userId = 1L;
+            String newAccessToken = "new_access_token";
+
+            when(jwtTokenValidator.isValidExpiredWithThrow(eq(accessToken))).thenReturn(true);
+            doNothing().when(jwtTokenValidator).validRefreshTokenWithThrow(eq(refreshToken));
+            when(jwtTokenParser.getUserIdBy(eq(refreshToken))).thenReturn(userId);
+            when(jwtTokenGenerator.issueToken(eq(userId), eq(accessTokenPlusHour))).thenReturn(newAccessToken);
 
             //when
+            AccessToken reIssueAccessToken = sut.reIssueAccessToken(accessToken, refreshToken);
 
             //then
-
+            assertNotNull(reIssueAccessToken);
+            assertEquals(newAccessToken, reIssueAccessToken.getAccessToken());
+            assertTrue(LocalDateTime.parse(reIssueAccessToken.getExpiredAt()).isAfter(LocalDateTime.now()));
         }
     }
 }
