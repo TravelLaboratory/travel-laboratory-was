@@ -72,7 +72,7 @@ public class Review {
     private void verifyOwner(User user) {
         // 유저가 작성한 후기가 아닌 경우
         if (!this.getUser().getId().equals(user.getId())) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_UPDATE_NOT_USER,
+            throw new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER,
                 HttpStatus.FORBIDDEN);
         }
     }

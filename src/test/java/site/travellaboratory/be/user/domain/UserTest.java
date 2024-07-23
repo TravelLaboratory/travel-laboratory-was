@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -28,10 +29,13 @@ class UserTest {
                 .isAgreement(false)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () -> {
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () -> {
                 User.register(encodedPassword, validRequest);
             });
+
+            // then
+            assertEquals(ErrorCodes.AUTH_USER_NOT_IS_AGREEMENT, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - UserJoinRequest_으로_User_객체_생성")

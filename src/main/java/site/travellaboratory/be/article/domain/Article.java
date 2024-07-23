@@ -90,7 +90,7 @@ public class Article {
 
     public void verifyOwner(User user) {
         if (!this.user.getId().equals(user.getId())) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_POST_NOT_USER, HttpStatus.FORBIDDEN);
+            throw new BeApplicationException(ErrorCodes.ARTICLE_VERIFY_OWNER, HttpStatus.FORBIDDEN);
         }
     }
 }

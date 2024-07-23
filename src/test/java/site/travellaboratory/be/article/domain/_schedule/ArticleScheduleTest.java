@@ -18,6 +18,7 @@ import site.travellaboratory.be.article.domain._schedule.request.ScheduleGeneral
 import site.travellaboratory.be.article.domain._schedule.request.ScheduleTransportRequest;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
@@ -54,9 +55,12 @@ class ArticleScheduleTest {
                 .dtype("ANYTHING")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 ArticleSchedule.create(writer1, article1, saveRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_SCHEDULE_POST_NOT_DTYPE, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleGeneral_본인이_작성한_여행계획이_아닌_경우_예외_반환")
@@ -73,9 +77,12 @@ class ArticleScheduleTest {
                 .dtype("GENERAL")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 ArticleSchedule.create(otherUser, article1, saveRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleTransport_본인이_작성한_여행계획이_아닌_경우_예외_반환")
@@ -92,9 +99,12 @@ class ArticleScheduleTest {
                 .dtype("TRANSPORT")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 ArticleSchedule.create(otherUser, article1, saveRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleEtc_본인이_작성한_여행계획이_아닌_경우_예외_반환")
@@ -111,9 +121,12 @@ class ArticleScheduleTest {
                 .dtype("ETC")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 ArticleSchedule.create(otherUser, article1, saveRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - ScheduleGeneral_객체_생성")
@@ -296,9 +309,12 @@ class ArticleScheduleTest {
                 .scheduleId(existingScheduleId)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(otherUser, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleTransport- 본인이_작성하지_않은_여행계획의_일정을_수정하려는_경우_예외_반환")
@@ -322,9 +338,12 @@ class ArticleScheduleTest {
                 .scheduleId(existingScheduleId)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(otherUser, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleEtc- 본인이_작성하지_않은_여행계획의_일정을_수정하려는_경우_예외_반환")
@@ -348,9 +367,12 @@ class ArticleScheduleTest {
                 .scheduleId(existingScheduleId)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(otherUser, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleGeneral- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
@@ -368,9 +390,12 @@ class ArticleScheduleTest {
                 .dtype("GENERAL")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(writer1, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleTransport- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
@@ -388,9 +413,12 @@ class ArticleScheduleTest {
                 .dtype("TRANSPORT")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(writer1, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleEtc- schedule_id가_존재하지_않는_여행계획의_일정을_수정하려는_경우_예외_반환")
@@ -408,9 +436,12 @@ class ArticleScheduleTest {
                 .dtype("ETC")
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.update(writer1, scheduleUpdateRequest));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - GENERAL_타입_일정_수정_완료")
@@ -611,9 +642,12 @@ class ArticleScheduleTest {
                 .status(ArticleScheduleStatus.ACTIVE)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.delete(otherUser));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleTransport- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
@@ -633,9 +667,12 @@ class ArticleScheduleTest {
                 .status(ArticleScheduleStatus.ACTIVE)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.delete(otherUser));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("ScheduleEtc- 본인이_작성하지_않은_여행계획의_일정을_삭제하려는_경우_예외_반환")
@@ -655,9 +692,12 @@ class ArticleScheduleTest {
                 .status(ArticleScheduleStatus.ACTIVE)
                 .build();
 
-            //when & then
-            assertThrows(BeApplicationException.class, () ->
+            //when
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 articleSchedule.delete(otherUser));
+
+            // then
+            assertEquals(ErrorCodes.ARTICLE_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - GENERAL_Transport_ETC_3가지_일정_삭제_완료")

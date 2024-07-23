@@ -74,9 +74,10 @@ class UserRegistrationServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.register(invalidRequest), ErrorCodes.AUTH_DUPLICATED_NICK_NAME.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.register(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_DUPLICATED_NICK_NAME, exception.getErrorCodes());
         }
 
         @DisplayName("이미_존재하는_username_인_경우")
@@ -91,9 +92,10 @@ class UserRegistrationServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.register(invalidRequest), ErrorCodes.AUTH_DUPLICATED_NICK_NAME.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.register(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_DUPLICATED_USER_NAME, exception.getErrorCodes());
         }
 
         @DisplayName("유효하지_않은_비밀번호찾기용_질문을_선택한_경우")
@@ -109,9 +111,10 @@ class UserRegistrationServiceTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.register(invalidRequest), ErrorCodes.PASSWORD_INVALID_QUESTION.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.register(invalidRequest)
             );
+            assertEquals(ErrorCodes.PASSWORD_INVALID_QUESTION, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 회원가입")

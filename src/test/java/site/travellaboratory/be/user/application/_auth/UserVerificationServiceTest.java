@@ -1,5 +1,6 @@
 package site.travellaboratory.be.user.application._auth;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +31,7 @@ class UserVerificationServiceTest {
     class isNicknameAvailable {
 
         private final String existingNickname = "existing_nickname";
+
         @BeforeEach
         void setUp() {
             fakeUserRepository.save(User.builder()
@@ -42,12 +44,14 @@ class UserVerificationServiceTest {
         @Test
         void test1() {
             //given
-            UserNicknameRequest invalidRequest = UserNicknameRequest.builder().nickname(existingNickname).build();
+            UserNicknameRequest invalidRequest = UserNicknameRequest.builder()
+                .nickname(existingNickname).build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.isNicknameAvailable(invalidRequest), ErrorCodes.AUTH_DUPLICATED_NICK_NAME.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.isNicknameAvailable(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_DUPLICATED_NICK_NAME, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 존재하지_않는_nickname_인_경우")
@@ -55,7 +59,8 @@ class UserVerificationServiceTest {
         void test1000() {
             //given
             String newNickname = "new_nickname";
-            UserNicknameRequest validRequest = UserNicknameRequest.builder().nickname(newNickname).build();
+            UserNicknameRequest validRequest = UserNicknameRequest.builder().nickname(newNickname)
+                .build();
 
             //when & then
             Boolean result = sut.isNicknameAvailable(validRequest);
@@ -65,6 +70,7 @@ class UserVerificationServiceTest {
 
     @Nested
     class isUsernameAvailable {
+
         private final String existingUsername = "existing_username";
 
         @BeforeEach
@@ -80,12 +86,14 @@ class UserVerificationServiceTest {
         @Test
         void test1() {
             //given
-            UsernameRequest invalidRequest = UsernameRequest.builder().username(existingUsername).build();
+            UsernameRequest invalidRequest = UsernameRequest.builder().username(existingUsername)
+                .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
-                sut.isUsernameAvailable(invalidRequest), ErrorCodes.AUTH_DUPLICATED_NICK_NAME.getMessage()
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
+                sut.isUsernameAvailable(invalidRequest)
             );
+            assertEquals(ErrorCodes.AUTH_DUPLICATED_USER_NAME, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 존재하지_않는_username_인_경우")

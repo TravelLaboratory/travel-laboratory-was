@@ -14,6 +14,7 @@ import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
 import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.user.domain.User;
@@ -102,8 +103,9 @@ class CommentTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 comment1.withUpdatedReplyContent(otherUser, updateRequest));
+            assertEquals(ErrorCodes.COMMENT_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 본인이_작성한_댓글을_수정")
@@ -154,8 +156,9 @@ class CommentTest {
                 .build();
 
             //when & then
-            assertThrows(BeApplicationException.class, () ->
+            BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 comment1.withInactiveStatus(otherUser));
+            assertEquals(ErrorCodes.COMMENT_VERIFY_OWNER, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 본인이_작성한_댓글을_삭제")
