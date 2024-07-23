@@ -23,7 +23,6 @@ import site.travellaboratory.be.user.domain.enums.UserStatus;
 class CommentTest {
 
     private User writer1;
-    private Article article1;
     private Review review1;
 
     @BeforeEach
@@ -36,7 +35,7 @@ class CommentTest {
             .build();
 
         // 유저가 쓴 여행계획
-        article1 = Article.builder()
+        Article article1 = Article.builder()
             .id(1L)
             .user(writer1)
             .status(ArticleStatus.ACTIVE)
