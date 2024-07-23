@@ -1,7 +1,6 @@
 package site.travellaboratory.be.user.infrastructure.jwt.manager;
 
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -15,18 +14,26 @@ import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenP
 import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenValidator;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenManager implements TokenManager {
 
     private final JwtTokenGenerator jwtTokenGenerator;
     private final JwtTokenValidator jwtTokenValidator;
     private final JwtTokenParser jwtTokenParser;
+    private final Long accessTokenPlusHour;
+    private final Long refreshTokenPlusHour;
 
-    @Value("${jwt.access-token.plus-hour}")
-    private Long accessTokenPlusHour;
-
-    @Value("${jwt.refresh-token.plus-hour}")
-    private Long refreshTokenPlusHour;
+    public JwtTokenManager(
+        JwtTokenGenerator jwtTokenGenerator,
+        JwtTokenValidator jwtTokenValidator,
+        JwtTokenParser jwtTokenParser,
+        @Value("${jwt.access-token.plus-hour}") Long accessTokenPlusHour,
+        @Value("${jwt.refresh-token.plus-hour}") Long refreshTokenPlusHour) {
+        this.jwtTokenGenerator = jwtTokenGenerator;
+        this.jwtTokenValidator = jwtTokenValidator;
+        this.jwtTokenParser = jwtTokenParser;
+        this.accessTokenPlusHour = accessTokenPlusHour;
+        this.refreshTokenPlusHour = refreshTokenPlusHour;
+    }
 
     @Override
     public AuthTokens generateTokens(Long userId) {
