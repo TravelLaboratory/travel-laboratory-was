@@ -38,7 +38,7 @@ public class ReviewReaderController {
         @UserId Long tokenUserId,
         @PathVariable(name = "userId") Long userId,
         @RequestParam(name = "page", defaultValue = "0") int page,
-        @RequestParam(name = "int", defaultValue = "10") int size
+        @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         ProfileReviewPaginationResponse response = reviewReaderService.readProfileReviews(
             tokenUserId, userId, page, size);

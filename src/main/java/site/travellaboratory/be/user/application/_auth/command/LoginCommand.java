@@ -1,7 +1,7 @@
 package site.travellaboratory.be.user.application._auth.command;
 
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.presentation._auth.response.userauthentication.AuthTokenResponse;
+import site.travellaboratory.be.user.domain._auth.AuthTokens;
 
 public record LoginCommand(
     Long userId,
@@ -11,9 +11,9 @@ public record LoginCommand(
     String refreshToken,
     String expiredAt
 ) {
-    public static LoginCommand from(User user, AuthTokenResponse token) {
+    public static LoginCommand from(User user, AuthTokens token) {
         return new LoginCommand(
             user.getId(), user.getNickname(), user.getProfileImgUrl(),
-            token.accessToken(), token.refreshToken(), token.expiredAt());
+            token.getAccessToken(), token.getRefreshToken(), token.getExpiredAt());
     }
 }

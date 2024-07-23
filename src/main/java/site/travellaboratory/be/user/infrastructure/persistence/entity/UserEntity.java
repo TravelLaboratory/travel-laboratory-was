@@ -11,9 +11,8 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.domain._auth.UserAuth;
 import site.travellaboratory.be.common.infrastructure.common.BaseEntity;
+import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
@@ -53,23 +52,13 @@ public class UserEntity extends BaseEntity {
     public static UserEntity from(User user) {
         UserEntity result = new UserEntity();
         result.id = user.getId();
+        result.username = user.getUsername();
+        result.password = user.getPassword();
+        result.role = user.getRole();
         result.nickname = user.getNickname();
         result.profileImgUrl = user.getProfileImgUrl();
         result.introduce = user.getIntroduce();
-        result.status = user.getStatus();
-        return result;
-    }
-
-    public static UserEntity from(User user, UserAuth userAuth) {
-        UserEntity result = new UserEntity();
-        result.id = user.getId();
-        result.username = userAuth.getUsername();
-        result.password = userAuth.getPassword();
-        result.role = userAuth.getRole();
-        result.nickname = user.getNickname();
-        result.profileImgUrl = user.getProfileImgUrl();
-        result.introduce = user.getIntroduce();
-        result.isAgreement = userAuth.getIsAgreement();
+        result.isAgreement = user.getIsAgreement();
         result.status = user.getStatus();
         return result;
     }
@@ -103,16 +92,6 @@ public class UserEntity extends BaseEntity {
             .profileImgUrl(this.profileImgUrl)
             .introduce(this.introduce)
             .status(this.status)
-            .build();
-    }
-
-    public UserAuth toModelUserAuth() {
-        return UserAuth.builder()
-            .id(this.id)
-            .username(this.username)
-            .password(this.password)
-            .role(this.role)
-            .isAgreement(this.isAgreement)
             .build();
     }
 

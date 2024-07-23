@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.common.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.review.infrastructure.persistence.ReviewEntity;
+import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 @Entity

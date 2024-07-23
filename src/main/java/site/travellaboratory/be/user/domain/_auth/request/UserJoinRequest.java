@@ -12,11 +12,11 @@ public record UserJoinRequest(
     @NotBlank
     String nickname,
     @NotNull
+    Boolean isAgreement,
+    @NotNull
     Long pwQuestionId,
     @NotBlank
-    String pwAnswer,
-    @NotNull
-    Boolean isAgreement
+    String pwAnswer
 ) {
 
     @Builder
