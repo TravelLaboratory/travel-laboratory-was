@@ -116,6 +116,13 @@ public enum ErrorCodes {
     // 북마크 관련
     BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
 
+    // 도메인 예외 (domain)
+    ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
+    REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
+    COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
+
+
+
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     // NPE
@@ -128,9 +135,5 @@ public enum ErrorCodes {
     ErrorCodes(String message, Long code) {
         this.message = message;
         this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }
