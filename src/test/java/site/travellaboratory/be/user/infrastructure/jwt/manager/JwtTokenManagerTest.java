@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import site.travellaboratory.be.common.exception.NotImplementedTestException;
 import site.travellaboratory.be.user.domain._auth.AuthTokens;
 import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenGenerator;
 import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenParser;
@@ -72,7 +73,7 @@ class JwtTokenManagerTest {
         @Test
         void test1() {
             //given
-
+            throw new NotImplementedTestException();
             //when
 
             //then
@@ -83,6 +84,7 @@ class JwtTokenManagerTest {
         @Test
         void test2() {
             //given
+            throw new NotImplementedTestException();
 
             //when
 
@@ -94,6 +96,7 @@ class JwtTokenManagerTest {
         @Test
         void test1000() {
             //given
+            throw new NotImplementedTestException();
 
             //when
 
