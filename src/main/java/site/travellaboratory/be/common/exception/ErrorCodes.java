@@ -1,8 +1,5 @@
 package site.travellaboratory.be.common.exception;
 
-import org.jetbrains.annotations.NotNull;
-
-// todo enum을 각각의 controller에 맞게끔 나눠주기
 public enum ErrorCodes {
 
     // 회원가입
@@ -60,8 +57,6 @@ public enum ErrorCodes {
     // 프로필 - 리뷰 전체 조회 (페이지네이션)
     PROFILE_REVIEW_READ_USER_NOT_FOUND("[프로필 - 후기 전체 조회] - 유효하지 않은 User ID", 4060L),
 
-
-
     // 댓글
     // 댓글 작성
     COMMENT_POST_INVALID("[댓글 작성] - 유효하지 않은 후기 ID", 5000L),
@@ -79,7 +74,6 @@ public enum ErrorCodes {
 
     // 일정 상세 (article_schedule)
     // 일정 상세 - 작성
-
     ARTICLE_SCHEDULE_POST_INVALID("[일정 상세 - 작성] - 유효하지 않은 초기 여행 계획 ID", 10000L),
     ARTICLE_SCHEDULE_POST_NOT_USER("[일정 상세 - 작성] - 초기 여행 계획 작성자만 상세 여행 계획을 작성할 수 있습니다.", 10001L),
     ARTICLE_SCHEDULE_POST_NOT_DTYPE("[일정 상세] - 올바르지 않은 DTYPE이 포함되어 있습니다.", 10002L),
@@ -88,7 +82,6 @@ public enum ErrorCodes {
     ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID("[일정 상세 - 수정] - 유효하지 않은 초기 여행 계획(article) - ID", 10010L),
     ARTICLE_SCHEDULE_UPDATE_NOT_USER("[일정 상세 - 수정] - 초기 여행 계획 작성자만 상세 여행 계획을 수정할 수 있습니다.", 10011L),
     ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID("[일정 상세 - 수정] - 유효하지 않은 일정(schedule) ID", 10012L),
-
 
     // 일정 상세 - 삭제
     ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 초기 여행 계획 - ID", 10020L),
@@ -99,7 +92,6 @@ public enum ErrorCodes {
     // 일정 상세 - 전체 조회
     ARTICLE_SCHEDULE_READ_DETAIL_INVALID("[일정 상세 - 리스트 조회] - 유효하지 않은 초기 여행 계획 - ID", 10040L),
     ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER("[일정 상세 - 리스트 조회] - 해당 여행 계획에 접근 권한 없음", 10041L),
-
 
     // 아티클 관련
     ARTICLE_NOT_FOUND("존재 하지 않는 초기 여행 계획", 6000L),
@@ -121,16 +113,16 @@ public enum ErrorCodes {
     REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
     COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
 
-
-
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception
-    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L);
-    public final @NotNull String message;
-    public final @NotNull Long code;
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L)
+    ;
+
+    public final String message;
+    public final Long code;
 
     ErrorCodes(String message, Long code) {
         this.message = message;
