@@ -11,31 +11,49 @@ import java.util.Date;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import site.travellaboratory.be.user.domain._auth.Token;
 
 @Component
 public class JwtTokenGenerator {
 
     private final Key key;
+    private final Long accessTokenPlusHour;
+    private final Long refreshTokenPlusHour;
 
-    public JwtTokenGenerator(@Value("${jwt.secret-key}") String secretKey) {
-        // 생성자에서 키 생성
+    public JwtTokenGenerator(
+        @Value("${jwt.secret-key}") String secretKey,
+        @Value("${jwt.access-token.plus-hour}") Long accessTokenPlusHour,
+        @Value("${jwt.refresh-token.plus-hour}") Long refreshTokenPlusHour) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.accessTokenPlusHour = accessTokenPlusHour;
+        this.refreshTokenPlusHour = refreshTokenPlusHour;
     }
 
-    public String issueToken(final Long userId, final Long tokenPlusHour) {
-        // claims
+    public Token issueAccessToken(Long userId) {
+        return getToken(userId, accessTokenPlusHour);
+    }
+
+    public Token issueRefreshToken(Long userId) {
+        return getToken(userId, refreshTokenPlusHour);
+    }
+
+    private Token getToken(Long userId, Long tokenPlusHour) {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
 
-        // expiration
         LocalDateTime expiredLocalDateTime = LocalDateTime.now().plusHours(tokenPlusHour);
         Date expiredAt = Date.from(expiredLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        return Jwts.builder()
+        String token = Jwts.builder()
             .signWith(key, SignatureAlgorithm.HS256)
             .setClaims(claims)
             .setExpiration(expiredAt)
             .compact();
+
+        return Token.builder()
+            .token(token)
+            .expiredAt(expiredLocalDateTime)
+            .build();
     }
 }
