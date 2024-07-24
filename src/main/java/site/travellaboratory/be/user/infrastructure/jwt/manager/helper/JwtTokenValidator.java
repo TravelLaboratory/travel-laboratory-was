@@ -1,5 +1,6 @@
 package site.travellaboratory.be.user.infrastructure.jwt.manager.helper;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -16,54 +17,43 @@ import site.travellaboratory.be.common.exception.ErrorCodes;
 @Component
 public class JwtTokenValidator {
 
-    private final Key key;
     private final JwtParser parser;
 
     public JwtTokenValidator(@Value("${jwt.secret-key}") String secretKey) {
-        // 생성자에서 키 생성
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
         this.parser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
-    public void validAccessTokenWithThrow(String token) {
+    public Claims parseAccessTokenClaims(String token) {
         try {
-            parser.parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException  e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN,
-                HttpStatus.BAD_REQUEST);
+            return parser.parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN,
-                HttpStatus.UNAUTHORIZED);
+            throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED);
+        } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL,
-                HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
         }
     }
 
-    public void validRefreshTokenWithThrow(String token) {
+    public Claims parseRefreshTokenClaims(String token) {
         try {
-            parser.parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException  e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN,
-                HttpStatus.BAD_REQUEST);
+            return parser.parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
-            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN,
-                HttpStatus.UNAUTHORIZED);
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED);
+        } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION,
-                HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION, HttpStatus.BAD_REQUEST);
         }
     }
 
-    // 리프레시 토큰을 발급받기 위해
-    public boolean isValidExpiredWithThrow(String token) {
+    public boolean isTokenExpired(String token) {
         try {
-            validAccessTokenWithThrow(token);
-            // 통과하면 아직 유효한 토큰
+            parseAccessTokenClaims(token);
             return false;
         } catch (BeApplicationException e) {
-            // 만료된 토큰일 경우에만!!
             if (e.getErrorCodes() == ErrorCodes.TOKEN_EXPIRED_TOKEN) {
                 return true;
             }

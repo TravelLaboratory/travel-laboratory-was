@@ -16,7 +16,7 @@ import site.travellaboratory.be.mock.user.FakeUserRepository;
 import site.travellaboratory.be.mock.user._auth.FakeTokenManager;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.domain._auth.AccessToken;
+import site.travellaboratory.be.user.domain._auth.Token;
 import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
@@ -97,14 +97,14 @@ class UserAuthenticationServiceTest {
 
             //then
             assertNotNull(result);
-            assertNotNull(result.accessToken());
-            assertNotNull(result.refreshToken());
-            assertNotNull(result.expiredAt());
+            assertNotNull(result.accessToken().getToken());
+            assertNotNull(result.refreshToken().getToken());
+            assertNotNull(result.accessToken().getExpiredAt());
         }
     }
 
     @Nested
-    class reIssueAccessToken {
+    class reIssueToken {
         @DisplayName("성공 - 액세스_토큰_재발급")
         @Test
         void test1000() {
@@ -113,11 +113,11 @@ class UserAuthenticationServiceTest {
             String refreshToken = "";
 
             // when
-            AccessToken result = sut.reIssueAccessToken(accessToken, refreshToken);
+            Token result = sut.reIssueAccessToken(accessToken, refreshToken);
 
             // then
             assertNotNull(result);
-            assertNotEquals(accessToken, result.getAccessToken());
+            assertNotEquals(accessToken, result.getToken());
             assertNotNull(result.getExpiredAt());
         }
     }

@@ -11,8 +11,8 @@ import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.application.port.TokenManager;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.domain._auth.AccessToken;
-import site.travellaboratory.be.user.domain._auth.AuthTokens;
+import site.travellaboratory.be.user.domain._auth.Token;
+import site.travellaboratory.be.user.domain._auth.Tokens;
 import site.travellaboratory.be.user.domain._auth.request.LoginRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 
@@ -38,11 +38,11 @@ public class UserAuthenticationService {
                 HttpStatus.UNAUTHORIZED);
         }
 
-        AuthTokens authTokens = tokenManager.generateTokens(user.getId());
-        return LoginCommand.from(user, authTokens);
+        Tokens tokens = tokenManager.generateTokens(user.getId());
+        return LoginCommand.from(user, tokens);
     }
 
-    public AccessToken reIssueAccessToken(String accessToken, String refreshToken) {
+    public Token reIssueAccessToken(String accessToken, String refreshToken) {
         return tokenManager.reIssueAccessToken(accessToken, refreshToken);
     }
 }

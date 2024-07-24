@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.infrastructure.jwt.manager.JwtTokenManager;
 import site.travellaboratory.be.user.domain.User;
-import site.travellaboratory.be.user.domain._auth.AuthTokens;
+import site.travellaboratory.be.user.domain._auth.Tokens;
 import site.travellaboratory.be.user.domain._auth.request.OAuthJoinRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
@@ -27,7 +27,7 @@ public class OAuthService {
                         oAuthJoinRequest.profileNickname(), oAuthJoinRequest.isAgreement()));
                 }).toModel();
 
-        AuthTokens authTokens = jwtTokenManager.generateTokens(user.getId());
-        return LoginCommand.from(user, authTokens);
+        Tokens tokens = jwtTokenManager.generateTokens(user.getId());
+        return LoginCommand.from(user, tokens);
     }
 }

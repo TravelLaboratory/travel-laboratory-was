@@ -2,31 +2,36 @@ package site.travellaboratory.be.mock.user._auth;
 
 import java.time.LocalDateTime;
 import site.travellaboratory.be.user.application.port.TokenManager;
-import site.travellaboratory.be.user.domain._auth.AccessToken;
-import site.travellaboratory.be.user.domain._auth.AuthTokens;
+import site.travellaboratory.be.user.domain._auth.Token;
+import site.travellaboratory.be.user.domain._auth.Tokens;
 
 public class FakeTokenManager implements TokenManager {
 
     @Override
-    public AuthTokens generateTokens(Long userId) {
-        String accessToken = "access_token";
-        String refreshToken = "refresh_token";
-        String expiredAt = LocalDateTime.now().plusHours(1).toString();
+    public Tokens generateTokens(Long userId) {
+        Token accessToken = Token.builder()
+            .token("access_token")
+            .expiredAt(LocalDateTime.now().plusHours(1))
+            .build();
 
-        return AuthTokens.builder()
+        Token refreshToken = Token.builder()
+            .token("refresh_token")
+            .expiredAt(LocalDateTime.now().plusHours(2))
+            .build();
+
+        return Tokens.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
-            .expiredAt(expiredAt)
             .build();
     }
 
     @Override
-    public AccessToken reIssueAccessToken(String accessToken, String refreshToken) {
+    public Token reIssueAccessToken(String accessToken, String refreshToken) {
         String reIssueToken = "reIssue_token";
-        String reIssueTokenExpiredAt = LocalDateTime.now().plusHours(1).toString();
+        LocalDateTime reIssueTokenExpiredAt = LocalDateTime.now().plusHours(1);
 
-        return AccessToken.builder()
-            .accessToken(reIssueToken)
+        return Token.builder()
+            .token(reIssueToken)
             .expiredAt(reIssueTokenExpiredAt)
             .build();
     }
