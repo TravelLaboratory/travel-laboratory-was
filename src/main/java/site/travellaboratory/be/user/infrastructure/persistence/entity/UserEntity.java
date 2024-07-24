@@ -44,9 +44,10 @@ public class UserEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    // 후기 좋아요를 위한 생성자
-    private UserEntity(Long id) {
-        this.id = id;
+    @PrePersist
+    void prePersist() {
+        this.role = UserRole.USER;
+        this.status = UserStatus.ACTIVE;
     }
 
     public static UserEntity from(User user) {
@@ -63,6 +64,20 @@ public class UserEntity extends BaseEntity {
         return result;
     }
 
+    public User toModel() {
+        return User.builder()
+            .id(this.id)
+            .username(this.username)
+            .password(this.password)
+            .role(this.role)
+            .nickname(this.nickname)
+            .profileImgUrl(this.profileImgUrl)
+            .introduce(this.introduce)
+            .isAgreement(this.isAgreement)
+            .status(this.status)
+            .build();
+    }
+
     // 소셜 로그인 시
     public static UserEntity socialOf(String email, String profileImgUrl, String nickname,
         Boolean isAgreement) {
@@ -74,25 +89,15 @@ public class UserEntity extends BaseEntity {
         return userEntity;
     }
 
+    // 후기 좋아요를 위한 생성자
+    private UserEntity(Long id) {
+        this.id = id;
+    }
+
+
     // 후기 좋아요를 위한 of
     public static UserEntity of(Long userId) {
         return new UserEntity(userId);
-    }
-
-    @PrePersist
-    void prePersist() {
-        this.role = UserRole.USER;
-        this.status = UserStatus.ACTIVE;
-    }
-
-    public User toModel() {
-        return User.builder()
-            .id(this.id)
-            .nickname(this.nickname)
-            .profileImgUrl(this.profileImgUrl)
-            .introduce(this.introduce)
-            .status(this.status)
-            .build();
     }
 
     public void update(final String nickname, final String profileImgUrl, final String introduce) {
