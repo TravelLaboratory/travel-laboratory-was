@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
         "/api/v1/auth/join",
         "/api/v1/auth/nickname",
         "/api/v1/auth/username",
-        "/api/v1/reissue-token",
+        "/api/v1/auth/reissue-token",
         "/api/v1/auth/pw-inquiry/email",
         "/api/v1/auth/pw-inquiry/verification",
         "/api/v1/auth/pw-inquiry/renewal",

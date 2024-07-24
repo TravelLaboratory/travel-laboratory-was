@@ -14,14 +14,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.infrastructure.jwt.manager.JwtTokenVerifier;
+import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenParser;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private final JwtTokenVerifier jwtTokenVerifier;
+    private final JwtTokenParser jwtTokenParser;
 
     @Override
     public boolean preHandle(
@@ -52,7 +52,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         // (2) 토큰이 유효한지 체크 - 없다면 BAD_REQUEST 후, userId 반환
-        Long userId = jwtTokenVerifier.getAccessTokenUserId(accessToken);
+        Long userId = jwtTokenParser.getUserIdBy(accessToken);
 
         // (4)-1 현재 요청 request Context 에다가 userId를 저장한다.
         // (4)-2 범위는 이번 요청동안만! SCOPE_REQUEST

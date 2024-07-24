@@ -26,9 +26,9 @@ public class OAuthController {
     ) {
         LoginCommand result = oAuthService.kakaoLogin(oAuthJoinRequest);
 
-        response.setHeader("authorization-token", result.accessToken());
-        response.setHeader("authorization-token-expired-at", result.expiredAt());
-        response.setHeader("refresh-token", result.refreshToken());
+        response.setHeader("authorization-token", result.accessToken().getToken());
+        response.setHeader("authorization-token-expired-at", result.accessToken().getExpiredAt().toString());
+        response.setHeader("refresh-token", result.refreshToken().getToken());
         return ResponseEntity.ok(LoginResponse.from(result.userId(), result.nickname(),
             result.profileImgUrl()));
     }
