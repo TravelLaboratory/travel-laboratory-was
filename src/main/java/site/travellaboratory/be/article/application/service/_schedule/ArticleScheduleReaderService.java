@@ -1,4 +1,4 @@
-package site.travellaboratory.be.article.application._schedule;
+package site.travellaboratory.be.article.application.service._schedule;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
