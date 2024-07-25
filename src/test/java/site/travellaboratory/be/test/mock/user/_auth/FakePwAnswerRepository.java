@@ -1,4 +1,4 @@
-package site.travellaboratory.be.mock.user._auth;
+package site.travellaboratory.be.test.mock.user._auth;
 
 import site.travellaboratory.be.user.application.port.PwAnswerRepository;
 import site.travellaboratory.be.user.domain._pw.PwAnswer;

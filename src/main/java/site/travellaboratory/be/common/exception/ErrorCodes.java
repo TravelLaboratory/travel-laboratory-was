@@ -115,10 +115,16 @@ public enum ErrorCodes {
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
+    // S3
+    FILE_UPLOAD_FAILED("S3에 파일 업로드 실패", 9997L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception
-    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L)
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L),
+    // FILE_UPLOAD_COMMON 100,000
+    FILE_IS_EMPTY("파일이 비어 있습니다.", 100001L),
+    FILE_NAME_EMPTY("파일 이름이 비어 있습니다.", 100002L),
+    FILE_SIZE_ZERO("파일 크기가 0입니다.", 100003L),
     ;
 
     public final String message;

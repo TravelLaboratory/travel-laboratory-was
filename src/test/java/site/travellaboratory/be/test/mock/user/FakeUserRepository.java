@@ -1,4 +1,4 @@
-package site.travellaboratory.be.mock.user;
+package site.travellaboratory.be.test.mock.user;
 
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;

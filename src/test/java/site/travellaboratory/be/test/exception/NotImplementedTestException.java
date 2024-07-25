@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.exception;
+package site.travellaboratory.be.test.exception;
 
 public class NotImplementedTestException extends RuntimeException {
 }
