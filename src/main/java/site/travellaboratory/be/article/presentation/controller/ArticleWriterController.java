@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import site.travellaboratory.be.article.application.ArticleWriterService;
+import site.travellaboratory.be.article.application.service.ArticleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;

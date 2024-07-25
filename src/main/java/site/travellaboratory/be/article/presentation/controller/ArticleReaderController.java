@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.article.application.ArticleReaderService;
+import site.travellaboratory.be.article.application.service.ArticleReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;

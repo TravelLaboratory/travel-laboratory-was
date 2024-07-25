@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.mock.user.FakeUserRepository;
+import site.travellaboratory.be.test.mock.user.FakeUserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
 import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
