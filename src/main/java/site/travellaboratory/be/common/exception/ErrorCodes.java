@@ -35,8 +35,8 @@ public enum ErrorCodes {
 
     // 후기 (review)
     REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
-    REVIEW_INVALID_ARTICLE_ID("[후기] - 유효하지 않은 여행 계획 ID", 4001L),
-    REVIEW_INVALID_REVIEW_ID("[후기] - 유효하지 않은 후기 ID", 4002L),
+    REVIEW_INVALID_ARTICLE_ID("[후기] - 유효하지 않은 여행 계획[Article] ID", 4001L),
+    REVIEW_INVALID_REVIEW_ID("[후기] - 유효하지 않은 후기[Review] ID", 4002L),
     REVIEW_POST_EXIST("[후기] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4003L),
 
     // 후기 좋아요
@@ -54,7 +54,7 @@ public enum ErrorCodes {
 
     // 댓글
     // 댓글 작성
-    COMMENT_POST_INVALID("[댓글 작성] - 유효하지 않은 후기 ID", 5000L),
+    COMMENT_POST_INVALID("[댓글] - 유효하지 않은 후기[Review] ID", 5000L),
     // 댓글 수정
     COMMENT_UPDATE_INVALID("[댓글 수정] - 유효하지 않은 댓글 ID", 5010L),
     COMMENT_UPDATE_NOT_USER("[댓글 수정] - 본인의 댓글이 아닙니다.", 5011L),
