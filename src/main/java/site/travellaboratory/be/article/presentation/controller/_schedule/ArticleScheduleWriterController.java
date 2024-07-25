@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.article.application._schedule.ArticleScheduleWriterService;
+import site.travellaboratory.be.article.application.service._schedule.ArticleScheduleWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response._schedule.writer.ArticleScheduleDeleteResponse;
 import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleUpdateRequest;

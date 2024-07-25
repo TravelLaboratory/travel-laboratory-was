@@ -1,4 +1,4 @@
-package site.travellaboratory.be.article.application;
+package site.travellaboratory.be.article.application.service;
 
 import java.util.Collections;
 import java.util.List;

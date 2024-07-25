@@ -1,4 +1,4 @@
-package site.travellaboratory.be.comment.application;
+package site.travellaboratory.be.comment.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

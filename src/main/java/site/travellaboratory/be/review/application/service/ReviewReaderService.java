@@ -1,4 +1,4 @@
-package site.travellaboratory.be.review.application;
+package site.travellaboratory.be.review.application.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
