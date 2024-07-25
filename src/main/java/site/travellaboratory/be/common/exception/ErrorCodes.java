@@ -53,14 +53,10 @@ public enum ErrorCodes {
     PROFILE_REVIEW_READ_USER_NOT_FOUND("[프로필 - 후기 전체 조회] - 유효하지 않은 User ID", 4060L),
 
     // 댓글
-    // 댓글 작성
-    COMMENT_POST_INVALID("[댓글] - 유효하지 않은 후기[Review] ID", 5000L),
-    // 댓글 수정
-    COMMENT_INVALID_COMMENT_ID("[댓글] - 유효하지 않은 댓글[Comment] ID", 5001L),
-    COMMENT_UPDATE_NOT_USER("[댓글 수정] - 본인의 댓글이 아닙니다.", 5011L),
-    // 댓글 삭제
-    COMMENT_DELETE_INVALID("[댓글 삭제] - 유효하지 않은 댓글 ID", 5020L),
-    COMMENT_DELETE_NOT_USER("[댓글 삭제] - 본인의 댓글가 아닙니다.", 5021L),
+    COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
+    COMMENT_INVALID_REVIEW_ID("[댓글] - 유효하지 않은 후기[Review] ID", 5001L),
+    COMMENT_INVALID_COMMENT_ID("[댓글] - 유효하지 않은 댓글[Comment] ID", 5002L),
+
     // 댓글 좋아요
     COMMENT_LIKE_INVALID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5030L),
     // 댓글 전체 조회 (페이지네이션)
@@ -98,8 +94,6 @@ public enum ErrorCodes {
 
     // 여행계획
     ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
-
-    COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),

@@ -56,7 +56,7 @@ public class CommentWriterService {
 
     private Review getReviewById(Long reviewId) {
         return reviewRepository.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_POST_INVALID,
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }
 
