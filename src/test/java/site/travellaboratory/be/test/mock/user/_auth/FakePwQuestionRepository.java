@@ -1,4 +1,4 @@
-package site.travellaboratory.be.mock.user._auth;
+package site.travellaboratory.be.test.mock.user._auth;
 
 import java.util.ArrayList;
 import java.util.List;
