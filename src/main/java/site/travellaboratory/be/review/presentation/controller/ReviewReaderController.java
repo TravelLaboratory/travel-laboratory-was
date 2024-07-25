@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.review.application.ReviewReaderService;
+import site.travellaboratory.be.review.application.service.ReviewReaderService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.review.presentation.response.reader.ProfileReviewPaginationResponse;
 import site.travellaboratory.be.review.presentation.response.reader.ReviewReadDetailResponse;

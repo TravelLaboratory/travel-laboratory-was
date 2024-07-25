@@ -40,10 +40,6 @@ public enum ErrorCodes {
     REVIEW_POST_EXIST("[후기 작성] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
     // 후기 수정
     REVIEW_UPDATE_INVALID("[후기 수정] - 유효하지 않은 후기 ID", 4003L),
-    REVIEW_UPDATE_NOT_USER("[후기 수정] - 본인의 후기가 아닙니다.", 4004L),
-    // 후기 삭제
-    REVIEW_DELETE_INVALID("[후기 삭제] - 유효하지 않은 후기 ID", 4005L),
-    REVIEW_DELETE_NOT_USER("[후기 삭제] - 본인의 후기가 아닙니다.", 4006L),
     // 후기 좋아요
     REVIEW_LIKE_INVALID("[후기 좋아요] - 유효하지 않은 후기 ID", 4007L),
     // 후기 상세 조회
@@ -74,18 +70,14 @@ public enum ErrorCodes {
 
     // 일정 상세 (article_schedule)
     // 일정 상세 - 작성
-    ARTICLE_SCHEDULE_POST_INVALID("[일정 상세 - 작성] - 유효하지 않은 초기 여행 계획 ID", 10000L),
-    ARTICLE_SCHEDULE_POST_NOT_USER("[일정 상세 - 작성] - 초기 여행 계획 작성자만 상세 여행 계획을 작성할 수 있습니다.", 10001L),
     ARTICLE_SCHEDULE_POST_NOT_DTYPE("[일정 상세] - 올바르지 않은 DTYPE이 포함되어 있습니다.", 10002L),
 
     // 일정 상세 - 수정
     ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID("[일정 상세 - 수정] - 유효하지 않은 초기 여행 계획(article) - ID", 10010L),
-    ARTICLE_SCHEDULE_UPDATE_NOT_USER("[일정 상세 - 수정] - 초기 여행 계획 작성자만 상세 여행 계획을 수정할 수 있습니다.", 10011L),
     ARTICLE_SCHEDULE_UPDATE_SCHEDULE_INVALID("[일정 상세 - 수정] - 유효하지 않은 일정(schedule) ID", 10012L),
 
     // 일정 상세 - 삭제
     ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 초기 여행 계획 - ID", 10020L),
-    ARTICLE_SCHEDULE_DELETE_NOT_USER("[일정 상세 - 삭제] - 본인의 초기 여행 계획이 아닙니다.", 10021L),
     // 일정 상세 - 비공개 여부
     ARTICLE_SCHEDULE_PRIVACY_INVALID("[일정 상세 - 비공개 여부] - 유효하지 않은 초기 여행 계획 - ID", 10030L),
     ARTICLE_SCHEDULE_PRIVACY_NOT_USER("[일정 상세 - 비공개 여부] - 본인의 초기 여행 계획이 아닙니다.", 10031L),
@@ -95,9 +87,6 @@ public enum ErrorCodes {
 
     // 아티클 관련
     ARTICLE_NOT_FOUND("존재 하지 않는 초기 여행 계획", 6000L),
-    ARTICLE_READ_DETAIL_NOT_AUTHORIZATION("[초기 여행 계획 상세 조회] - 해당 여행 계획에 접근 권한 없음", 6010L),
-    ARTICLE_DELETE_NOT_USER("[초기 여행 계획 삭제] - 본인의 초기 여행 계획이 아닙니다.", 6020L),
-    ARTICLE_UPDATE_NOT_USER("[초기 여행 계획 수정] - 본인의 초기 여행 계획이 아닙니다.", 6030L),
 
     // Style 관련
     STYLE_NOT_FOUND("존재 하지 않는 스타일", 7000L),
@@ -111,6 +100,8 @@ public enum ErrorCodes {
     // 도메인 예외 (domain)
     ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
     REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
+    REVIEW_INVALID_ARTICLE_ID("[후기] - 유효하지 않은 여행 계획 ID", 4001L),
+
     COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
 
     BAD_REQUEST("BAD_REQUEST", 9404L),

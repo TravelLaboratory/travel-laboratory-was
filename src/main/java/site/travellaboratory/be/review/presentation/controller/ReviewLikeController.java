@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.review.application.ReviewLikeService;
+import site.travellaboratory.be.review.application.service.ReviewLikeService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.review.domain.enums.ReviewLikeStatus;
 import site.travellaboratory.be.review.presentation.response.like.ReviewToggleLikeResponse;

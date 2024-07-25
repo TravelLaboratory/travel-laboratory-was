@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.travellaboratory.be.review.application.ReviewWriterService;
+import site.travellaboratory.be.review.application.service.ReviewWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewDeleteResponse;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
