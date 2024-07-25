@@ -20,4 +20,9 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         return articleJpaRepository.findByIdAndStatusIn(articleId, Status)
             .map(ArticleEntity::toModel);
     }
+
+    @Override
+    public Article save(Article article) {
+        return articleJpaRepository.save(ArticleEntity.from(article)).toModel();
+    }
 }

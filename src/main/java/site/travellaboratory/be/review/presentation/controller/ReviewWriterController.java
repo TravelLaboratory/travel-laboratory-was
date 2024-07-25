@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.review.application.service.ReviewWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewDeleteResponse;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
 import site.travellaboratory.be.review.presentation.response.writer.ReviewSaveResponse;
@@ -30,9 +31,9 @@ public class ReviewWriterController {
         @UserId Long userId,
         @Valid @RequestBody ReviewSaveRequest reviewSaveRequest
     ) {
-        Long reviewId = reviewWriterService.save(userId, reviewSaveRequest);
+        Review result = reviewWriterService.save(userId, reviewSaveRequest);
 
-        ReviewSaveResponse response = ReviewSaveResponse.from(reviewId);
+        ReviewSaveResponse response = ReviewSaveResponse.from(result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -42,9 +43,9 @@ public class ReviewWriterController {
         @PathVariable(name = "reviewId") Long reviewId,
         @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
     ) {
-        Long updateReviewId = reviewWriterService.update(userId, reviewId, reviewUpdateRequest);
+        Review result = reviewWriterService.update(userId, reviewId, reviewUpdateRequest);
 
-        ReviewUpdateResponse response = ReviewUpdateResponse.from(updateReviewId);
+        ReviewUpdateResponse response = ReviewUpdateResponse.from(result);
         return ResponseEntity.ok(response);
     }
 
@@ -53,7 +54,7 @@ public class ReviewWriterController {
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
-        boolean result = reviewWriterService.delete(userId, reviewId);
+        Review result = reviewWriterService.delete(userId, reviewId);
         ReviewDeleteResponse response = ReviewDeleteResponse.from(result);
         return ResponseEntity.ok(response);
     }

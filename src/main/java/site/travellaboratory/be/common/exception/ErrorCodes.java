@@ -34,10 +34,11 @@ public enum ErrorCodes {
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
 
     // 후기 (review)
-    // 후기 작성
-    REVIEW_POST_EXIST("[후기 작성] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4002L),
-    // 후기 수정
-    REVIEW_UPDATE_INVALID("[후기 수정] - 유효하지 않은 후기 ID", 4003L),
+    REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
+    REVIEW_INVALID_ARTICLE_ID("[후기] - 유효하지 않은 여행 계획 ID", 4001L),
+    REVIEW_INVALID_REVIEW_ID("[후기] - 유효하지 않은 후기 ID", 4002L),
+    REVIEW_POST_EXIST("[후기] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4003L),
+
     // 후기 좋아요
     REVIEW_LIKE_INVALID("[후기 좋아요] - 유효하지 않은 후기 ID", 4007L),
     // 후기 상세 조회
@@ -95,10 +96,8 @@ public enum ErrorCodes {
     // 북마크 관련
     BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
 
-    // 도메인 예외 (domain)
+    // 여행계획
     ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
-    REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
-    REVIEW_INVALID_ARTICLE_ID("[후기] - 유효하지 않은 여행 계획 ID", 4001L),
 
     COMMENT_VERIFY_OWNER("[댓글] - 본인의 댓글이 아닙니다.", 5000L),
 

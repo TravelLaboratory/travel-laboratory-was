@@ -29,38 +29,35 @@ public class ReviewWriterService {
 
 
     @Transactional
-    public Long save(Long userId, ReviewSaveRequest request) {
+    public Review save(Long userId, ReviewSaveRequest request) {
         Article article = getArticleById(request.articleId());
         verifyExistReviewBy(article);
         User user = getUserById(userId);
 
         // Review 클래스에서 검증하고 생성
         Review review = Review.create(user, article, request);
-        Review saveReview = reviewRepository.save(review);
-        return saveReview.getId();
+        return reviewRepository.save(review);
     }
 
 
     @Transactional
-    public Long update(Long userId, Long reviewId, ReviewUpdateRequest request) {
+    public Review update(Long userId, Long reviewId, ReviewUpdateRequest request) {
         Review review = getReviewById(reviewId);
         User user = getUserById(userId);
 
         // 후기 업데이트
         Review updatedReview = review.withUpdatedContent(user, request);
-        reviewRepository.save(updatedReview);
-        return updatedReview.getId();
+        return reviewRepository.save(updatedReview);
     }
 
     @Transactional
-    public boolean delete(final Long userId, final Long reviewId) {
+    public Review delete(Long userId, Long reviewId) {
         Review review = getReviewById(reviewId);
         User user = getUserById(userId);
 
         // 후기 삭제
         Review deletedReview = review.withInactiveStatus(user);
-        Review result = reviewRepository.save(deletedReview);
-        return result.getStatus() == ReviewStatus.INACTIVE;
+        return reviewRepository.save(deletedReview);
     }
 
     private Article getArticleById(Long articleId) {
@@ -74,7 +71,7 @@ public class ReviewWriterService {
 
     private Review getReviewById(Long reviewId) {
         return reviewRepository.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_UPDATE_INVALID,
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }
 
