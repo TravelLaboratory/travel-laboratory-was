@@ -22,14 +22,13 @@ class JwtTokenParserTest {
 
     private static final String SECRET_KEY = "random-test-secret-key-random-test-secret-key";
     private JwtTokenParser sut;
-    private JwtTokenValidator jwtTokenValidator;
     private Key key;
 
     @BeforeEach
     void setUp() {
         byte[] keyBytes = SECRET_KEY.getBytes(StandardCharsets.UTF_8);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.jwtTokenValidator = new JwtTokenValidator(SECRET_KEY);
+        JwtTokenValidator jwtTokenValidator = new JwtTokenValidator(SECRET_KEY);
         this.sut = new JwtTokenParser(jwtTokenValidator);
     }
 
