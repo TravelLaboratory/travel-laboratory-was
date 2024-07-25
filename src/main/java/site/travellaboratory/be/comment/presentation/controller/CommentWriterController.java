@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.comment.application.service.CommentWriterService;
+import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentDeleteResponse;
 import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.common.annotation.UserId;
@@ -30,7 +31,7 @@ public class CommentWriterController {
         @UserId Long userId,
         @Valid @RequestBody CommentSaveRequest commentSaveRequest
     ) {
-        Long result = commentWriterService.save(userId, commentSaveRequest);
+        Comment result = commentWriterService.save(userId, commentSaveRequest);
         return new ResponseEntity<>(CommentSaveResponse.from(result), HttpStatus.CREATED);
     }
 
@@ -40,7 +41,7 @@ public class CommentWriterController {
         @PathVariable(name = "commentId") Long commentId,
         @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
     ) {
-        Long result = commentWriterService.update(userId, commentId, commentUpdateRequest);
+        Comment result = commentWriterService.update(userId, commentId, commentUpdateRequest);
         return ResponseEntity.ok(CommentUpdateResponse.from(result));
     }
 
@@ -49,7 +50,7 @@ public class CommentWriterController {
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
-        boolean result = commentWriterService.delete(userId, commentId);
+        Comment result = commentWriterService.delete(userId, commentId);
         return ResponseEntity.ok(CommentDeleteResponse.from(result));
     }
 }

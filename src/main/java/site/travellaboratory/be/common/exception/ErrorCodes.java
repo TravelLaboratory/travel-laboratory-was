@@ -56,7 +56,7 @@ public enum ErrorCodes {
     // 댓글 작성
     COMMENT_POST_INVALID("[댓글] - 유효하지 않은 후기[Review] ID", 5000L),
     // 댓글 수정
-    COMMENT_UPDATE_INVALID("[댓글 수정] - 유효하지 않은 댓글 ID", 5010L),
+    COMMENT_INVALID_COMMENT_ID("[댓글] - 유효하지 않은 댓글[Comment] ID", 5001L),
     COMMENT_UPDATE_NOT_USER("[댓글 수정] - 본인의 댓글이 아닙니다.", 5011L),
     // 댓글 삭제
     COMMENT_DELETE_INVALID("[댓글 삭제] - 유효하지 않은 댓글 ID", 5020L),
