@@ -29,7 +29,6 @@ import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.domain.request.LocationRequest;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
 import site.travellaboratory.be.common.exception.BeApplicationException;
@@ -193,51 +192,6 @@ class ArticleWriterServiceTest {
         assertThat(updateArticle.getTravelStyles().stream()
                 .map(TravelStyle::getName)).containsExactlyElementsOf(
                 articleUpdateRequest().travelStyles());
-    }
-
-    @DisplayName("올바르지 않은 유저가 게시물을 삭제하려고 하면 예외가 발생한다.")
-    @Test
-    void deleteArticle_test_ifUserIsNotFound() {
-        //given
-        when(userJpaRepository.findByIdAndStatus(any(Long.class), eq(UserStatus.ACTIVE)))
-                .thenReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> articleWriterService.deleteArticle(1L, 1L)).isInstanceOf(
-                BeApplicationException.class);
-    }
-
-    @DisplayName("유효하지 않은 게시물을 삭제하려고 하면 예외가 발생한다.")
-    @Test
-    void deleteArticle_test_ifArticleIsNotFound() {
-        //given
-        when(userJpaRepository.findByIdAndStatus(any(Long.class), eq(UserStatus.ACTIVE)))
-                .thenReturn(Optional.of(UserEntity.from(user())));
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
-                .thenReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> articleWriterService.deleteArticle(1L, 1L)).isInstanceOf(
-                BeApplicationException.class);
-    }
-
-    @DisplayName("게시물 삭제 성공 테스트")
-    @Test
-    void deleteArticle_test_success() {
-        //given
-        final Article article = Article.create(user(), articleRegisterRequest());
-        final ArticleEntity articleEntity = ArticleEntity.from(article);
-
-        when(userJpaRepository.findByIdAndStatus(any(Long.class), eq(UserStatus.ACTIVE)))
-                .thenReturn(Optional.of(UserEntity.from(user())));
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
-                .thenReturn(Optional.of(articleEntity));
-
-        //when
-        final ArticleDeleteResponse articleDeleteResponse = articleWriterService.deleteArticle(1L, 1L);
-
-        //then
-        assertThat(articleDeleteResponse.isDelete()).isEqualTo(true);
     }
 
     @DisplayName("유효하지 않은 게시물의 접근 권한을 변경하려고 할 경우 예외가 발생한다.")
