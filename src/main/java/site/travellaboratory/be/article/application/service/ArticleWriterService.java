@@ -12,7 +12,6 @@ import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
 import site.travellaboratory.be.common.exception.BeApplicationException;
@@ -71,22 +70,6 @@ public class ArticleWriterService {
         return articleJpaRepository.save(ArticleEntity.from(article)).toModel();
     }
 
-    // 아티클 삭제
-    @Transactional
-    public ArticleDeleteResponse deleteArticle(Long userId, Long articleId) {
-        User user = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                HttpStatus.NOT_FOUND)).toModel();
-
-        Article article = articleJpaRepository.findByIdAndStatusIn(articleId,
-                List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND)).toModel();
-
-
-        article = article.delete(user);
-        articleJpaRepository.save(ArticleEntity.from(article));
-        return ArticleDeleteResponse.from(true);
-    }
 
     // articleService_에 가는 게 맞는 로직
     @Transactional
