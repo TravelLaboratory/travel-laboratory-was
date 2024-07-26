@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.article.application.service.ArticleWriterService;
-import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.domain.Article;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleDeleteResponse;
 import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
+import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleRegisterResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
-import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateResponse;
+import site.travellaboratory.be.common.annotation.UserId;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,16 +57,6 @@ public class ArticleWriterController {
         Article result = articleWriterService.updateArticle(userId, articleId,
             articleUpdateRequest);
         return ResponseEntity.ok(ArticleUpdateResponse.from(result));
-    }
-
-    @PatchMapping("/article/status/{articleId}")
-    public ResponseEntity<ArticleDeleteResponse> deleteArticle(
-        @UserId final Long userId,
-        @PathVariable(name = "articleId") final Long articleId
-    ) {
-        ArticleDeleteResponse articleDeleteResponse = articleWriterService.deleteArticle(userId,
-            articleId);
-        return ResponseEntity.ok(articleDeleteResponse);
     }
 
     // articleWriterService_에 가는 게 맞는 로직 - 상권 (여행 계획 - 공개, 비공개 설정)
