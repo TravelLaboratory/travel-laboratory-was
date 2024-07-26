@@ -91,7 +91,7 @@ public class ArticleScheduleReaderService
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleEntityAndStatusInOrderByArticleEntityDesc(
+        reviewJpaRepository.findByArticleEntityAndStatusIn(
                 articleEntity,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
             .ifPresent(it -> {

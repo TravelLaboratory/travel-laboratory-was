@@ -19,7 +19,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public Optional<Review> findByArticleAndStatusInOrderByArticleDesc(Article article, List<ReviewStatus> status) {
-        return reviewJpaRepository.findByArticleEntityAndStatusInOrderByArticleEntityDesc(ArticleEntity.from(article), status)
+        return reviewJpaRepository.findByArticleEntityAndStatusIn(ArticleEntity.from(article), status)
             .map(ReviewEntity::toModel);
     }
 
