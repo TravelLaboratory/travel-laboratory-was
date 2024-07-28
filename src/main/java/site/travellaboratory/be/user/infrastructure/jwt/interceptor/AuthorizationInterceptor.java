@@ -1,10 +1,18 @@
 package site.travellaboratory.be.user.infrastructure.jwt.interceptor;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -14,14 +22,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
-import site.travellaboratory.be.user.infrastructure.jwt.manager.helper.JwtTokenParser;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private final JwtTokenParser jwtTokenParser;
+    private final JwtParser parser;
+
+    public AuthorizationInterceptor(@Value("${jwt.secret-key}") String secretKey) {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+        this.parser = Jwts.parserBuilder().setSigningKey(key).build();
+    }
 
     @Override
     public boolean preHandle(
@@ -52,7 +64,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         // (2) 토큰이 유효한지 체크 - 없다면 BAD_REQUEST 후, userId 반환
-        Long userId = jwtTokenParser.getUserIdBy(accessToken);
+        Long userId = getUserIdBy(accessToken);
 
         // (4)-1 현재 요청 request Context 에다가 userId를 저장한다.
         // (4)-2 범위는 이번 요청동안만! SCOPE_REQUEST
@@ -60,5 +72,22 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             RequestContextHolder.getRequestAttributes());
         requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
         return true;
+    }
+
+    private Long getUserIdBy(String token) {
+        Claims claims = parseAccessTokenClaims(token);
+        return Long.parseLong(claims.get("userId").toString());
+    }
+
+    private Claims parseAccessTokenClaims(String token) {
+        try {
+            return parser.parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED);
+        } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
+        }
     }
 }
