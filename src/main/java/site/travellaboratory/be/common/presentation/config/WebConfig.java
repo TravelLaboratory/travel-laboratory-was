@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.infrastructure.config;
+package site.travellaboratory.be.common.presentation.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
