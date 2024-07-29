@@ -1,5 +1,6 @@
 package site.travellaboratory.be.user.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,13 @@ public class User {
     private final String introduce;
     private final Boolean isAgreement;
     private final UserStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     @Builder
     public User(Long id, String username, String password, UserRole role, String nickname,
-        String profileImgUrl, String introduce, Boolean isAgreement, UserStatus status) {
+        String profileImgUrl, String introduce, Boolean isAgreement, UserStatus status,
+        LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -36,6 +40,8 @@ public class User {
         this.introduce = introduce;
         this.isAgreement = isAgreement;
         this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static User register(String encodedPassword, UserJoinRequest joinRequest) {
@@ -45,14 +51,15 @@ public class User {
                 HttpStatus.BAD_REQUEST);
         }
 
-
         return User.builder()
             .username(joinRequest.username())
             .password(encodedPassword)
             .role(UserRole.USER)
             .nickname(joinRequest.nickname())
-            .status(UserStatus.ACTIVE)
             .isAgreement(true)
+            .status(UserStatus.ACTIVE)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -67,6 +74,8 @@ public class User {
             .introduce(this.introduce)
             .isAgreement(this.isAgreement)
             .status(this.status)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 }

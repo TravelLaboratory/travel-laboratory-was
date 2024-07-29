@@ -1,5 +1,6 @@
 package site.travellaboratory.be.review.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class Review {
     private final String representativeImgUrl;
     private final String description;
     private final ReviewStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static Review create(User user, Article article, ReviewSaveRequest saveRequest) {
         // 유저가 작성한 article_id이 아닌 경우
@@ -36,6 +39,8 @@ public class Review {
             .representativeImgUrl(saveRequest.representativeImgUrl())
             .description(saveRequest.description())
             .status(saveRequest.status())
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -51,6 +56,8 @@ public class Review {
             .representativeImgUrl(updatedContent.representativeImgUrl())
             .description(updatedContent.description())
             .status(updatedContent.status())
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -66,6 +73,8 @@ public class Review {
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)
             .status(ReviewStatus.INACTIVE) // ACTIVE -> INACTIVE
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 

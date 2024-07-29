@@ -1,5 +1,6 @@
 package site.travellaboratory.be.comment.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,16 @@ public class CommentLike {
     private final User user;
     private final Comment comment;
     private final CommentLikeStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static CommentLike create(User user, Comment comment) {
         return CommentLike.builder()
             .user(user)
             .comment(comment)
             .status(CommentLikeStatus.ACTIVE)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -30,6 +35,8 @@ public class CommentLike {
             .user(this.getUser())
             .comment(this.getComment())
             .status((this.status == CommentLikeStatus.ACTIVE) ? CommentLikeStatus.INACTIVE : CommentLikeStatus.ACTIVE)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 }

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.article.domain._schedule.ScheduleEtc;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.domain._schedule.request.ScheduleEtcRequest;
 
 @Entity
 @Table(name = "schedule_etc")
@@ -36,6 +35,8 @@ public class ScheduleEtcEntity extends ArticleScheduleEntity {
         result.memo = scheduleEtc.getMemo();
         result.status = scheduleEtc.getStatus();
         result.dtype = scheduleEtc.getDtype();
+        result.setCreatedAt(scheduleEtc.getCreatedAt());
+        result.setUpdatedAt(scheduleEtc.getUpdatedAt());
         result.placeName = scheduleEtc.getPlaceName();
         return result;
     }
@@ -54,11 +55,9 @@ public class ScheduleEtcEntity extends ArticleScheduleEntity {
             .memo(this.memo)
             .status(this.status)
             .dtype(this.dtype)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .placeName(this.placeName)
             .build();
-    }
-
-    public void update(ScheduleEtcRequest request) {
-        this.placeName = request.placeName();
     }
 }

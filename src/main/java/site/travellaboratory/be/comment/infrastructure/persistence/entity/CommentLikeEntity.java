@@ -46,6 +46,8 @@ public class CommentLikeEntity extends BaseEntity {
         result.userEntity = UserEntity.from(commentLike.getUser());
         result.commentEntity = CommentEntity.from(commentLike.getComment());
         result.status = commentLike.getStatus();
+        result.setCreatedAt(commentLike.getCreatedAt());
+        result.setUpdatedAt(commentLike.getUpdatedAt());
         return result;
     }
 
@@ -55,6 +57,8 @@ public class CommentLikeEntity extends BaseEntity {
             .user(this.getUserEntity().toModel())
             .comment(this.getCommentEntity().toModel())
             .status(this.getStatus())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 }
