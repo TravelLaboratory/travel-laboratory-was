@@ -71,3 +71,18 @@ CREATE TABLE review
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (article_id) REFERENCES article (id)
 );
+
+-- Comment 테이블 생성 SQL
+DROP TABLE if EXISTS comment;
+CREATE TABLE comment
+(
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id       BIGINT      NOT NULL,
+    review_id     BIGINT      NOT NULL,
+    reply_comment TEXT        NOT NULL,
+    status        VARCHAR(10) NOT NULL COMMENT 'ACTIVE, INACTIVE',
+    created_at    TIMESTAMP   NOT NULL,
+    updated_at    TIMESTAMP   NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (review_id) REFERENCES review (id)
+);
