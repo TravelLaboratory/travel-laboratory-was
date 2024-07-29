@@ -1,6 +1,7 @@
 package site.travellaboratory.be.comment.presentation.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -42,7 +43,6 @@ import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
-import site.travellaboratory.be.test.exception.NotImplementedTestException;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -295,35 +295,80 @@ class CommentWriterControllerTest {
     class Delete {
         @DisplayName("[실패] 유효하지 않은 댓글 ID - 404 Not Found 반환")
         @Test
-        void test1() {
+        void test1() throws Exception {
             //given
-            throw new NotImplementedTestException();
+            Long invalidCommentId = 9999L;
+
+            given(commentWriterService.delete(eq(user.getId()), eq(invalidCommentId)))
+                .willThrow(new BeApplicationException(ErrorCodes.COMMENT_INVALID_COMMENT_ID,
+                    HttpStatus.NOT_FOUND));
+
             //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/comments/{commentId}/status", invalidCommentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
 
             //then
-
+            assertMvcErrorEquals(result, ErrorCodes.COMMENT_INVALID_COMMENT_ID);
+            verify(commentWriterService).delete(user.getId(), invalidCommentId);
         }
 
         @DisplayName("[실패] 유저가 작성한 댓글이 아닌 경우 - 403 Forbidden 반환")
         @Test
-        void test2() {
+        void test2() throws Exception {
             //given
-            throw new NotImplementedTestException();
+            Long commentIdNotOwnedByUser = 2L;
+
+            given(commentWriterService.delete(eq(user.getId()), eq(commentIdNotOwnedByUser)))
+                .willThrow(new BeApplicationException(ErrorCodes.COMMENT_VERIFY_OWNER,
+                    HttpStatus.FORBIDDEN));
+
             //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/comments/{commentId}/status", commentIdNotOwnedByUser)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isForbidden())
+                .andReturn();
 
             //then
-
+            assertMvcErrorEquals(result, ErrorCodes.COMMENT_VERIFY_OWNER);
+            verify(commentWriterService).delete(user.getId(), commentIdNotOwnedByUser);
         }
 
         @DisplayName("[성공] 댓글 삭제 - 200 OK 반환")
         @Test
-        void test1000() {
+        void test1000() throws Exception {
             //given
-            throw new NotImplementedTestException();
+            Long commentId = 1L;
+
+            Comment deletedComment = Comment.builder()
+                .id(commentId)
+                .user(user)
+                .review(review)
+                .replyComment("This comment is deleted.")
+                .status(CommentStatus.INACTIVE)
+                .build();
+
+            given(commentWriterService.delete(eq(user.getId()), eq(commentId)))
+                .willReturn(deletedComment);
+
             //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/comments/{commentId}/status", commentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isOk())
+                .andReturn();
 
             //then
-
+            assertMvcDataEquals(result, dataField -> {
+                assertTrue(dataField.get("is_delete").asBoolean());
+            });
+            verify(commentWriterService).delete(user.getId(), commentId);
         }
     }
 }
