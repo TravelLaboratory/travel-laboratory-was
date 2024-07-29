@@ -27,7 +27,7 @@ public class ReviewWriterController {
     private final ReviewWriterService reviewWriterService;
 
     @PostMapping("/review")
-    public ResponseEntity<ReviewSaveResponse> saveReview(
+    public ResponseEntity<ReviewSaveResponse> save(
         @UserId Long userId,
         @Valid @RequestBody ReviewSaveRequest reviewSaveRequest
     ) {
@@ -38,7 +38,7 @@ public class ReviewWriterController {
     }
 
     @PatchMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewUpdateResponse> updateReview(
+    public ResponseEntity<ReviewUpdateResponse> update(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId,
         @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
@@ -50,7 +50,7 @@ public class ReviewWriterController {
     }
 
     @PatchMapping("/reviews/{reviewId}/status")
-    public ResponseEntity<ReviewDeleteResponse> deleteReview(
+    public ResponseEntity<ReviewDeleteResponse> delete(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {

@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.infrastructure.config;
+package site.travellaboratory.be.common.presentation.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import site.travellaboratory.be.user.infrastructure.jwt.interceptor.AuthorizationInterceptor;
-import site.travellaboratory.be.user.presentation.resolver.AuthenticatedUserIdResolver;
+import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 
 @Configuration
 @RequiredArgsConstructor
