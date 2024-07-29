@@ -259,7 +259,7 @@ class ReviewWriterControllerTest {
             .id(1L)
             .user(user)
             .article(article)
-            .build();;
+            .build();
 
         @DisplayName("[실패] - 유효하지 않은 여행 계획 ID (ArticleId) - 404 Not Found 반환")
         @Test
