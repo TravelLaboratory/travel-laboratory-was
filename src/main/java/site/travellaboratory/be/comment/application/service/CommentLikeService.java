@@ -9,7 +9,6 @@ import site.travellaboratory.be.comment.application.port.CommentLikeRepository;
 import site.travellaboratory.be.comment.application.port.CommentRepository;
 import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.CommentLike;
-import site.travellaboratory.be.comment.domain.enums.CommentLikeStatus;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
@@ -26,7 +25,7 @@ public class CommentLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentLikeStatus toggleLike(Long userId, Long commentId) {
+    public CommentLike toggleLike(Long userId, Long commentId) {
         // 유효하지 않은 댓글에 좋아요하려고 할 경우
         Comment comment = getCommentById(commentId);
 
@@ -42,8 +41,7 @@ public class CommentLikeService {
         } else {
             commentLike = CommentLike.create(user, comment);
         }
-        CommentLike saveCommentLike = commentLikeRepository.save(commentLike);
-        return saveCommentLike.getStatus();
+        return commentLikeRepository.save(commentLike);
     }
 
     private User getUserById(Long userId) {
