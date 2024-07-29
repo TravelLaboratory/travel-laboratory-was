@@ -1,11 +1,17 @@
 package site.travellaboratory.be.review.presentation.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.travellaboratory.be.test.assertion.Assertions.assertMvcDataEquals;
+import static site.travellaboratory.be.test.assertion.Assertions.assertMvcErrorEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import site.travellaboratory.be.article.domain.Article;
@@ -34,6 +41,7 @@ import site.travellaboratory.be.review.application.service.ReviewWriterService;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
+import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -115,13 +123,13 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.save(eq(1L), any(ReviewSaveRequest.class))).willThrow(
+            given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
                 new BeApplicationException(ErrorCodes.REVIEW_INVALID_ARTICLE_ID,
                     HttpStatus.NOT_FOUND)
             );
 
             //when & then
-            mockMvc.perform(post("/api/v1/review")
+            MvcResult result = mockMvc.perform(post("/api/v1/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
@@ -129,38 +137,43 @@ class ReviewWriterControllerTest {
                 .andExpect(
                     jsonPath("$.local_message").value(ErrorCodes.REVIEW_INVALID_ARTICLE_ID.message))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.REVIEW_INVALID_ARTICLE_ID.code))
-            ;
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_INVALID_ARTICLE_ID);
+            verify(reviewWriterService).save(user.getId(), request);
         }
 
         @DisplayName("[실패] - 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
         @Test
         void test2() throws Exception {
             //given
-            Long notOwnerArticleId = 2L;
+            Long articleIdNotOwnedByUser = 2L;
 
             ReviewSaveRequest request = ReviewSaveRequest.builder()
-                .articleId(notOwnerArticleId)
+                .articleId(articleIdNotOwnedByUser)
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.save(eq(1L), any(ReviewSaveRequest.class))).willThrow(
+            given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
                 new BeApplicationException(ErrorCodes.ARTICLE_VERIFY_OWNER, HttpStatus.FORBIDDEN)
             );
 
-            //when & then
-            mockMvc.perform(post("/api/v1/review")
+            //when
+            MvcResult result = mockMvc.perform(post("/api/v1/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
                 .andExpect(status().isForbidden())
-                .andExpect(
-                    jsonPath("$.local_message").value(ErrorCodes.ARTICLE_VERIFY_OWNER.message))
-                .andExpect(jsonPath("$.code").value(ErrorCodes.ARTICLE_VERIFY_OWNER.code))
+                .andReturn();
 
-            ;
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.ARTICLE_VERIFY_OWNER);
+            verify(reviewWriterService).save(user.getId(), request);
+
         }
 
         @DisplayName("[실패] - 이미 해당 여행 계획에 대한 후기가 있는 경우 - 409 Conflict 반환")
@@ -177,26 +190,28 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.save(eq(1L), any(ReviewSaveRequest.class))).willThrow(
+            given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
                 new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST, HttpStatus.CONFLICT)
             );
 
-            //when & then
-            mockMvc.perform(post("/api/v1/review")
+            //when
+            MvcResult result = mockMvc.perform(post("/api/v1/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
                 .andExpect(status().isConflict())
-                .andExpect(
-                    jsonPath("$.local_message").value(ErrorCodes.REVIEW_POST_EXIST.message))
-                .andExpect(jsonPath("$.code").value(ErrorCodes.REVIEW_POST_EXIST.code))
-            ;
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_POST_EXIST);
+            verify(reviewWriterService).save(user.getId(), request);
         }
 
 
         @DisplayName("[성공] 후기 작성 - 201 Created 반환")
         @Test
         void test1000() throws Exception {
+            //given
             Long articleId = 1L;
 
             ReviewSaveRequest request = ReviewSaveRequest.builder()
@@ -217,15 +232,219 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.save(eq(1L), any(ReviewSaveRequest.class))).willReturn(
+            given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willReturn(
                 review);
 
-            mockMvc.perform(post("/api/v1/review")
+            //then
+            MvcResult result = mockMvc.perform(post("/api/v1/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.review_id").value(review.getId()));
+                .andReturn();
+
+            //when
+            assertMvcDataEquals(result, dataField -> {
+                assertEquals(review.getId(), dataField.get("review_id").asLong());
+            });
+
+            verify(reviewWriterService).save(user.getId(), request);
+        }
+    }
+
+    @Nested
+    @DisplayName("[PATCH] 후기 수정 /api/v1/review/{reviewId}")
+    class Update {
+
+        @DisplayName("[실패] - 유효하지 않은 여행 계획 ID (ArticleId) - 404 Not Found 반환")
+        @Test
+        void test1() throws Exception {
+            //given
+            Long invalidReviewId = 9999L;
+
+            ReviewUpdateRequest request = ReviewUpdateRequest.builder()
+                .title("review_title")
+                .representativeImgUrl("https://review_img.png")
+                .description("review_description")
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            given(reviewWriterService.update(eq(user.getId()), eq(invalidReviewId), any(ReviewUpdateRequest.class))).willThrow(
+                new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID, HttpStatus.NOT_FOUND)
+            );
+
+            //when
+            MvcResult result = mockMvc.perform(patch("/api/v1/reviews/{reviewId}", invalidReviewId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_INVALID_REVIEW_ID);
+            verify(reviewWriterService).update(user.getId(), invalidReviewId, request);
+        }
+
+        @DisplayName("[실패] - 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
+        @Test
+        void test2() throws Exception {
+            //given
+            Long reviewIdNotOwnedByUser = 2L;
+
+            ReviewUpdateRequest request = ReviewUpdateRequest.builder()
+                .title("review_title")
+                .representativeImgUrl("https://review_img.png")
+                .description("review_description")
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            given(reviewWriterService.update(eq(user.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
+                new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.NOT_FOUND)
+            );
+
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}", reviewIdNotOwnedByUser)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request))
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_VERIFY_OWNER);
+            verify(reviewWriterService).update(user.getId(), reviewIdNotOwnedByUser, request);
+        }
+
+        @DisplayName("[성공] 후기 수정 - 200 OK 반환")
+        @Test
+        void test1000() throws Exception {
+            //given
+            Review existReview = Review.builder()
+                .id(1L)
+                .user(user)
+                .article(article)
+                .build();
+
+            ReviewUpdateRequest request = ReviewUpdateRequest.builder()
+                .title("updated_review_title")
+                .representativeImgUrl("https://updated_review_img.png")
+                .description("updated_review_description")
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            Review updateReview = Review.builder()
+                .id(existReview.getId())
+                .user(user)
+                .article(article)
+                .title("updated_review_title")
+                .representativeImgUrl("https://updated_review_img.png")
+                .description("updated_review_description")
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            given(reviewWriterService.update(eq(user.getId()), eq(existReview.getId()), any(ReviewUpdateRequest.class))).willReturn(updateReview);
+
+            //when
+            MvcResult result = mockMvc.perform(patch("/api/v1/reviews/{reviewId}", updateReview.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+            //then
+            assertMvcDataEquals(result, dataField -> {
+                assertEquals(updateReview.getId(), dataField.get("review_id").asLong());
+            });
+            verify(reviewWriterService).update(user.getId(), existReview.getId(), request);
+        }
+    }
+
+    @Nested
+    @DisplayName("[PATCH] 후기 삭제 /api/v1/reviews/{reviewId}/status")
+    class Delete {
+        @DisplayName("[실패] 유효하지 않은 후기 ID - 404 Not Found 반환")
+        @Test
+        void test1() throws Exception {
+            //given
+            Long invalidReviewId = 9999L;
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(invalidReviewId)))
+                .willThrow(new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID,
+                    HttpStatus.NOT_FOUND));
+            
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", invalidReviewId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_INVALID_REVIEW_ID);
+            verify(reviewWriterService).delete(user.getId(), invalidReviewId);
+        }
+
+        @DisplayName("[실패] 유저가 작성한 후기가 아닌 경우 - 403 Forbidden 반환")
+        @Test
+        void test2() throws Exception {
+            //given
+            Long reviewIdNotOwnedByUser  = 2L;
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(reviewIdNotOwnedByUser)))
+                .willThrow(new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER,
+                    HttpStatus.NOT_FOUND));
+
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", reviewIdNotOwnedByUser)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_VERIFY_OWNER);
+
+            verify(reviewWriterService).delete(user.getId(), reviewIdNotOwnedByUser);
+        }
+
+        @DisplayName("[성공] 후기 삭제 - 200 OK 반환")
+        @Test
+        void test1000() throws Exception {
+
+            //given
+            Review existReview = Review.builder()
+                .id(1L)
+                .user(user)
+                .article(article)
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            Review deleteReview = Review.builder()
+                .id(existReview.getId())
+                .status(ReviewStatus.INACTIVE)
+                .build();
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(existReview.getId())))
+                .willReturn(deleteReview);
+
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", existReview.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+            //then
+            assertMvcDataEquals(result, dataField -> {
+                assertTrue(dataField.get("is_delete").asBoolean());
+            });
+            verify(reviewWriterService).delete(user.getId(), existReview.getId());
         }
     }
 }

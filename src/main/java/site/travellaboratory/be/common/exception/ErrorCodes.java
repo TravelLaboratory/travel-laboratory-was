@@ -93,7 +93,7 @@ public enum ErrorCodes {
     BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
 
     // 여행계획
-    ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
+    ARTICLE_VERIFY_OWNER("본인의 여행계획이 아닙니다.", 3000L),
 
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
