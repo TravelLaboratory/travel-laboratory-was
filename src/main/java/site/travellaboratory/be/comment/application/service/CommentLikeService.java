@@ -27,7 +27,7 @@ public class CommentLikeService {
     private final UserJpaRepository userJpaRepository;
 
     @Transactional
-    public CommentLikeStatus toggleLikeComment(Long userId, Long commentId) {
+    public CommentLikeStatus toggleLike(Long userId, Long commentId) {
         // 유효하지 않은 댓글에 좋아요하려고 할 경우
         Comment comment = commentJpaRepository.findByIdAndStatusIn(commentId,
                 List.of(CommentStatus.ACTIVE))

@@ -19,11 +19,11 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @PutMapping("/comments/{commentId}/likes")
-    public ResponseEntity<CommentToggleLikeResponse> toggleLikeComment(
+    public ResponseEntity<CommentToggleLikeResponse> toggleLike(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
-        CommentLikeStatus result = commentLikeService.toggleLikeComment(userId, commentId);
+        CommentLikeStatus result = commentLikeService.toggleLike(userId, commentId);
         return ResponseEntity.ok(CommentToggleLikeResponse.from(result));
     }
 }
