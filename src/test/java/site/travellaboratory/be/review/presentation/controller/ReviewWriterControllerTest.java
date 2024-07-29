@@ -1,6 +1,7 @@
 package site.travellaboratory.be.review.presentation.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -255,12 +256,6 @@ class ReviewWriterControllerTest {
     @DisplayName("[PATCH] 후기 수정 /api/v1/review/{reviewId}")
     class Update {
 
-        private final Review review = Review.builder()
-            .id(1L)
-            .user(user)
-            .article(article)
-            .build();
-
         @DisplayName("[실패] - 유효하지 않은 여행 계획 ID (ArticleId) - 404 Not Found 반환")
         @Test
         void test1() throws Exception {
@@ -274,7 +269,7 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.update(eq(review.getId()), eq(invalidReviewId), any(ReviewUpdateRequest.class))).willThrow(
+            given(reviewWriterService.update(eq(user.getId()), eq(invalidReviewId), any(ReviewUpdateRequest.class))).willThrow(
                 new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID, HttpStatus.NOT_FOUND)
             );
 
@@ -288,7 +283,7 @@ class ReviewWriterControllerTest {
 
             //then
             assertMvcErrorEquals(result, ErrorCodes.REVIEW_INVALID_REVIEW_ID);
-            verify(reviewWriterService).update(review.getId(), invalidReviewId, request);
+            verify(reviewWriterService).update(user.getId(), invalidReviewId, request);
         }
 
         @DisplayName("[실패] - 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
@@ -304,7 +299,7 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.update(eq(review.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
+            given(reviewWriterService.update(eq(user.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
                 new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.NOT_FOUND)
             );
 
@@ -319,14 +314,18 @@ class ReviewWriterControllerTest {
 
             //then
             assertMvcErrorEquals(result, ErrorCodes.REVIEW_VERIFY_OWNER);
-            verify(reviewWriterService).update(review.getId(), reviewIdNotOwnedByUser, request);
+            verify(reviewWriterService).update(user.getId(), reviewIdNotOwnedByUser, request);
         }
 
         @DisplayName("[성공] 후기 수정 - 200 OK 반환")
         @Test
         void test1000() throws Exception {
             //given
-            Long existReviewId = review.getId();
+            Review existReview = Review.builder()
+                .id(1L)
+                .user(user)
+                .article(article)
+                .build();
 
             ReviewUpdateRequest request = ReviewUpdateRequest.builder()
                 .title("updated_review_title")
@@ -335,8 +334,8 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            Review review = Review.builder()
-                .id(existReviewId)
+            Review updateReview = Review.builder()
+                .id(existReview.getId())
                 .user(user)
                 .article(article)
                 .title("updated_review_title")
@@ -345,10 +344,10 @@ class ReviewWriterControllerTest {
                 .status(ReviewStatus.ACTIVE)
                 .build();
 
-            given(reviewWriterService.update(eq(review.getId()), eq(existReviewId), any(ReviewUpdateRequest.class))).willReturn(review);
+            given(reviewWriterService.update(eq(user.getId()), eq(existReview.getId()), any(ReviewUpdateRequest.class))).willReturn(updateReview);
 
             //when
-            MvcResult result = mockMvc.perform(patch("/api/v1/reviews/{reviewId}", review.getId())
+            MvcResult result = mockMvc.perform(patch("/api/v1/reviews/{reviewId}", updateReview.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
@@ -357,9 +356,95 @@ class ReviewWriterControllerTest {
 
             //then
             assertMvcDataEquals(result, dataField -> {
-                assertEquals(review.getId(), dataField.get("review_id").asLong());
+                assertEquals(updateReview.getId(), dataField.get("review_id").asLong());
             });
-            verify(reviewWriterService).update(review.getId(), user.getId(), request);
+            verify(reviewWriterService).update(user.getId(), existReview.getId(), request);
+        }
+    }
+
+    @Nested
+    @DisplayName("[PATCH] 후기 삭제 /api/v1/reviews/{reviewId}/status")
+    class Delete {
+        @DisplayName("[실패] 유효하지 않은 후기 ID - 404 Not Found 반환")
+        @Test
+        void test1() throws Exception {
+            //given
+            Long invalidReviewId = 9999L;
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(invalidReviewId)))
+                .willThrow(new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID,
+                    HttpStatus.NOT_FOUND));
+            
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", invalidReviewId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_INVALID_REVIEW_ID);
+            verify(reviewWriterService).delete(user.getId(), invalidReviewId);
+        }
+
+        @DisplayName("[실패] 유저가 작성한 후기가 아닌 경우 - 403 Forbidden 반환")
+        @Test
+        void test2() throws Exception {
+            //given
+            Long reviewIdNotOwnedByUser  = 2L;
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(reviewIdNotOwnedByUser)))
+                .willThrow(new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER,
+                    HttpStatus.NOT_FOUND));
+
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", reviewIdNotOwnedByUser)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //then
+            assertMvcErrorEquals(result, ErrorCodes.REVIEW_VERIFY_OWNER);
+
+            verify(reviewWriterService).delete(user.getId(), reviewIdNotOwnedByUser);
+        }
+
+        @DisplayName("[성공] 후기 삭제 - 200 OK 반환")
+        @Test
+        void test1000() throws Exception {
+
+            //given
+            Review existReview = Review.builder()
+                .id(1L)
+                .user(user)
+                .article(article)
+                .status(ReviewStatus.ACTIVE)
+                .build();
+
+            Review deleteReview = Review.builder()
+                .id(existReview.getId())
+                .status(ReviewStatus.INACTIVE)
+                .build();
+
+            given(reviewWriterService.delete(eq(user.getId()), eq(existReview.getId())))
+                .willReturn(deleteReview);
+
+            //when
+            MvcResult result = mockMvc.perform(
+                    patch("/api/v1/reviews/{reviewId}/status", existReview.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("authorization-token", "validTokenWithUserId"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+            //then
+            assertMvcDataEquals(result, dataField -> {
+                assertTrue(dataField.get("is_delete").asBoolean());
+            });
+            verify(reviewWriterService).delete(user.getId(), existReview.getId());
         }
     }
 }
