@@ -86,3 +86,17 @@ CREATE TABLE comment
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (review_id) REFERENCES review (id)
 );
+
+-- Comment Like 테이블 생성 SQL
+DROP TABLE IF EXISTS comment_like;
+CREATE TABLE comment_like
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT NOT NULL,
+    comment_id  BIGINT NOT NULL,
+    status      VARCHAR(10) NOT NULL COMMENT 'ACTIVE, INACTIVE',
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (comment_id) REFERENCES comment (id)
+);
