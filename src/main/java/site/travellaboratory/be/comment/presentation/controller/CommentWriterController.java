@@ -27,7 +27,7 @@ public class CommentWriterController {
     private final CommentWriterService commentWriterService;
 
     @PostMapping("/comment")
-    public ResponseEntity<CommentSaveResponse> saveComment(
+    public ResponseEntity<CommentSaveResponse> save(
         @UserId Long userId,
         @Valid @RequestBody CommentSaveRequest commentSaveRequest
     ) {
@@ -36,7 +36,7 @@ public class CommentWriterController {
     }
 
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<CommentUpdateResponse> updateComment(
+    public ResponseEntity<CommentUpdateResponse> update(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId,
         @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
@@ -46,7 +46,7 @@ public class CommentWriterController {
     }
 
     @PatchMapping("/comments/{commentId}/status")
-    public ResponseEntity<CommentDeleteResponse> deleteComment(
+    public ResponseEntity<CommentDeleteResponse> delete(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
