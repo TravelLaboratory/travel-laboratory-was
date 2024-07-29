@@ -23,7 +23,7 @@ public class OAuthService {
                 oAuthJoinRequest.accountEmail(), UserStatus.ACTIVE)
             .orElseGet(() -> {
                 return userJpaRepository.save(
-                    UserEntity.socialOf(oAuthJoinRequest.accountEmail(), oAuthJoinRequest.profileImage(),
+                    UserEntity.socialOf(oAuthJoinRequest.accountEmail(), oAuthJoinRequest.profileImgUrl(),
                         oAuthJoinRequest.profileNickname(), oAuthJoinRequest.isAgreement()));
                 }).toModel();
 
