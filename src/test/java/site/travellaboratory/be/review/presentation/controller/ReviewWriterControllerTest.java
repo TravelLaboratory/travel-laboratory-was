@@ -109,7 +109,7 @@ class ReviewWriterControllerTest {
     @DisplayName("[POST] 후기 작성 /api/v1/review")
     class Save {
 
-        @DisplayName("[실패] - 유효하지 않은 여행 계획 ID(ArticleId) - 404 Not Found 반환")
+        @DisplayName("[실패] 유효하지 않은 여행 계획 ID(ArticleId) - 404 Not Found 반환")
         @Test
         void test1() throws Exception {
             //given
@@ -144,7 +144,7 @@ class ReviewWriterControllerTest {
             verify(reviewWriterService).save(user.getId(), request);
         }
 
-        @DisplayName("[실패] - 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
+        @DisplayName("[실패] 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
         @Test
         void test2() throws Exception {
             //given
@@ -176,7 +176,7 @@ class ReviewWriterControllerTest {
 
         }
 
-        @DisplayName("[실패] - 이미 해당 여행 계획에 대한 후기가 있는 경우 - 409 Conflict 반환")
+        @DisplayName("[실패] 이미 해당 여행 계획에 대한 후기가 있는 경우 - 409 Conflict 반환")
         @Test
         void test3() throws Exception {
             //given
@@ -256,7 +256,7 @@ class ReviewWriterControllerTest {
     @DisplayName("[PATCH] 후기 수정 /api/v1/review/{reviewId}")
     class Update {
 
-        @DisplayName("[실패] - 유효하지 않은 여행 계획 ID (ArticleId) - 404 Not Found 반환")
+        @DisplayName("[실패] 유효하지 않은 여행 계획 ID (ArticleId) - 404 Not Found 반환")
         @Test
         void test1() throws Exception {
             //given
@@ -286,7 +286,7 @@ class ReviewWriterControllerTest {
             verify(reviewWriterService).update(user.getId(), invalidReviewId, request);
         }
 
-        @DisplayName("[실패] - 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
+        @DisplayName("[실패] 유저가 작성한 여행 계획이 아닌 경우 - 403 Forbidden 반환")
         @Test
         void test2() throws Exception {
             //given
