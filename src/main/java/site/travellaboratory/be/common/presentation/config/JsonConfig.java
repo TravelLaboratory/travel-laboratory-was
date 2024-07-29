@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.infrastructure.config;
+package site.travellaboratory.be.common.presentation.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;

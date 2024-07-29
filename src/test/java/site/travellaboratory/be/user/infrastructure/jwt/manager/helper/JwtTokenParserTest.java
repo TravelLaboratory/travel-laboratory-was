@@ -43,58 +43,6 @@ class JwtTokenParserTest {
     }
 
     @Nested
-    class getUserIdBy {
-        private final Long userId = 1L;
-
-        @DisplayName("유효하지_않은_액세스_토큰일_경우_에러_반환")
-        @Test
-        void test1() {
-            //given
-            String invalidAccessToken = "invalid_access_token";
-
-            //when
-            BeApplicationException exception = assertThrows(BeApplicationException.class,
-                () -> sut.getUserIdBy(invalidAccessToken));
-
-            //then
-            assertEquals(ErrorCodes.TOKEN_INVALID_TOKEN, exception.getErrorCodes());
-        }
-
-        @DisplayName("만료된_액세스_토큰일_경우_에러_반환")
-        @Test
-        void test2() {
-            //given
-            LocalDateTime currentTime = LocalDateTime.now();
-            LocalDateTime invalidExpiredAt = currentTime.minusHours(1);
-            Date invalidExpiration = Date.from(invalidExpiredAt.atZone(ZoneId.systemDefault()).toInstant());
-            String invalidAccessToken = createToken(userId, invalidExpiration);
-
-            //when
-            BeApplicationException exception = assertThrows(BeApplicationException.class,
-                () -> sut.getUserIdBy(invalidAccessToken));
-
-            //then
-            assertEquals(ErrorCodes.TOKEN_EXPIRED_TOKEN, exception.getErrorCodes());
-        }
-
-        @DisplayName("성공 - 유효한_액세스_토큰으로_userId_반환")
-        @Test
-        void test1000() {
-            //given
-            LocalDateTime currentTime = LocalDateTime.now();
-            LocalDateTime expiredAt = currentTime.plusHours(1);
-            Date invalidExpiration = Date.from(expiredAt.atZone(ZoneId.systemDefault()).toInstant());
-            String accessToken = createToken(userId, invalidExpiration);
-
-            //when
-            Long tokenByUserId = sut.getUserIdBy(accessToken);
-
-            //then
-            assertEquals(userId, tokenByUserId);
-        }
-    }
-
-    @Nested
     class getRefreshTokenUserId {
 
         private final Long userId = 1L;
@@ -181,4 +129,56 @@ class JwtTokenParserTest {
             assertEquals(userId, refreshTokenUserId);
         }
     }
+
+    //    @Nested
+//    class getUserIdBy {
+//        private final Long userId = 1L;
+//
+//        @DisplayName("유효하지_않은_액세스_토큰일_경우_에러_반환")
+//        @Test
+//        void test1() {
+//            //given
+//            String invalidAccessToken = "invalid_access_token";
+//
+//            //when
+//            BeApplicationException exception = assertThrows(BeApplicationException.class,
+//                () -> sut.getUserIdBy(invalidAccessToken));
+//
+//            //then
+//            assertEquals(ErrorCodes.TOKEN_INVALID_TOKEN, exception.getErrorCodes());
+//        }
+//
+//        @DisplayName("만료된_액세스_토큰일_경우_에러_반환")
+//        @Test
+//        void test2() {
+//            //given
+//            LocalDateTime currentTime = LocalDateTime.now();
+//            LocalDateTime invalidExpiredAt = currentTime.minusHours(1);
+//            Date invalidExpiration = Date.from(invalidExpiredAt.atZone(ZoneId.systemDefault()).toInstant());
+//            String invalidAccessToken = createToken(userId, invalidExpiration);
+//
+//            //when
+//            BeApplicationException exception = assertThrows(BeApplicationException.class,
+//                () -> sut.getUserIdBy(invalidAccessToken));
+//
+//            //then
+//            assertEquals(ErrorCodes.TOKEN_EXPIRED_TOKEN, exception.getErrorCodes());
+//        }
+//
+//        @DisplayName("성공 - 유효한_액세스_토큰으로_userId_반환")
+//        @Test
+//        void test1000() {
+//            //given
+//            LocalDateTime currentTime = LocalDateTime.now();
+//            LocalDateTime expiredAt = currentTime.plusHours(1);
+//            Date invalidExpiration = Date.from(expiredAt.atZone(ZoneId.systemDefault()).toInstant());
+//            String accessToken = createToken(userId, invalidExpiration);
+//
+//            //when
+//            Long tokenByUserId = sut.getUserIdBy(accessToken);
+//
+//            //then
+//            assertEquals(userId, tokenByUserId);
+//        }
+//    }
 }

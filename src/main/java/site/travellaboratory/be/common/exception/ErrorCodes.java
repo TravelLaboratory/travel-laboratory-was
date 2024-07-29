@@ -95,8 +95,11 @@ public enum ErrorCodes {
     // 여행계획
     ARTICLE_VERIFY_OWNER("[여행계획] - 본인의 여행계획이 아닙니다.", 3000L),
 
+
     BAD_REQUEST("BAD_REQUEST", 9404L),
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
+    BAD_REQUEST_REQUEST_ATTRIBUTES_MISSING("[BAD_REQUEST] RequestAttributes is null, Cannot resolve userId.", 9406L),
+    BAD_REQUEST_USER_ID_MISSING("[BAD_REQUEST] userId attribute is not set in the RequestAttributes.", 9407L),
     // S3
     FILE_UPLOAD_FAILED("S3에 파일 업로드 실패", 9997L),
     // NPE
