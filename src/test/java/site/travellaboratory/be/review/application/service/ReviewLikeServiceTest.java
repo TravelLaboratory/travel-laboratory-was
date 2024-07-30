@@ -63,7 +63,7 @@ class ReviewLikeServiceTest {
             );
         }
 
-        @DisplayName("유효하지_않은_리뷰_ID일_경우_예외_반환")
+        @DisplayName("유효하지_않은_후기_ID일_경우_예외_반환")
         @Test
         void test1() {
             //given
@@ -73,14 +73,14 @@ class ReviewLikeServiceTest {
             //when
             BeApplicationException exception = assertThrows(
                 BeApplicationException.class, () -> {
-                    sut.toggleLikeReview(userId, invalidReviewId);
+                    sut.toggleLike(userId, invalidReviewId);
                 });
 
             //then
             assertEquals(ErrorCodes.REVIEW_LIKE_INVALID_REVIEW_ID, exception.getErrorCodes());
         }
 
-        @DisplayName("성공 - 리뷰_좋아요")
+        @DisplayName("성공 - 후기_좋아요")
         @Test
         void test1000() {
             //given
@@ -88,14 +88,14 @@ class ReviewLikeServiceTest {
             Long reviewId = review.getId();
 
             //when
-            ReviewLike result = sut.toggleLikeReview(userId, reviewId);
+            ReviewLike result = sut.toggleLike(userId, reviewId);
 
             //then
             assertNotNull(result);
             assertEquals(ReviewLikeStatus.ACTIVE, result.getStatus());
         }
 
-        @DisplayName("성공 - 리뷰_좋아요_토글로_취소")
+        @DisplayName("성공 - 후기_좋아요_토글로_취소")
         @Test
         void test1001() {
             //given
@@ -111,7 +111,7 @@ class ReviewLikeServiceTest {
                 .build());
 
             //when
-            ReviewLike result = sut.toggleLikeReview(userId, reviewId);
+            ReviewLike result = sut.toggleLike(userId, reviewId);
 
             //then
             assertNotNull(result);
