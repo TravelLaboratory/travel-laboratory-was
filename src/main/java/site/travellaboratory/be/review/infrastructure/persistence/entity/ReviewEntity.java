@@ -61,6 +61,8 @@ public class ReviewEntity extends BaseEntity {
         result.representativeImgUrl = review.getRepresentativeImgUrl();
         result.description = review.getDescription();
         result.status = review.getStatus();
+        result.setCreatedAt(review.getCreatedAt());
+        result.setUpdatedAt(review.getUpdatedAt());
         return result;
     }
 
@@ -73,6 +75,8 @@ public class ReviewEntity extends BaseEntity {
             .representativeImgUrl(this.representativeImgUrl)
             .description(this.description)
             .status(this.status)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 }

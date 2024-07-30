@@ -52,6 +52,8 @@ public class CommentEntity extends BaseEntity {
         result.reviewEntity = ReviewEntity.from(comment.getReview());
         result.replyComment = comment.getReplyComment();
         result.status = comment.getStatus();
+        result.setCreatedAt(comment.getCreatedAt());
+        result.setUpdatedAt(comment.getUpdatedAt());
         return result;
     }
 
@@ -62,6 +64,8 @@ public class CommentEntity extends BaseEntity {
             .review(this.reviewEntity.toModel())
             .replyComment(this.replyComment)
             .status(this.status)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 }

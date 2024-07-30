@@ -44,6 +44,8 @@ public class PwAnswerEntity extends BaseEntity {
         result.pwQuestionId = pwAnswer.getPwQuestionId();
         result.answer = pwAnswer.getAnswer();
         result.status = pwAnswer.getStatus();
+        result.setCreatedAt(pwAnswer.getCreatedAt());
+        result.setUpdatedAt(pwAnswer.getUpdatedAt());
         return result;
     }
 
@@ -54,6 +56,8 @@ public class PwAnswerEntity extends BaseEntity {
             .pwQuestionId(this.pwQuestionId)
             .answer(this.answer)
             .status(this.status)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 }

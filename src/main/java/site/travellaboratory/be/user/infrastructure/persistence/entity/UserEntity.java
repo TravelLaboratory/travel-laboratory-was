@@ -61,6 +61,8 @@ public class UserEntity extends BaseEntity {
         result.introduce = user.getIntroduce();
         result.isAgreement = user.getIsAgreement();
         result.status = user.getStatus();
+        result.setCreatedAt(user.getCreatedAt());
+        result.setUpdatedAt(user.getUpdatedAt());
         return result;
     }
 
@@ -75,6 +77,8 @@ public class UserEntity extends BaseEntity {
             .introduce(this.introduce)
             .isAgreement(this.isAgreement)
             .status(this.status)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 

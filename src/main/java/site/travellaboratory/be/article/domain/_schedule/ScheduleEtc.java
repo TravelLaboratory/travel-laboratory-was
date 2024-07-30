@@ -2,6 +2,7 @@ package site.travellaboratory.be.article.domain._schedule;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import site.travellaboratory.be.article.domain.Article;
@@ -27,9 +28,11 @@ public class ScheduleEtc extends ArticleSchedule {
         String memo,
         ArticleScheduleStatus status,
         String dtype,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String placeName) {
         super(id, article, visitedDate, visitedTime, sortOrder, category, durationTime, expense,
-            memo, status, dtype);
+            memo, status, dtype, createdAt, updatedAt);
         this.placeName = placeName;
     }
 
@@ -47,6 +50,8 @@ public class ScheduleEtc extends ArticleSchedule {
             .memo(request.memo())
             .status(ArticleScheduleStatus.ACTIVE)
             .dtype(request.dtype())
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .placeName(request.scheduleEtc().placeName())
             .build();
     }
@@ -69,6 +74,8 @@ public class ScheduleEtc extends ArticleSchedule {
             .memo(request.memo())
             .status(this.getStatus())
             .dtype(request.dtype())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(LocalDateTime.now())
             .placeName(request.scheduleEtc().placeName())
             .build();
     }
@@ -89,6 +96,8 @@ public class ScheduleEtc extends ArticleSchedule {
             .memo(this.getMemo())
             .status(ArticleScheduleStatus.INACTIVE)
             .dtype(this.getDtype())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(LocalDateTime.now())
             .placeName(this.getPlaceName())
             .build();
     }

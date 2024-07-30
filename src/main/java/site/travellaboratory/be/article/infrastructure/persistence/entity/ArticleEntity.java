@@ -82,6 +82,8 @@ public class ArticleEntity extends BaseEntity {
         result.travelStyles = article.getTravelStyles();
         result.status = article.getStatus();
         result.coverImgUrl = article.getCoverImgUrl();
+        result.setCreatedAt(article.getCreatedAt());
+        result.setUpdatedAt(article.getUpdatedAt());
         return result;
     }
 
@@ -99,6 +101,8 @@ public class ArticleEntity extends BaseEntity {
             .travelStyles(this.travelStyles)
             .status(this.status)
             .coverImgUrl(this.coverImgUrl)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 

@@ -63,3 +63,16 @@ VALUES
     (2, 3, 'Business Trip to NY', 'https://example.com/ny_review.png','Business trip was successful.', NOW(), NOW(), 'INACTIVE'),
 --  [활성] 유저2의 [활성] 후기 (나만보기)
     (3, 4, 'Wonderful London Trip', 'https://example.com/london_review.png','London was wonderful!', NOW(), NOW(), 'PRIVATE');
+
+-- Comment 데이터 삽입
+INSERT INTO comment (user_id, review_id, reply_comment, status, created_at, updated_at)
+VALUES
+-- [활성] 유저의 [활성] 후기의 [삭제] 댓글
+(1, 2, 'Amazing review!', 'INACTIVE', NOW(), NOW()),
+-- [활성] 유저의 [활성] 후기의 [활성] 댓글
+(1, 2, 'Great to hear!', 'ACTIVE', NOW(), NOW()),
+-- [활성] 유저2의 [활성] 후기의 [활성] 댓글
+(3, 2, 'Great to hear!', 'ACTIVE', NOW(), NOW()),
+-- [삭제] 유저의 [삭제] 후기의 [삭제] 댓글
+(2, 3, 'Nice trip', 'INACTIVE', NOW(), NOW());
+

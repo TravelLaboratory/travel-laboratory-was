@@ -2,6 +2,7 @@ package site.travellaboratory.be.article.domain._schedule;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import site.travellaboratory.be.user.domain.User;
 
 @Getter
 @RequiredArgsConstructor
-public abstract class ArticleSchedule{
+public abstract class ArticleSchedule {
 
     private final Long id;
     private final Article article;
@@ -27,6 +28,9 @@ public abstract class ArticleSchedule{
     private final String memo;
     private final ArticleScheduleStatus status;
     private final String dtype;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+
 
     public static ArticleSchedule create(User user, Article article, ArticleScheduleRequest request) {
         switch (request.dtype()) {

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.article.domain._schedule.ScheduleTransport;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.domain._schedule.request.ScheduleTransportRequest;
 
 @Entity
 @Table(name = "schedule_transport")
@@ -60,6 +59,8 @@ public class ScheduleTransportEntity extends ArticleScheduleEntity {
         result.memo = scheduleTransport.getMemo();
         result.status = scheduleTransport.getStatus();
         result.dtype = scheduleTransport.getDtype();
+        result.setCreatedAt(scheduleTransport.getCreatedAt());
+        result.setUpdatedAt(scheduleTransport.getUpdatedAt());
         result.transportation = scheduleTransport.getTransportation();
         result.startPlaceName = scheduleTransport.getStartPlaceName();
         result.googleMapStartPlaceAddress = scheduleTransport.getGoogleMapStartPlaceAddress();
@@ -86,6 +87,8 @@ public class ScheduleTransportEntity extends ArticleScheduleEntity {
             .memo(this.memo)
             .status(this.status)
             .dtype(this.dtype)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .transportation(this.transportation)
             .startPlaceName(this.startPlaceName)
             .googleMapStartPlaceAddress(this.googleMapStartPlaceAddress)
@@ -96,17 +99,5 @@ public class ScheduleTransportEntity extends ArticleScheduleEntity {
             .googleMapEndLatitude(this.googleMapEndLatitude)
             .googleMapEndLongitude(this.googleMapEndLongitude)
             .build();
-    }
-
-    public void update(ScheduleTransportRequest request) {
-        this.transportation = request.transportation();
-        this.startPlaceName = request.startPlaceName();
-        this.googleMapStartPlaceAddress = request.googleMapStartPlaceAddress();
-        this.googleMapStartLatitude = request.googleMapStartLatitude();
-        this.googleMapStartLongitude = request.googleMapStartLongitude();
-        this.endPlaceName = request.endPlaceName();
-        this.googleMapEndPlaceAddress = request.googleMapEndPlaceAddress();
-        this.googleMapEndLatitude = request.googleMapEndLatitude();
-        this.googleMapEndLongitude = request.googleMapEndLongitude();
     }
 }

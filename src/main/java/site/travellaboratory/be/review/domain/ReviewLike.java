@@ -1,5 +1,6 @@
 package site.travellaboratory.be.review.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,16 @@ public class ReviewLike {
     private final User user;
     private final Review review;
     private final ReviewLikeStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static ReviewLike create(User user, Review review) {
         return ReviewLike.builder()
             .user(user)
             .review(review)
             .status(ReviewLikeStatus.ACTIVE)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -31,6 +36,8 @@ public class ReviewLike {
             .review(this.getReview())
             .status((this.status == ReviewLikeStatus.ACTIVE) ? ReviewLikeStatus.INACTIVE
                 : ReviewLikeStatus.ACTIVE)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 }

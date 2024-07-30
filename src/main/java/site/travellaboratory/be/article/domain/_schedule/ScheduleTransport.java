@@ -2,6 +2,7 @@ package site.travellaboratory.be.article.domain._schedule;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import site.travellaboratory.be.article.domain.Article;
@@ -35,6 +36,8 @@ public class ScheduleTransport extends ArticleSchedule {
         String memo,
         ArticleScheduleStatus status,
         String dtype,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String transportation,
         String startPlaceName,
         String googleMapStartPlaceAddress,
@@ -44,7 +47,7 @@ public class ScheduleTransport extends ArticleSchedule {
         String googleMapEndPlaceAddress,
         Double googleMapEndLatitude,
         Double googleMapEndLongitude) {
-        super(id, article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status, dtype);
+        super(id, article, visitedDate, visitedTime, sortOrder, category, durationTime, expense, memo, status, dtype, createdAt, updatedAt);
         this.transportation = transportation;
         this.startPlaceName = startPlaceName;
         this.googleMapStartPlaceAddress = googleMapStartPlaceAddress;
@@ -70,6 +73,8 @@ public class ScheduleTransport extends ArticleSchedule {
             .memo(request.memo())
             .status(ArticleScheduleStatus.ACTIVE)
             .dtype(request.dtype())
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .transportation(request.scheduleTransport().transportation())
             .startPlaceName(request.scheduleTransport().startPlaceName())
             .googleMapStartPlaceAddress(request.scheduleTransport().googleMapStartPlaceAddress())
@@ -100,7 +105,8 @@ public class ScheduleTransport extends ArticleSchedule {
             .memo(request.memo())
             .status(this.getStatus())
             .dtype(request.dtype())
-            .dtype(request.dtype())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(LocalDateTime.now())
             .transportation(request.scheduleTransport().transportation())
             .startPlaceName(request.scheduleTransport().startPlaceName())
             .googleMapStartPlaceAddress(request.scheduleTransport().googleMapStartPlaceAddress())
@@ -129,6 +135,8 @@ public class ScheduleTransport extends ArticleSchedule {
             .memo(this.getMemo())
             .status(ArticleScheduleStatus.INACTIVE)
             .dtype(this.getDtype())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(LocalDateTime.now())
             .transportation(this.transportation)
             .startPlaceName(this.startPlaceName)
             .googleMapStartPlaceAddress(this.googleMapStartPlaceAddress)
