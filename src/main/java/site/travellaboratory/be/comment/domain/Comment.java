@@ -1,5 +1,6 @@
 package site.travellaboratory.be.comment.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class Comment {
     private final Review review;
     private final String replyComment;
     private final CommentStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static Comment create(User user, Review review, CommentSaveRequest saveRequest) {
         return Comment.builder()
@@ -29,6 +32,8 @@ public class Comment {
             .review(review)
             .replyComment(saveRequest.replyComment())
             .status(CommentStatus.ACTIVE)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -41,6 +46,8 @@ public class Comment {
             .review(this.review)
             .replyComment(updateRequest.replyComment())
             .status(this.status)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -53,6 +60,8 @@ public class Comment {
             .review(this.review)
             .replyComment(this.replyComment)
             .status(CommentStatus.INACTIVE)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 

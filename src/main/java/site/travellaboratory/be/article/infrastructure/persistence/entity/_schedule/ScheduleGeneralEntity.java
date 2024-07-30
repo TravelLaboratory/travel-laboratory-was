@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.travellaboratory.be.article.domain._schedule.ScheduleGeneral;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.domain._schedule.request.ScheduleGeneralRequest;
 
 @Entity
 @Table(name = "schedule_general")
@@ -54,6 +53,8 @@ public class ScheduleGeneralEntity extends ArticleScheduleEntity {
         result.memo = scheduleGeneral.getMemo();
         result.status = scheduleGeneral.getStatus();
         result.dtype = scheduleGeneral.getDtype();
+        result.setCreatedAt(scheduleGeneral.getCreatedAt());
+        result.setUpdatedAt(scheduleGeneral.getUpdatedAt());
         result.placeName = scheduleGeneral.getPlaceName();
         result.googleMapPlaceId = scheduleGeneral.getGoogleMapPlaceId();
         result.googleMapLatitude = scheduleGeneral.getGoogleMapLatitude();
@@ -78,6 +79,8 @@ public class ScheduleGeneralEntity extends ArticleScheduleEntity {
             .memo(this.memo)
             .status(this.status)
             .dtype(this.dtype)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .placeName(this.placeName)
             .googleMapPlaceId(this.googleMapPlaceId)
             .googleMapLatitude(this.googleMapLatitude)
@@ -86,15 +89,5 @@ public class ScheduleGeneralEntity extends ArticleScheduleEntity {
             .googleMapPhoneNumber(this.googleMapPhoneNumber)
             .googleMapHomePageUrl(this.googleMapHomePageUrl)
             .build();
-    }
-
-    public void update(ScheduleGeneralRequest request) {
-        this.placeName = request.placeName();
-        this.googleMapPlaceId = request.googleMapPlaceId();
-        this.googleMapLatitude = request.googleMapLatitude();
-        this.googleMapLongitude = request.googleMapLongitude();
-        this.googleMapAddress = request.googleMapAddress();
-        this.googleMapPhoneNumber = request.googleMapPhoneNumber();
-        this.googleMapHomePageUrl = request.googleMapHomePageUrl();
     }
 }

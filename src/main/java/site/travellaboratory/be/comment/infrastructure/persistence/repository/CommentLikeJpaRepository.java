@@ -25,9 +25,9 @@ public interface CommentLikeJpaRepository extends JpaRepository<CommentLikeEntit
     // userId와 commentIds 리스트 (getComment 하기에 FETCH JOIN 사용
 
     // before
-    @Query("SELECT t FROM CommentLikeEntity t WHERE t.userEntity.id = :userId AND t.commentEntity.id IN :commentIds AND t.status = :status")
-    List<CommentLikeEntity> findAllByUserIdAndCommentIdInAndStatus(Long userId,
-        Collection<Long> commentIds, CommentLikeStatus status);
+//    @Query("SELECT t FROM CommentLikeEntity t WHERE t.userEntity.id = :userId AND t.commentEntity.id IN :commentIds AND t.status = :status")
+//    List<CommentLikeEntity> findAllByUserIdAndCommentIdInAndStatus(Long userId,
+//        Collection<Long> commentIds, CommentLikeStatus status);
 
     // after
     @Query("SELECT t FROM CommentLikeEntity t LEFT JOIN FETCH t.commentEntity WHERE t.userEntity.id = :userId AND t.commentEntity.id IN :commentIds AND t.status = :status")

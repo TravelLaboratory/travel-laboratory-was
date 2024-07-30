@@ -1,6 +1,7 @@
 package site.travellaboratory.be.article.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -34,6 +35,8 @@ public class Article {
     private final List<TravelStyle> travelStyles  = new ArrayList<>();
     private final String coverImgUrl;
     private final ArticleStatus status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static Article create(User user, ArticleRegisterRequest registerRequest) {
         return Article.builder()
@@ -47,6 +50,8 @@ public class Article {
             .travelStyles(TravelStyle.from(registerRequest.travelStyles()))
             .coverImgUrl(null) // 여행 생성 시에는 coverImgUrl 받지 않음
             .status(ArticleStatus.ACTIVE) // 기본 상태를 ACTIVE로 설정
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -65,6 +70,8 @@ public class Article {
             .travelStyles(TravelStyle.from(updateRequest.travelStyles()))
             .coverImgUrl(this.coverImgUrl)
             .status(this.status) // 기본 상태를 ACTIVE로 설정
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -83,6 +90,8 @@ public class Article {
             .travelStyles(this.travelStyles)
             .coverImgUrl(this.coverImgUrl)
             .status(ArticleStatus.INACTIVE)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 

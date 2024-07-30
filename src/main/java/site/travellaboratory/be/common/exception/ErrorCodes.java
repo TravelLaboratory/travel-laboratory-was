@@ -40,7 +40,7 @@ public enum ErrorCodes {
     REVIEW_POST_EXIST("[후기] - 각 여행 계획에 대한 후기는 한 개만 작성할 수 있습니다.", 4003L),
 
     // 후기 좋아요
-    REVIEW_LIKE_INVALID("[후기 좋아요] - 유효하지 않은 후기 ID", 4007L),
+    REVIEW_LIKE_INVALID_REVIEW_ID("[후기 좋아요] - 유효하지 않은 후기 ID", 4100L),
     // 후기 상세 조회
     REVIEW_READ_DETAIL_INVALID("[후기 상세 조회] - 유효하지 않은 후기 ID", 4040L),
     REVIEW_READ_DETAIL_NOT_AUTHORIZATION("[후기 상세 조회] - 해당 후기에 접근 권한 없음", 4041L),
@@ -58,7 +58,7 @@ public enum ErrorCodes {
     COMMENT_INVALID_COMMENT_ID("[댓글] - 유효하지 않은 댓글[Comment] ID", 5002L),
 
     // 댓글 좋아요
-    COMMENT_LIKE_INVALID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5030L),
+    COMMENT_LIKE_INVALID_COMMENT_ID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5100L),
     // 댓글 전체 조회 (페이지네이션)
     COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
     COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
