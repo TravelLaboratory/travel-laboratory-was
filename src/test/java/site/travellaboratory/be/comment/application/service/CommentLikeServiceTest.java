@@ -73,7 +73,7 @@ class CommentLikeServiceTest {
                 () -> sut.toggleLike(user.getId(), invalidCommentId));
 
             // then
-            assertEquals(ErrorCodes.COMMENT_LIKE_INVALID, exception.getErrorCodes());
+            assertEquals(ErrorCodes.COMMENT_LIKE_INVALID_COMMENT_ID, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 댓글_좋아요")

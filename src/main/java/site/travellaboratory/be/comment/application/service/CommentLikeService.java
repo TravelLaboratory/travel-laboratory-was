@@ -51,7 +51,7 @@ public class CommentLikeService {
     private Comment getCommentById(Long commentId) {
         return commentRepository.findByIdAndStatusIn(commentId,
                 List.of(CommentStatus.ACTIVE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID,
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID_COMMENT_ID,
                 HttpStatus.NOT_FOUND));
     }
 }
