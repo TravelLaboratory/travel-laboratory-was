@@ -30,7 +30,7 @@ public class UserAuthenticationService {
         User user = userRepository.findByUsernameAndStatusOrderByIdDesc(
                 request.username(), UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(
-                ErrorCodes.AUTH_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+                ErrorCodes.LOGIN_USERNAME_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 비밀번호 체크
         if (!encoder.matches(request.password(), user.getPassword())) {

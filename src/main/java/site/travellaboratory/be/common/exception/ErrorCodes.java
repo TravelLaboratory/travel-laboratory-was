@@ -7,8 +7,10 @@ public enum ErrorCodes {
     AUTH_DUPLICATED_USER_NAME("이미 존재하는 아이디입니다.", 1001L),
     AUTH_DUPLICATED_NICK_NAME("중복된 닉네임입니다.", 1002L),
     // 로그인
+    LOGIN_USERNAME_NOT_FOUND("[로그인] - 사용자를 찾을 수 없습니다.", 1003L),
+    AUTH_INVALID_PASSWORD("[로그인] - 잘못된 비밀번호입니다.", 1004L),
+
     AUTH_USER_NOT_FOUND("사용자를 찾을 수 없습니다.", 1010L),
-    AUTH_INVALID_PASSWORD("잘못된 비밀번호입니다.", 1011L),
 
     // todo : tokenErrorCode 로 분리
     TOKEN_INVALID_TOKEN("유효하지 않은 토큰", 2000L),
