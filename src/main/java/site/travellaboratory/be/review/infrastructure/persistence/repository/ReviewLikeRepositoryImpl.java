@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.review.application.port.ReviewLikeRepository;
 import site.travellaboratory.be.review.domain.ReviewLike;
-import site.travellaboratory.be.review.domain.enums.ReviewLikeStatus;
 import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewLikeEntity;
 
 @Repository
@@ -14,15 +13,9 @@ public class ReviewLikeRepositoryImpl implements ReviewLikeRepository {
 
     private final ReviewLikeJpaRepository reviewLikeJpaRepository;
 
-
     @Override
     public Optional<ReviewLike> findByUserIdAndReviewId(Long userId, Long reviewJpaEntityId) {
         return reviewLikeJpaRepository.findByUserIdAndReviewId(userId, reviewJpaEntityId).map(ReviewLikeEntity::toModel);
-    }
-
-    @Override
-    public Long countByReviewIdAndStatus(Long reviewId, ReviewLikeStatus status) {
-        return reviewLikeJpaRepository.countByReviewEntityIdAndStatus(reviewId, status);
     }
 
     @Override
