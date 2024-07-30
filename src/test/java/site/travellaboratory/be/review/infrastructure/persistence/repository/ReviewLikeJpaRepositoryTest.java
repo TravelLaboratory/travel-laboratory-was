@@ -1,4 +1,4 @@
-package site.travellaboratory.be.comment.infrastructure.persistence.repository;
+package site.travellaboratory.be.review.infrastructure.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,16 +21,13 @@ import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.domain.enums.TravelCompanion;
 import site.travellaboratory.be.article.domain.enums.TravelStyle;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.comment.domain.Comment;
-import site.travellaboratory.be.comment.domain.CommentLike;
-import site.travellaboratory.be.comment.domain.enums.CommentLikeStatus;
-import site.travellaboratory.be.comment.domain.enums.CommentStatus;
-import site.travellaboratory.be.comment.infrastructure.persistence.entity.CommentEntity;
-import site.travellaboratory.be.comment.infrastructure.persistence.entity.CommentLikeEntity;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.review.domain.Review;
+import site.travellaboratory.be.review.domain.ReviewLike;
+import site.travellaboratory.be.review.domain.enums.ReviewLikeStatus;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
+import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewLikeEntity;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -39,16 +36,16 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntit
 @Import({JsonConfig.class})
 @ActiveProfiles("h2-test")
 @DataJpaTest
-class CommentLikeJpaRepositoryTest {
+class ReviewLikeJpaRepositoryTest {
 
     @Autowired
-    private CommentLikeJpaRepository sut;
+    private ReviewLikeJpaRepository sut;
 
     @Autowired
     private TestEntityManager em;
 
     private UserEntity userEntity;
-    private CommentEntity commentEntity;
+    private ReviewEntity reviewEntity;
 
     @BeforeEach
     void setUp() {
@@ -89,7 +86,7 @@ class CommentLikeJpaRepositoryTest {
                 .build())
         );
 
-        ReviewEntity reviewEntity = em.persist(ReviewEntity.from(
+        this.reviewEntity = em.persist(ReviewEntity.from(
             Review.builder()
                 .user(userEntity.toModel())
                 .article(articleEntity.toModel())
@@ -101,71 +98,61 @@ class CommentLikeJpaRepositoryTest {
                 .build()
         ));
 
-        this.commentEntity = em.persist(CommentEntity.from(
-            Comment.builder()
-                .user(userEntity.toModel())
-                .review(reviewEntity.toModel())
-                .replyComment("Test Comment")
-                .status(CommentStatus.ACTIVE)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build()
-        ));
-
         em.clear();
     }
-
     @Nested
-    @DisplayName("댓글 좋아요 조회")
-    class findByUserIdAndCommentId {
-
-        @DisplayName("유저 ID와 댓글 ID로 좋아요 조회")
+    @DisplayName("후기 좋아요 조회 - findByUserIdAndReviewId")
+    class FindByUserIdAndReviewId {
+        @DisplayName("유저 ID와 리뷰 ID로 좋아요 조회")
         @Test
-        void test1000() {
+        void findByUserIdAndReviewId() {
             // given
-            CommentLikeEntity commentLikeEntity = em.persistAndFlush(CommentLikeEntity.from(
-                CommentLike.builder()
+            ReviewLikeEntity reviewLikeEntity = em.persistAndFlush(ReviewLikeEntity.from(
+                ReviewLike.builder()
                     .user(userEntity.toModel())
-                    .comment(commentEntity.toModel())
-                    .status(CommentLikeStatus.ACTIVE)
+                    .review(reviewEntity.toModel())
+                    .status(ReviewLikeStatus.ACTIVE)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build()
             ));
 
             // when
-            Optional<CommentLikeEntity> result = sut.findByUserIdAndCommentId(userEntity.getId(), commentEntity.getId());
+            Optional<ReviewLikeEntity> result = sut.findByUserIdAndReviewId(userEntity.getId(), reviewEntity.getId());
 
             // then
             assertThat(result).isPresent();
-            assertThat(result.get().getId()).isEqualTo(commentLikeEntity.getId());
+            assertThat(result.get().getId()).isEqualTo(reviewLikeEntity.getId());
         }
     }
 
     @Nested
-    class save {
+    class Save {
         @DisplayName("댓글 좋아요 저장")
         @Test
-        void test1000() {
+        void save() {
             // given
-            CommentLikeEntity commentLikeEntity = CommentLikeEntity.from(CommentLike.builder()
+            ReviewLikeEntity reviewLikeEntity = ReviewLikeEntity.from(ReviewLike.builder()
                 .user(userEntity.toModel())
-                .comment(commentEntity.toModel())
-                .status(CommentLikeStatus.ACTIVE)
+                .review(reviewEntity.toModel())
+                .status(ReviewLikeStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
 
             // when
-            CommentLikeEntity savedCommentLike = sut.save(commentLikeEntity);
+            ReviewLikeEntity savedReviewLike = sut.save(reviewLikeEntity);
 
             // then
-            assertThat(savedCommentLike.getId()).isNotNull();
-            assertThat(savedCommentLike.getUserEntity().getId()).isEqualTo(userEntity.getId());
-            assertThat(savedCommentLike.getCommentEntity().getId()).isEqualTo(commentLikeEntity.getCommentEntity().getId());
-            assertThat(savedCommentLike.getCreatedAt()).isEqualTo(commentLikeEntity.getCreatedAt());
-            assertThat(savedCommentLike.getUpdatedAt()).isAfterOrEqualTo(commentLikeEntity.getUpdatedAt());
-            assertThat(savedCommentLike.getStatus()).isEqualTo(CommentLikeStatus.ACTIVE);
+            assertThat(savedReviewLike.getId()).isNotNull();
+            assertThat(savedReviewLike.getUserEntity().getId()).isEqualTo(userEntity.getId());
+            assertThat(savedReviewLike.getReviewEntity().getId()).isEqualTo(reviewLikeEntity.getReviewEntity().getId());
+            assertThat(savedReviewLike.getCreatedAt()).isEqualTo(reviewLikeEntity.getCreatedAt());
+            assertThat(savedReviewLike.getUpdatedAt()).isAfterOrEqualTo(reviewLikeEntity.getUpdatedAt());
+            assertThat(savedReviewLike.getStatus()).isEqualTo(ReviewLikeStatus.ACTIVE);
         }
+
+
     }
+
 }

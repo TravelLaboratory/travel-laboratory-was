@@ -14,10 +14,10 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.travellaboratory.be.review.domain.ReviewLike;
 import site.travellaboratory.be.common.infrastructure.common.BaseEntity;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
+import site.travellaboratory.be.review.domain.ReviewLike;
 import site.travellaboratory.be.review.domain.enums.ReviewLikeStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 @Entity
 @Table(name = "review_like")
@@ -47,6 +47,8 @@ public class ReviewLikeEntity extends BaseEntity {
         result.userEntity = UserEntity.from(reviewLike.getUser());
         result.reviewEntity = ReviewEntity.from(reviewLike.getReview());
         result.status = reviewLike.getStatus();
+        result.setCreatedAt(reviewLike.getCreatedAt());
+        result.setUpdatedAt(reviewLike.getUpdatedAt());
         return result;
     }
 
@@ -56,6 +58,8 @@ public class ReviewLikeEntity extends BaseEntity {
             .user(this.getUserEntity().toModel())
             .review(this.getReviewEntity().toModel())
             .status(this.getStatus())
+            .createdAt(this.getCreatedAt())
+            .updatedAt(this.getUpdatedAt())
             .build();
     }
 }
