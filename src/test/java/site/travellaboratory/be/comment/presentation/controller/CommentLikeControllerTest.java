@@ -61,7 +61,6 @@ class CommentLikeControllerTest {
 
     private User user;
 
-    private Article article;
     private Review review;
 
     @BeforeEach
@@ -78,7 +77,7 @@ class CommentLikeControllerTest {
             .isAgreement(true)
             .build();
 
-        this.article = Article.builder()
+        Article article = Article.builder()
             .id(1L)
             .user(user)
             .title("article_title")
