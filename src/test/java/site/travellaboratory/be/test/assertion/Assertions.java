@@ -1,5 +1,6 @@
 package site.travellaboratory.be.test.assertion;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.function.Consumer;
 import org.springframework.test.web.servlet.MvcResult;
 import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 public class Assertions {
 
@@ -49,5 +52,23 @@ public class Assertions {
         assertTrue(responseBody.isObject());
 
         consumer.accept(responseBody);
+    }
+
+    /*
+    * DataJpaTest - UserEntity
+    * 항상 UserStatus.ACTIVE
+    * */
+    public static void assertDataJpaTestUserEntityEquals(UserEntity actual, UserEntity expected) {
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getUsername()).isEqualTo(expected.getUsername());
+        assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
+        assertThat(actual.getRole()).isEqualTo(expected.getRole());
+        assertThat(actual.getNickname()).isEqualTo(expected.getNickname());
+        assertThat(actual.getProfileImgUrl()).isEqualTo(expected.getProfileImgUrl());
+        assertThat(actual.getIntroduce()).isEqualTo(expected.getIntroduce());
+        assertThat(actual.getIsAgreement()).isEqualTo(expected.getIsAgreement());
+        assertThat(UserStatus.ACTIVE).isEqualTo(expected.getStatus());
+        assertThat(actual.getCreatedAt()).isEqualTo(expected.getCreatedAt());
+        assertThat(actual.getUpdatedAt()).isEqualTo(expected.getUpdatedAt());
     }
 }
