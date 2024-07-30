@@ -11,7 +11,6 @@ import site.travellaboratory.be.review.application.port.ReviewLikeRepository;
 import site.travellaboratory.be.review.application.port.ReviewRepository;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.ReviewLike;
-import site.travellaboratory.be.review.domain.enums.ReviewLikeStatus;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
@@ -26,7 +25,7 @@ public class ReviewLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ReviewLikeStatus toggleLikeReview(Long userId, Long reviewId) {
+    public ReviewLike toggleLikeReview(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 좋아요 할 경우
         Review review = getReviewById(reviewId);
 
@@ -42,8 +41,7 @@ public class ReviewLikeService {
         } else {
             reviewLike = ReviewLike.create(user, review);
         }
-        ReviewLike saveReviewLike = reviewLikeRepository.save(reviewLike);
-        return saveReviewLike.getStatus();
+        return reviewLikeRepository.save(reviewLike);
     }
 
     private User getUserById(Long userId) {
@@ -53,7 +51,7 @@ public class ReviewLikeService {
     private Review getReviewById(Long reviewId) {
         return reviewRepository.findByIdAndStatusIn(reviewId,
                 List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID,
+            .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }
 }
