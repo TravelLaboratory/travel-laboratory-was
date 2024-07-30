@@ -39,7 +39,7 @@ public class UserAuthenticationController {
     }
 
     @GetMapping("/auth/reissue-token")
-    public ResponseEntity<ReissueTokenResponse> refreshAccessToken(
+    public ResponseEntity<ReissueTokenResponse> reIssueAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @RequestHeader("refresh-token") String refreshToken,
         HttpServletResponse response

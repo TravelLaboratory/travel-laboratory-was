@@ -201,7 +201,7 @@ class UserAuthenticationControllerTest {
 
     @Nested
     @DisplayName("[GET] 토큰 재발급 (액세스 토큰) /api/v1/auth/reissue-token")
-    class RefreshAccessToken {
+    class ReIssueAccessToken {
 
         @DisplayName("[실패] 유효하지 않은 액세스 토큰일 경우 - 400 Bad Request  반환 ")
         @Test
