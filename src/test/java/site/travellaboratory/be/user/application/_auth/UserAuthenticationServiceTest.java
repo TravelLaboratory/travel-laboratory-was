@@ -64,7 +64,7 @@ class UserAuthenticationServiceTest {
             BeApplicationException exception = assertThrows(BeApplicationException.class, () ->
                 sut.login(invalidRequest)
             );
-            assertEquals(ErrorCodes.AUTH_USER_NOT_FOUND, exception.getErrorCodes());
+            assertEquals(ErrorCodes.LOGIN_USERNAME_NOT_FOUND, exception.getErrorCodes());
         }
 
         @DisplayName("유저가_존재하지만_비밀번호가_틀린_경우")
