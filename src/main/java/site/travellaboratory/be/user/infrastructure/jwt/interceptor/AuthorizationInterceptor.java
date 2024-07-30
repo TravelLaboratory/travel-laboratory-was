@@ -87,7 +87,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
             throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

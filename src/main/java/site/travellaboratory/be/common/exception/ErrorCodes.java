@@ -13,17 +13,14 @@ public enum ErrorCodes {
     AUTH_USER_NOT_FOUND("사용자를 찾을 수 없습니다.", 1010L),
 
     // todo : tokenErrorCode 로 분리
-    TOKEN_INVALID_TOKEN("유효하지 않은 토큰", 2000L),
-    TOKEN_EXPIRED_TOKEN("만료된 토큰", 2001L),
-    TOKEN_TOKEN_EXCEPTION("토큰 알수없는 에러", 2002L),
-    TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND("토큰이 존재하지 않음", 2003L),
-    TOKEN_AUTHORIZATION_FAIL("인증 실패", 2004L),
-
-    TOKEN_INVALID_REFRESH_TOKEN("유효하지 않은 리프레시 토큰", 2005L),
-    //    REFRESH_TOKEN_NOT_CORRECT_USER("로그인한 유저의 리프레시 토큰이 아닙니다.", 2006L),
-    TOKEN_NOT_EXPIRED_ACCESS_TOKEN("만료되지 않은 토큰", 2007L),
+    TOKEN_INVALID_TOKEN("유효하지 않은 액세스 토큰", 2000L),
+    TOKEN_EXPIRED_TOKEN("만료된 액세스 토큰", 2001L),
+    TOKEN_AUTHORIZATION_TOKEN_NOT_FOUND("액세스 토큰이 존재하지 않음", 2002L),
+    TOKEN_AUTHORIZATION_FAIL("액세스 토큰 관련 알 수 없는 에러로 인증 실패", 2003L),
+    REFRESH_TOKEN_INVALID_REFRESH_TOKEN("유효하지 않은 리프레시 토큰", 2004L),
+    TOKEN_NOT_EXPIRED_ACCESS_TOKEN("[토큰 재발급] 만료되지 않은 액세스 토큰", 2005L),
     REFRESH_TOKEN_EXPIRED_TOKEN("만료된 리프레시 토큰 - 재로그인", 2008L),
-    REFRESH_TOKEN_TOKEN_EXCEPTION("리프레시 토큰 에러", 2009L),
+    REFRESH_TOKEN_TOKEN_EXCEPTION("리프레시 토큰 관련 알 수 없는 에러", 2009L),
 
     // 비밀번호 질문, 답 관련
     PASSWORD_INVALID_QUESTION("유효하지 않은 질문", 2010L),

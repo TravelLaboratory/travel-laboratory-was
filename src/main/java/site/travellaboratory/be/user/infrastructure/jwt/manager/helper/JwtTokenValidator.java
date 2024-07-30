@@ -33,7 +33,7 @@ public class JwtTokenValidator {
         } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
             throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -43,9 +43,9 @@ public class JwtTokenValidator {
         } catch (ExpiredJwtException e) {
             throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED);
         } catch (MalformedJwtException | io.jsonwebtoken.security.SecurityException e) {
-            throw new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION, HttpStatus.BAD_REQUEST);
+            throw new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

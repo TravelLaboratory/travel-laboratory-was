@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,8 +58,6 @@ class UserAuthenticationControllerTest {
     @MockBean
     private AuthorizationInterceptor authorizationInterceptor;
 
-
-
     @BeforeEach
     void setUp() throws Exception {
         // 인터셉터 모킹 설정 - 토큰 검증 및 userId 설정
@@ -80,6 +79,7 @@ class UserAuthenticationControllerTest {
     }
 
     @Nested
+    @DisplayName("[POST] 로그인 /api/v1/auth/login")
     class Login {
 
         private User user;
@@ -155,7 +155,7 @@ class UserAuthenticationControllerTest {
 
         @DisplayName("[성공] 로그인 - 200 OK 반환")
         @Test
-        void loginSuccess() throws Exception {
+        void test1000() throws Exception {
             //given
             LocalDateTime currentTime = LocalDateTime.now();
             Tokens tokens = Tokens.builder()
@@ -200,16 +200,173 @@ class UserAuthenticationControllerTest {
     }
 
     @Nested
-    class refreshAccessToken {
-        @DisplayName("")
+    @DisplayName("[GET] 토큰 재발급 (액세스 토큰) /api/v1/auth/reissue-token")
+    class RefreshAccessToken {
+
+        @DisplayName("[실패] 유효하지 않은 액세스 토큰일 경우 - 400 Bad Request  반환 ")
         @Test
-        void test() {
-            //given
+        void test1() throws Exception {
+            // given
+            String invalidAccessToken = "invalidAccessToken";
+            String refreshToken = "refreshToken";
 
-            //when
+            given(userAuthenticationService.reIssueAccessToken(invalidAccessToken, refreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.TOKEN_INVALID_TOKEN, HttpStatus.BAD_REQUEST));
 
-            //then
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", invalidAccessToken)
+                    .header("refresh-token", refreshToken))
+                .andExpect(status().isBadRequest())
+                .andReturn();
 
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.TOKEN_INVALID_TOKEN);
+            verify(userAuthenticationService).reIssueAccessToken(invalidAccessToken, refreshToken);
+        }
+        
+        @DisplayName("[실패] 만료되지 않은 액세스 토큰일 경우 - 400 Bad Request 반환")
+        @Test
+        void test2() throws Exception {
+            // given
+            String notExpiredAccessToken = "NotExpiredAccessToken";
+            String refreshToken = "refreshToken";
+
+            given(userAuthenticationService.reIssueAccessToken(notExpiredAccessToken, refreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.TOKEN_NOT_EXPIRED_ACCESS_TOKEN, HttpStatus.BAD_REQUEST));
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", notExpiredAccessToken)
+                    .header("refresh-token", refreshToken))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.TOKEN_NOT_EXPIRED_ACCESS_TOKEN);
+            verify(userAuthenticationService).reIssueAccessToken(notExpiredAccessToken, refreshToken);
+        }
+
+
+        @DisplayName("[실패] 예기치 못한 서버 에러로 인한 액세스 토큰 검증을 실패한 경우 - 500 Internal Server Error 반환")
+        @Test
+        void test3() throws Exception {
+            // given
+            String expiredAccessToken = "expiredAccessToken";
+            String refreshToken = "refreshToken";
+
+            given(userAuthenticationService.reIssueAccessToken(expiredAccessToken, refreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.TOKEN_AUTHORIZATION_FAIL, HttpStatus.INTERNAL_SERVER_ERROR));
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", expiredAccessToken)
+                    .header("refresh-token", refreshToken))
+                .andExpect(status().isInternalServerError())
+                .andReturn();
+
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.TOKEN_AUTHORIZATION_FAIL);
+            verify(userAuthenticationService).reIssueAccessToken(expiredAccessToken, refreshToken);
+        }
+
+        @DisplayName("[실패] 유효하지 않은 리프레시 토큰 - 400 Bad Request 반환")
+        @Test
+        void test4() throws Exception {
+            // given
+            String accessToken = "validAccessToken";
+            String invalidRefreshToken = "invalidRefreshToken";
+
+            given(userAuthenticationService.reIssueAccessToken(accessToken, invalidRefreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST));
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", accessToken)
+                    .header("refresh-token", invalidRefreshToken))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN);
+            verify(userAuthenticationService).reIssueAccessToken(accessToken, invalidRefreshToken);
+        }
+
+        @DisplayName("[실패] 만료된 Refresh Token 일 경우 - 403 UnAuthorized 반환")
+        @Test
+        void test5() throws Exception {
+            // given
+            String expiredAccessToken = "expiredAccessToken";
+            String expiredRefreshToken = "expiredRefreshToken";
+
+            given(userAuthenticationService.reIssueAccessToken(expiredAccessToken, expiredRefreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED));
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", expiredAccessToken)
+                    .header("refresh-token", expiredRefreshToken))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN);
+            verify(userAuthenticationService).reIssueAccessToken(expiredAccessToken, expiredRefreshToken);
+        }
+
+        @DisplayName("[실패] 예기치 못한 서버 에러로 인한 리프레시 토큰 검증을 실패한 경우 - 500 Internal Server Error 반환")
+
+        void test6() throws Exception {
+            // given
+            String expiredAccessToken = "expiredAccessToken";
+            String refreshToken = "refreshToken";
+
+            given(userAuthenticationService.reIssueAccessToken(expiredAccessToken, refreshToken))
+                .willThrow(new BeApplicationException(ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR));
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", expiredAccessToken)
+                    .header("refresh-token", refreshToken))
+                .andExpect(status().isInternalServerError())
+                .andReturn();
+
+            // then
+            Assertions.assertMvcErrorEquals(result, ErrorCodes.REFRESH_TOKEN_TOKEN_EXCEPTION);
+            verify(userAuthenticationService).reIssueAccessToken(expiredAccessToken, refreshToken);
+        }
+
+
+        @DisplayName("[성공] 액세스 토큰 재발급 - 200 OK 반환")
+        @Test
+        void test1000() throws Exception {
+            // given
+            String expiredAccessToken = "expiredAccessToken";
+            String refreshToken = "refreshToken";
+            LocalDateTime currentTime = LocalDateTime.now();
+            Token newAccessToken = Token.builder()
+                .token("newAccessToken")
+                .expiredAt(currentTime.plusDays(1))
+                .build();
+
+            given(userAuthenticationService.reIssueAccessToken(expiredAccessToken, refreshToken))
+                .willReturn(newAccessToken);
+
+            // when
+            MvcResult result = mockMvc.perform(get("/api/v1/auth/reissue-token")
+                    .header("authorization-token", expiredAccessToken)
+                    .header("refresh-token", refreshToken))
+                .andExpect(status().isOk())
+                .andExpect(header().string("authorization-token", newAccessToken.getToken()))
+                .andExpect(header().string("authorization-token-expired-at", newAccessToken.getExpiredAt().toString()))
+                .andReturn();
+
+            // then
+            Assertions.assertMvcDataEquals(result, dataField -> {
+                assertTrue(dataField.get("is_reissue").asBoolean());
+            });
+
+            verify(userAuthenticationService).reIssueAccessToken(expiredAccessToken, refreshToken);
         }
 
     }
