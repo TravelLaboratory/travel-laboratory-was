@@ -25,7 +25,7 @@ public class ReviewLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ReviewLike toggleLikeReview(Long userId, Long reviewId) {
+    public ReviewLike toggleLike(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 좋아요 할 경우
         Review review = getReviewById(reviewId);
 

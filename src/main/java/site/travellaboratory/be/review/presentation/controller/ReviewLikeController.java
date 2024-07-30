@@ -19,11 +19,11 @@ public class ReviewLikeController {
     private final ReviewLikeService reviewLikeService;
 
     @PutMapping("/reviews/{reviewId}/likes")
-    public ResponseEntity<ReviewToggleLikeResponse> toggleLikeReview(
+    public ResponseEntity<ReviewToggleLikeResponse> toggleLike(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
-        ReviewLike result = reviewLikeService.toggleLikeReview(userId, reviewId);
+        ReviewLike result = reviewLikeService.toggleLike(userId, reviewId);
         return ResponseEntity.ok(ReviewToggleLikeResponse.from(result));
     }
 }
