@@ -6,6 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.travellaboratory.be.test.assertion.Assertions.assertMvcDataEquals;
+import static site.travellaboratory.be.test.assertion.Assertions.assertMvcErrorEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,9 +31,9 @@ import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
-import site.travellaboratory.be.test.assertion.Assertions;
 import site.travellaboratory.be.user.application._auth.UserVerificationService;
 import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
+import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;
 import site.travellaboratory.be.user.infrastructure.jwt.interceptor.AuthorizationInterceptor;
 
 @Import({JsonConfig.class, AuthenticatedUserIdResolver.class})
@@ -85,7 +87,8 @@ class UserVerificationControllerTest {
                 .build();
 
             given(userVerificationService.isNicknameAvailable(invalidRequest))
-                .willThrow(new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME, HttpStatus.CONFLICT));
+                .willThrow(new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_NICK_NAME,
+                    HttpStatus.CONFLICT));
 
             // when
             MvcResult result = mockMvc.perform(post("/api/v1/auth/nickname")
@@ -95,10 +98,10 @@ class UserVerificationControllerTest {
                 .andReturn();
 
             // then
-            Assertions.assertMvcErrorEquals(result, ErrorCodes.AUTH_DUPLICATED_NICK_NAME);
+            assertMvcErrorEquals(result, ErrorCodes.AUTH_DUPLICATED_NICK_NAME);
             verify(userVerificationService).isNicknameAvailable(any(UserNicknameRequest.class));
         }
-        
+
 
         @DisplayName("[성공] 닉네임 사용 가능 - 200 OK 반환")
         @Test
@@ -120,7 +123,7 @@ class UserVerificationControllerTest {
                 .andReturn();
 
             // then
-            Assertions.assertMvcDataEquals(result, dataField -> {
+            assertMvcDataEquals(result, dataField -> {
                 assertTrue(dataField.get("is_available").asBoolean());
             });
             verify(userVerificationService).isNicknameAvailable(any(UserNicknameRequest.class));
@@ -130,5 +133,57 @@ class UserVerificationControllerTest {
     @Nested
     @DisplayName("[POST] 이메일(회원 아이디) 중복 확인 /api/v1/auth/username")
     class checkUsernameDuplicate {
+
+        @DisplayName("[성공] 사용자 이름 사용 불가능 - 409 Conflict 반환")
+        @Test
+        void test1() throws Exception {
+            // given
+            String existingUsername = "existingUsername";
+            UsernameRequest request = UsernameRequest.builder()
+                .username(existingUsername)
+                .build();
+
+            given(userVerificationService.isUsernameAvailable(any(UsernameRequest.class)))
+                .willThrow(new BeApplicationException(ErrorCodes.AUTH_DUPLICATED_USER_NAME,
+                    HttpStatus.CONFLICT));
+
+            // when
+            MvcResult result = mockMvc.perform(post("/api/v1/auth/username")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andReturn();
+
+            // then
+            assertMvcErrorEquals(result, ErrorCodes.AUTH_DUPLICATED_USER_NAME);
+            verify(userVerificationService).isUsernameAvailable(any(UsernameRequest.class));
+        }
+
+
+        @DisplayName("[성공] 사용자 이름 사용 가능 - 200 OK 반환")
+        @Test
+        void test1000() throws Exception {
+            // given
+            String username = "uniqueUsername";
+            UsernameRequest request = UsernameRequest.builder()
+                .username(username)
+                .build();
+
+            given(userVerificationService.isUsernameAvailable(any(UsernameRequest.class)))
+                .willReturn(true);
+
+            // when
+            MvcResult result = mockMvc.perform(post("/api/v1/auth/username")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+            // then
+            assertMvcDataEquals(result, dataField -> {
+                assertTrue(dataField.get("is_available").asBoolean());
+            });
+            verify(userVerificationService).isUsernameAvailable(any(UsernameRequest.class));
+        }
     }
 }
