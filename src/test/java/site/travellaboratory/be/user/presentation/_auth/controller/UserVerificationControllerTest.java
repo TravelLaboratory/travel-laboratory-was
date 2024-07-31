@@ -76,7 +76,7 @@ class UserVerificationControllerTest {
     @DisplayName("[POST] 닉네임 중복 확인 /api/v1/auth/nickname")
     class checkNicknameDuplicate {
 
-        @DisplayName("[성공] 닉네임 사용 불가능 - 409 Conflict 반환")
+        @DisplayName("[실패] 닉네임 사용 불가능 - 409 Conflict 반환")
         @Test
         void test1() throws Exception {
             // given
@@ -134,7 +134,7 @@ class UserVerificationControllerTest {
     @DisplayName("[POST] 이메일(회원 아이디) 중복 확인 /api/v1/auth/username")
     class checkUsernameDuplicate {
 
-        @DisplayName("[성공] 사용자 이름 사용 불가능 - 409 Conflict 반환")
+        @DisplayName("[실패] 이메일(회원 아이디) 사용 불가능 - 409 Conflict 반환")
         @Test
         void test1() throws Exception {
             // given
@@ -160,7 +160,7 @@ class UserVerificationControllerTest {
         }
 
 
-        @DisplayName("[성공] 사용자 이름 사용 가능 - 200 OK 반환")
+        @DisplayName("[성공] 이메일(회원 아이디) 사용 가능 - 200 OK 반환")
         @Test
         void test1000() throws Exception {
             // given
