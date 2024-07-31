@@ -82,7 +82,7 @@ class JwtTokenParserTest {
                 sut.getRefreshTokenUserId(invalidAccessToken, refreshToken));
 
             //then
-            assertEquals(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
+            assertEquals(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
         }
 
         @DisplayName("만료된_액세스_토큰이고_만료된_리프레시_토큰일_경우_예외_반환_(재로그인_해야_하는_경우)")

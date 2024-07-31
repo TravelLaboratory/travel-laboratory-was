@@ -123,7 +123,7 @@ class JwtTokenValidatorTest {
             assertEquals(ErrorCodes.REFRESH_TOKEN_EXPIRED_TOKEN, exception.getErrorCodes());
         }
 
-        @DisplayName("유효하지_않은_리프레시_토큰일_경우_TOKEN_INVALID_REFRESH_TOKEN 에러 반환")
+        @DisplayName("유효하지_않은_리프레시_토큰일_경우_REFRESH_TOKEN_INVALID_REFRESH_TOKEN 에러 반환")
         @Test
         void test2() {
             //given
@@ -135,7 +135,7 @@ class JwtTokenValidatorTest {
             );
 
             //then
-            assertEquals(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
+            assertEquals(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 유효한_리프레시_토큰_파싱")

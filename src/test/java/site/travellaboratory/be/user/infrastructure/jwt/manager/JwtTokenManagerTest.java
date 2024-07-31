@@ -92,7 +92,7 @@ class JwtTokenManagerTest {
             String invalidRefreshToken = "invalid_refresh_token";
 
             when(jwtTokenParser.getRefreshTokenUserId(eq(accessToken), eq(invalidRefreshToken))).thenThrow(
-                new BeApplicationException(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST));
+                new BeApplicationException(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, HttpStatus.BAD_REQUEST));
 
 
             //when
@@ -101,7 +101,7 @@ class JwtTokenManagerTest {
             );
 
             //then
-            assertEquals(ErrorCodes.TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
+            assertEquals(ErrorCodes.REFRESH_TOKEN_INVALID_REFRESH_TOKEN, exception.getErrorCodes());
         }
 
         @DisplayName("성공 - 리프레시_토큰을_통해_새로운_액세스_토큰_재발급")
