@@ -1,10 +1,10 @@
 package site.travellaboratory.be.user.presentation._auth.response.userverification;
 
 public record UserNicknameResponse(
-    Boolean available
+    Boolean isAvailable
 ) {
-    public static UserNicknameResponse from(Boolean available) {
+    public static UserNicknameResponse from(Boolean isAvailable) {
         return new UserNicknameResponse(
-            available);
+            isAvailable);
     }
 }
