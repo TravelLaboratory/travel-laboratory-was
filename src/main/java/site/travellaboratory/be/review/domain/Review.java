@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
 import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;

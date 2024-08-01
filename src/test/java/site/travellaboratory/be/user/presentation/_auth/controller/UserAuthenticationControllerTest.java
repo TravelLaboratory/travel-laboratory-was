@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 import site.travellaboratory.be.test.assertion.Assertions;

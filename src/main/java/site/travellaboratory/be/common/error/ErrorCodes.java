@@ -1,6 +1,9 @@
-package site.travellaboratory.be.common.exception;
+package site.travellaboratory.be.common.error;
 
 public enum ErrorCodes {
+
+    // BeApplicationResponse
+    OK("성공", 200L),
 
     // 회원가입
     AUTH_USER_NOT_IS_AGREEMENT("개인정보 수집 미동의", 1000L),

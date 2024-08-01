@@ -10,7 +10,7 @@ import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
 import site.travellaboratory.be.article.domain._schedule.request.ArticleScheduleRequest;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 
 @Getter

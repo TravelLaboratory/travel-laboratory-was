@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;

@@ -15,7 +15,7 @@ import site.travellaboratory.be.comment.domain.CommentLike;
 import site.travellaboratory.be.comment.domain.enums.CommentLikeStatus;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.test.mock.comment.FakeCommentLikeRepository;
 import site.travellaboratory.be.test.mock.comment.FakeCommentRepository;
 import site.travellaboratory.be.test.mock.user.FakeUserRepository;

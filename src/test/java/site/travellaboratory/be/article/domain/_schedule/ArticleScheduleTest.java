@@ -18,7 +18,7 @@ import site.travellaboratory.be.article.domain._schedule.request.ScheduleGeneral
 import site.travellaboratory.be.article.domain._schedule.request.ScheduleTransportRequest;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 

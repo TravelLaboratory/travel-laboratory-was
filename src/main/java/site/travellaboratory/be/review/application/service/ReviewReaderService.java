@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
 import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;

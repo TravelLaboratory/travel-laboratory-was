@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;

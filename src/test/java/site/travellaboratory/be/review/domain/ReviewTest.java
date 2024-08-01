@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.domain.request.ReviewSaveRequest;
 import site.travellaboratory.be.review.domain.request.ReviewUpdateRequest;
