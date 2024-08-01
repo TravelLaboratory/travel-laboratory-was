@@ -296,7 +296,7 @@ class ReviewWriterControllerTest {
                 .build();
 
             given(reviewWriterService.update(eq(user.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
-                new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.NOT_FOUND)
+                new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.FORBIDDEN)
             );
 
             //when
@@ -305,7 +305,7 @@ class ReviewWriterControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .header("authorization-token", "validTokenWithUserId"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
             //then
@@ -392,14 +392,14 @@ class ReviewWriterControllerTest {
 
             given(reviewWriterService.delete(eq(user.getId()), eq(reviewIdNotOwnedByUser)))
                 .willThrow(new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER,
-                    HttpStatus.NOT_FOUND));
+                    HttpStatus.FORBIDDEN));
 
             //when
             MvcResult result = mockMvc.perform(
                     patch("/api/v1/reviews/{reviewId}/status", reviewIdNotOwnedByUser)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("authorization-token", "validTokenWithUserId"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
             //then
