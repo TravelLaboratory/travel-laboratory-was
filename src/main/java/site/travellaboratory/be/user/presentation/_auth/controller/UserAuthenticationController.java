@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.user.application._auth.UserAuthenticationService;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.domain._auth.Token;
@@ -24,7 +25,7 @@ public class UserAuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
         @RequestBody LoginRequest loginRequest,
         HttpServletResponse response
     ) {
@@ -34,12 +35,12 @@ public class UserAuthenticationController {
         response.setHeader("authorization-token-expired-at", result.accessToken().getExpiredAt().toString());
         response.setHeader("refresh-token", result.refreshToken().getToken());
 
-        return ResponseEntity.ok(LoginResponse.from(result.userId(), result.nickname(),
-            result.profileImgUrl()));
+        return ResponseEntity.ok(ApiResponse.OK(LoginResponse.from(result.userId(), result.nickname(),
+                result.profileImgUrl())));
     }
 
     @GetMapping("/auth/reissue-token")
-    public ResponseEntity<ReissueTokenResponse> reIssueAccessToken(
+    public ResponseEntity<ApiResponse<ReissueTokenResponse>> reIssueAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @RequestHeader("refresh-token") String refreshToken,
         HttpServletResponse response
@@ -51,7 +52,7 @@ public class UserAuthenticationController {
         response.setHeader("authorization-token", reIssueAccessToken.getToken());
         response.setHeader("authorization-token-expired-at", reIssueAccessToken.getExpiredAt().toString());
 
-        return ResponseEntity.ok(ReissueTokenResponse.from(reIssueAccessToken));
+        return ResponseEntity.ok(ApiResponse.OK(ReissueTokenResponse.from(reIssueAccessToken)));
     }
 }
 

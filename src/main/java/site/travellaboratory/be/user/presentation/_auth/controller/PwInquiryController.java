@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.user.application._auth.PwInquiryService;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain._pw.PwAnswer;
@@ -13,6 +14,7 @@ import site.travellaboratory.be.user.presentation._auth.request.PwInquiryEmailRe
 import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryEmailResponse;
 import site.travellaboratory.be.user.presentation._auth.request.PwInquiryRenewalRequest;
 import site.travellaboratory.be.user.presentation._auth.request.PwInquiryVerificationRequest;
+import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryRenewalResponse;
 import site.travellaboratory.be.user.presentation._auth.response.pwinquiry.PwInquiryVerificationResponse;
 
 @RestController
@@ -23,30 +25,33 @@ public class PwInquiryController {
     private final PwInquiryService pwInquiryService;
 
     @PostMapping("/auth/pw-inquiry/email")
-    public ResponseEntity<PwInquiryEmailResponse> pwInquiryEmail(
+    public ResponseEntity<ApiResponse<PwInquiryEmailResponse>> pwInquiryEmail(
         @RequestBody PwInquiryEmailRequest pwInquiryEmailRequest
     ) {
         PwAnswer result = pwInquiryService.pwInquiryEmail(pwInquiryEmailRequest);
         PwInquiryEmailResponse response = PwInquiryEmailResponse.from(pwInquiryEmailRequest.username(), result);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(ApiResponse.OK(response));
     }
 
     @PostMapping("/auth/pw-inquiry/verification")
-    public ResponseEntity<PwInquiryVerificationResponse> pwInquiryVerification(
+    public ResponseEntity<ApiResponse<PwInquiryVerificationResponse>> pwInquiryVerification(
         @RequestBody PwInquiryVerificationRequest pwInquiryVerificationRequest
     ) {
+
         PwAnswer result = pwInquiryService.pwInquiryVerification(pwInquiryVerificationRequest);
-        PwInquiryVerificationResponse response = PwInquiryVerificationResponse.from(pwInquiryVerificationRequest.username(),
+        PwInquiryVerificationResponse response = PwInquiryVerificationResponse.from(
+            pwInquiryVerificationRequest.username(),
             result.getPwQuestionId(), result.getAnswer());
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(ApiResponse.OK(response));
+
     }
 
     @PostMapping("/auth/pw-inquiry/renewal")
-    public ResponseEntity<Void> pwInquiryRenewal(
+    public ResponseEntity<ApiResponse<PwInquiryRenewalResponse>> pwInquiryRenewal(
         @RequestBody PwInquiryRenewalRequest pwInquiryRenewalRequest
     ) {
         User user = pwInquiryService.pwInquiryRenewal(pwInquiryRenewalRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(ApiResponse.OK(PwInquiryRenewalResponse.from(user)));
     }
 }
 

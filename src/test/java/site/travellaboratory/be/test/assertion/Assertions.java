@@ -54,11 +54,13 @@ public class Assertions {
     ) throws UnsupportedEncodingException, JsonProcessingException {
         final String content = result.getResponse().getContentAsString();
         final JsonNode responseBody = objectMapper.readTree(content);
+        JsonNode dataField = responseBody.get("data");
+        final JsonNode errorField = responseBody.get("error");
 
-        assertNotNull(responseBody);
-        assertTrue(responseBody.isObject());
-
-        consumer.accept(responseBody);
+        assertNotNull(dataField);
+        assertTrue(errorField.isNull());
+        assertTrue(dataField.isObject());
+        consumer.accept(dataField);
     }
 
     /*

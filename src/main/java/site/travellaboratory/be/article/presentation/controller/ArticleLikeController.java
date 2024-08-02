@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.travellaboratory.be.article.application.service.ArticleLikeService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkSaveResponse;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,11 +19,11 @@ public class ArticleLikeController {
     private final ArticleLikeService articleLikeService;
 
     @PatchMapping("/bookmark/{articleId}")
-    public ResponseEntity<BookmarkSaveResponse> registerBookmark(
+    public ResponseEntity<ApiResponse<BookmarkSaveResponse>> registerBookmark(
         @UserId final Long userId,
         @PathVariable(name = "articleId") final Long articleId
     ) {
         final BookmarkSaveResponse bookmarkSaveResponse = articleLikeService.saveBookmark(userId, articleId);
-        return ResponseEntity.ok(bookmarkSaveResponse);
+        return ResponseEntity.ok(ApiResponse.OK(bookmarkSaveResponse));
     }
 }
