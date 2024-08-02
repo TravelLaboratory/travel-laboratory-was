@@ -11,7 +11,7 @@ import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.CommentLike;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;

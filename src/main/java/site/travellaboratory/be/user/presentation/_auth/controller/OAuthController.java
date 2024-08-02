@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.user.presentation._auth.response.userauthentication.LoginResponse;
 import site.travellaboratory.be.user.application._auth.command.LoginCommand;
 import site.travellaboratory.be.user.domain._auth.request.OAuthJoinRequest;
@@ -20,7 +21,7 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> join(
+    public ResponseEntity<ApiResponse<LoginResponse>> join(
         @RequestBody OAuthJoinRequest oAuthJoinRequest,
         HttpServletResponse response
     ) {
@@ -29,7 +30,8 @@ public class OAuthController {
         response.setHeader("authorization-token", result.accessToken().getToken());
         response.setHeader("authorization-token-expired-at", result.accessToken().getExpiredAt().toString());
         response.setHeader("refresh-token", result.refreshToken().getToken());
-        return ResponseEntity.ok(LoginResponse.from(result.userId(), result.nickname(),
-            result.profileImgUrl()));
+        return ResponseEntity.ok(
+            ApiResponse.OK(LoginResponse.from(result.userId(), result.nickname(),
+                result.profileImgUrl())));
     }
 }

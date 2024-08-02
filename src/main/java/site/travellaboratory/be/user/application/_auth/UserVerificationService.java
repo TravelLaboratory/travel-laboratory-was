@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain._auth.request.UserNicknameRequest;
 import site.travellaboratory.be.user.domain._auth.request.UsernameRequest;

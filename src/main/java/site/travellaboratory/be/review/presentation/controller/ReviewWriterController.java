@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.review.application.service.ReviewWriterService;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.review.domain.Review;
@@ -27,18 +28,18 @@ public class ReviewWriterController {
     private final ReviewWriterService reviewWriterService;
 
     @PostMapping("/review")
-    public ResponseEntity<ReviewSaveResponse> save(
+    public ResponseEntity<ApiResponse<ReviewSaveResponse>> save(
         @UserId Long userId,
         @Valid @RequestBody ReviewSaveRequest reviewSaveRequest
     ) {
         Review result = reviewWriterService.save(userId, reviewSaveRequest);
 
         ReviewSaveResponse response = ReviewSaveResponse.from(result);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.OK(response), HttpStatus.CREATED);
     }
 
     @PatchMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewUpdateResponse> update(
+    public ResponseEntity<ApiResponse<ReviewUpdateResponse>> update(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId,
         @Valid @RequestBody ReviewUpdateRequest reviewUpdateRequest
@@ -46,16 +47,16 @@ public class ReviewWriterController {
         Review result = reviewWriterService.update(userId, reviewId, reviewUpdateRequest);
 
         ReviewUpdateResponse response = ReviewUpdateResponse.from(result);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
     @PatchMapping("/reviews/{reviewId}/status")
-    public ResponseEntity<ReviewDeleteResponse> delete(
+    public ResponseEntity<ApiResponse<ReviewDeleteResponse>> delete(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId
     ) {
         Review result = reviewWriterService.delete(userId, reviewId);
         ReviewDeleteResponse response = ReviewDeleteResponse.from(result);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 }

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.UnsupportedEncodingException;
 import java.util.function.Consumer;
 import org.springframework.test.web.servlet.MvcResult;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
@@ -37,9 +37,16 @@ public class Assertions {
     ) throws UnsupportedEncodingException, JsonProcessingException {
         final String content = result.getResponse().getContentAsString();
         final JsonNode responseBody = objectMapper.readTree(content);
+        final JsonNode resultField = responseBody.get("error");
+        final JsonNode dataField = responseBody.get("data");
 
-        assertEquals(errorCodes.code, responseBody.get("code").asLong());
-        assertEquals(errorCodes.message, responseBody.get("local_message").asText());
+
+        assertNotNull(resultField);
+        assertTrue(resultField.isObject());
+        assertEquals(errorCodes.code, resultField.get("code").asLong());
+        assertEquals(errorCodes.message, resultField.get("local_message").asText());
+        assertTrue(resultField.get("field_errors").isNull());
+        assertTrue(dataField.isNull());
     }
 
     public static void assertMvcDataEquals(
@@ -47,11 +54,13 @@ public class Assertions {
     ) throws UnsupportedEncodingException, JsonProcessingException {
         final String content = result.getResponse().getContentAsString();
         final JsonNode responseBody = objectMapper.readTree(content);
+        JsonNode dataField = responseBody.get("data");
+        final JsonNode errorField = responseBody.get("error");
 
-        assertNotNull(responseBody);
-        assertTrue(responseBody.isObject());
-
-        consumer.accept(responseBody);
+        assertNotNull(dataField);
+        assertTrue(errorField.isNull());
+        assertTrue(dataField.isObject());
+        consumer.accept(dataField);
     }
 
     /*

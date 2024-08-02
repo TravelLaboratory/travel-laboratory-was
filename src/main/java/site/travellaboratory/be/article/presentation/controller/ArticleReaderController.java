@@ -15,6 +15,7 @@ import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class ArticleReaderController {
     private final ArticleReaderService articleReaderService;
 
     @GetMapping("/articles/{userId}")
-    public ResponseEntity<Page<ArticleTotalResponse>> findArticlesByUser(
+    public ResponseEntity<ApiResponse<Page<ArticleTotalResponse>>> findArticlesByUser(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
             @RequestParam(defaultValue = "0", value = "page") int page,
@@ -32,11 +33,11 @@ public class ArticleReaderController {
     ) {
         final Page<ArticleTotalResponse> articleResponse = articleReaderService.findByUserArticles(loginId, userId,
                 PageRequest.of(page, size));
-        return ResponseEntity.ok(articleResponse);
+        return ResponseEntity.ok(ApiResponse.OK(articleResponse));
     }
 
     @GetMapping("/articles")
-    public ResponseEntity<Page<ArticleTotalResponse>> findArticles(
+    public ResponseEntity<ApiResponse<Page<ArticleTotalResponse>>> findArticles(
             @UserId final Long loginId,
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size,
@@ -44,21 +45,21 @@ public class ArticleReaderController {
     ) {
         final Page<ArticleTotalResponse> articleTotalResponses = articleReaderService.searchAllArticles(loginId,
                 PageRequest.of(page, size), sort);
-        return ResponseEntity.ok(articleTotalResponses);
+        return ResponseEntity.ok(ApiResponse.OK(articleTotalResponses));
     }
 
     @GetMapping("/article/{articleId}")
-    public ResponseEntity<ArticleOneResponse> findArticle(
+    public ResponseEntity<ApiResponse<ArticleOneResponse>> findArticle(
             @UserId final Long loginId,
             @PathVariable(name = "articleId") final Long articleId
     ) {
         final ArticleOneResponse articleResponse = articleReaderService.findByArticle(loginId, articleId);
-        return ResponseEntity.ok(articleResponse);
+        return ResponseEntity.ok(ApiResponse.OK(articleResponse));
     }
 
 
     @GetMapping("/search/article")
-    public ResponseEntity<Page<ArticleTotalResponse>> searchArticle(
+    public ResponseEntity<ApiResponse<Page<ArticleTotalResponse>>> searchArticle(
             @RequestParam("keyword") final String keyword,
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size,
@@ -67,23 +68,23 @@ public class ArticleReaderController {
     ) {
         final Page<ArticleTotalResponse> response = articleReaderService.searchArticlesByKeyWord(keyword,
                 PageRequest.of(page, size), loginId, sort);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
     @GetMapping("/banner/articles")
-    public ResponseEntity<List<ArticleTotalResponse>> getBannerNotUserArticles() {
+    public ResponseEntity<ApiResponse<List<ArticleTotalResponse>>> getBannerNotUserArticles() {
         List<ArticleTotalResponse> articles = articleReaderService.getBannerNotUserArticles();
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(ApiResponse.OK(articles));
     }
 
     @GetMapping("/auth/banner/articles")
-    public ResponseEntity<List<ArticleTotalResponse>> getBannerUserArticles(@UserId final Long userId) {
+    public ResponseEntity<ApiResponse<List<ArticleTotalResponse>>> getBannerUserArticles(@UserId final Long userId) {
         List<ArticleTotalResponse> articles = articleReaderService.getBannerUserArticles(userId);
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(ApiResponse.OK(articles));
     }
 
     @GetMapping("/bookmarks/{userId}")
-    public ResponseEntity<Page<BookmarkResponse>> findMyAllBookmark(
+    public ResponseEntity<ApiResponse<Page<BookmarkResponse>>> findMyAllBookmark(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
             @RequestParam(defaultValue = "0", value = "page") int page,
@@ -92,6 +93,6 @@ public class ArticleReaderController {
         final Page<BookmarkResponse> allBookmarkByUser = articleReaderService.findAllBookmarkByUser(loginId, userId,
                 PageRequest.of(page, size));
 
-        return ResponseEntity.ok(allBookmarkByUser);
+        return ResponseEntity.ok(ApiResponse.OK(allBookmarkByUser));
     }
 }

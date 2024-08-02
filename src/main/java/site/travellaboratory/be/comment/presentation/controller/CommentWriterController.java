@@ -18,6 +18,7 @@ import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentSaveResponse;
 import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
 import site.travellaboratory.be.comment.presentation.response.writer.CommentUpdateResponse;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -27,30 +28,31 @@ public class CommentWriterController {
     private final CommentWriterService commentWriterService;
 
     @PostMapping("/comment")
-    public ResponseEntity<CommentSaveResponse> save(
+    public ResponseEntity<ApiResponse<CommentSaveResponse>> save(
         @UserId Long userId,
         @Valid @RequestBody CommentSaveRequest commentSaveRequest
     ) {
         Comment result = commentWriterService.save(userId, commentSaveRequest);
-        return new ResponseEntity<>(CommentSaveResponse.from(result), HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.OK(CommentSaveResponse.from(result)),
+            HttpStatus.CREATED);
     }
 
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<CommentUpdateResponse> update(
+    public ResponseEntity<ApiResponse<CommentUpdateResponse>> update(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId,
         @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
     ) {
         Comment result = commentWriterService.update(userId, commentId, commentUpdateRequest);
-        return ResponseEntity.ok(CommentUpdateResponse.from(result));
+        return ResponseEntity.ok(ApiResponse.OK(CommentUpdateResponse.from(result)));
     }
 
     @PatchMapping("/comments/{commentId}/status")
-    public ResponseEntity<CommentDeleteResponse> delete(
+    public ResponseEntity<ApiResponse<CommentDeleteResponse>> delete(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
         Comment result = commentWriterService.delete(userId, commentId);
-        return ResponseEntity.ok(CommentDeleteResponse.from(result));
+        return ResponseEntity.ok(ApiResponse.OK(CommentDeleteResponse.from(result)));
     }
 }

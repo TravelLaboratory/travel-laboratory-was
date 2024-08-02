@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 
 public enum TravelStyle {
     HOCANCE("호캉스"),

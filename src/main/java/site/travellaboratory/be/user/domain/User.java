@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.user.domain._auth.enums.UserRole;
 import site.travellaboratory.be.user.domain._auth.request.UserJoinRequest;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.domain.request.UserProfileInfoUpdateRequest;
 
 
 @Getter
@@ -71,6 +72,38 @@ public class User {
             .role(this.role)
             .nickname(this.nickname)
             .profileImgUrl(this.profileImgUrl)
+            .introduce(this.introduce)
+            .isAgreement(this.isAgreement)
+            .status(this.status)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
+            .build();
+    }
+
+    public User withProfileInfo(UserProfileInfoUpdateRequest request) {
+        return User.builder()
+            .id(this.id)
+            .username(this.username)
+            .password(password)
+            .role(this.role)
+            .nickname(request.nickname())
+            .profileImgUrl(this.profileImgUrl)
+            .introduce(request.introduce())
+            .isAgreement(this.isAgreement)
+            .status(this.status)
+            .createdAt(this.createdAt)
+            .updatedAt(LocalDateTime.now())
+            .build();
+    }
+
+    public User withProfileImg(String profileImgUrl) {
+        return User.builder()
+            .id(this.id)
+            .username(this.username)
+            .password(password)
+            .role(this.role)
+            .nickname(this.nickname)
+            .profileImgUrl(profileImgUrl)
             .introduce(this.introduce)
             .isAgreement(this.isAgreement)
             .status(this.status)
