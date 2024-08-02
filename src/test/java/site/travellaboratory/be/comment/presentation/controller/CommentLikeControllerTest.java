@@ -32,7 +32,7 @@ import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.CommentLike;
 import site.travellaboratory.be.comment.domain.enums.CommentLikeStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 import site.travellaboratory.be.review.domain.Review;

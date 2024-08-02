@@ -10,6 +10,7 @@ import site.travellaboratory.be.article.application.service._schedule.ArticleSch
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadDetailResponse;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -20,23 +21,23 @@ public class ArticleScheduleReaderController {
 
     // 일정 리스트 조회
     @GetMapping("/articles/{articleId}/schedules")
-    public ResponseEntity<ArticleScheduleReadDetailResponse> readDetailSchedules(
+    public ResponseEntity<ApiResponse<ArticleScheduleReadDetailResponse>> readDetailSchedules(
         @UserId Long userId,
         @PathVariable(name = "articleId") Long articleId
     ) {
         ArticleScheduleReadDetailResponse response = articleScheduleReaderService.readSchedulesDetail(
             userId, articleId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
     // 후기 작성 전 조회 - 여행 일정별 장소 리스트
     @GetMapping("/articles/{articleId}/schedules/places")
-    public ResponseEntity<ArticleScheduleReadPlacesResponse> readSchedulesPlaces(
+    public ResponseEntity<ApiResponse<ArticleScheduleReadPlacesResponse>> readSchedulesPlaces(
         @UserId Long userId,
         @PathVariable(name = "articleId") Long articleId
     ) {
         ArticleScheduleReadPlacesResponse response = articleScheduleReaderService.readSchedulesPlaces(
             userId, articleId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 }

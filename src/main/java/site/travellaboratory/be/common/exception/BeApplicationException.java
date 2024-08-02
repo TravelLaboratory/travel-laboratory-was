@@ -1,6 +1,7 @@
 package site.travellaboratory.be.common.exception;
 
 import org.springframework.http.HttpStatus;
+import site.travellaboratory.be.common.error.ErrorCodes;
 
 public class BeApplicationException extends RuntimeException {
 

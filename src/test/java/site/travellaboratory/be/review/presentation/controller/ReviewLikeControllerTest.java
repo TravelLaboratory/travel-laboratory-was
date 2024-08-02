@@ -29,7 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 import site.travellaboratory.be.review.application.service.ReviewLikeService;

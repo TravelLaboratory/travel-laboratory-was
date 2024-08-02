@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.travellaboratory.be.test.assertion.Assertions.assertMvcDataEquals;
 import static site.travellaboratory.be.test.assertion.Assertions.assertMvcErrorEquals;
@@ -33,8 +32,8 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.common.presentation.config.JsonConfig;
 import site.travellaboratory.be.common.presentation.resolver.AuthenticatedUserIdResolver;
 import site.travellaboratory.be.review.application.service.ReviewWriterService;
@@ -134,9 +133,6 @@ class ReviewWriterControllerTest {
                     .content(objectMapper.writeValueAsBytes(request))
                     .header("authorization-token", "validTokenWithUserId"))
                 .andExpect(status().isNotFound())
-                .andExpect(
-                    jsonPath("$.local_message").value(ErrorCodes.REVIEW_INVALID_ARTICLE_ID.message))
-                .andExpect(jsonPath("$.code").value(ErrorCodes.REVIEW_INVALID_ARTICLE_ID.code))
                 .andReturn();
 
             //then
@@ -300,7 +296,7 @@ class ReviewWriterControllerTest {
                 .build();
 
             given(reviewWriterService.update(eq(user.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
-                new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.NOT_FOUND)
+                new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER, HttpStatus.FORBIDDEN)
             );
 
             //when
@@ -309,7 +305,7 @@ class ReviewWriterControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .header("authorization-token", "validTokenWithUserId"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
             //then
@@ -396,14 +392,14 @@ class ReviewWriterControllerTest {
 
             given(reviewWriterService.delete(eq(user.getId()), eq(reviewIdNotOwnedByUser)))
                 .willThrow(new BeApplicationException(ErrorCodes.REVIEW_VERIFY_OWNER,
-                    HttpStatus.NOT_FOUND));
+                    HttpStatus.FORBIDDEN));
 
             //when
             MvcResult result = mockMvc.perform(
                     patch("/api/v1/reviews/{reviewId}/status", reviewIdNotOwnedByUser)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("authorization-token", "validTokenWithUserId"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
             //then

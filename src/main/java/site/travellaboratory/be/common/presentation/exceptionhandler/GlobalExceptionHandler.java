@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.exception;
+package site.travellaboratory.be.common.presentation.exceptionhandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -12,6 +12,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 //@Profile("prod")
 @Slf4j
@@ -19,10 +21,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponse> handleJsonParseExceptionHandler(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleJsonParseExceptionHandler(HttpMessageNotReadableException ex) {
         log.info("Json Parse failed: {}", ex.getMessage());
 
-        final ApiErrorResponse body = ApiErrorResponse.from(ErrorCodes.BAD_REQUEST_JSON_PARSE_ERROR);
+        final ApiResponse<Object> body = ApiResponse.ERROR(ErrorCodes.BAD_REQUEST_JSON_PARSE_ERROR);
         final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -31,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidExceptionHandler(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleValidExceptionHandler(MethodArgumentNotValidException ex) {
         log.info("Validation failed: {}", ex.getMessage());
 
         Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
@@ -40,7 +42,7 @@ public class GlobalExceptionHandler {
                 FieldError::getDefaultMessage
             ));
 
-        final ApiErrorResponse body = ApiErrorResponse.from(ErrorCodes.BAD_REQUEST, errors);
+        final ApiResponse<Object> body = ApiResponse.ERROR(ErrorCodes.BAD_REQUEST, errors);
         final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -48,26 +50,13 @@ public class GlobalExceptionHandler {
             .body(body);
     }
 
-    @ExceptionHandler(value = { BeApplicationException.class })
-    public ResponseEntity<ApiErrorResponse> beApplicationExceptionHandler(
-        BeApplicationException ex) {
-        log.error("Error occurs {}", ex.toString());
-
-        final ApiErrorResponse body = ApiErrorResponse.from(ex.getErrorCodes());
-        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
-        final HttpStatus status = ex.getStatus();
-
-        return ResponseEntity.status(status)
-            .contentType(contentType)
-            .body(body);
-    }
-
     @ExceptionHandler(value = { RuntimeException.class })
-    public ResponseEntity<ApiErrorResponse> RuntimeExceptionHandler(
+    public ResponseEntity<ApiResponse<Object>> RuntimeExceptionHandler(
         RuntimeException ex) {
         log.error("Internal Server Error occurs - {}", ex.getStackTrace()[0]);
 
-        final ApiErrorResponse body = ApiErrorResponse.from(ErrorCodes.INTERNAL_SERVER_ERROR);
+
+        final ApiResponse<Object> body = ApiResponse.ERROR(ErrorCodes.INTERNAL_SERVER_ERROR);
         final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
         final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 

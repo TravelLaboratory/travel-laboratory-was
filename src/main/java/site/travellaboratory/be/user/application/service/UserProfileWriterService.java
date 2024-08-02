@@ -5,42 +5,42 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
 import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
+import site.travellaboratory.be.user.application.port.UserRepository;
+import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
-import site.travellaboratory.be.user.domain.request.UserProfileUpdateRequest;
-import site.travellaboratory.be.user.presentation.response.writer.UserProfileUpdateResponse;
+import site.travellaboratory.be.user.domain.request.UserProfileInfoUpdateRequest;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserProfileWriterService {
 
-    private final UserJpaRepository userJpaRepository;
+    private final UserRepository userRepository;
     private final S3FileUploader s3FileUploader;
 
-    public UserProfileUpdateResponse updateProfile(
-            final MultipartFile file,
-            final UserProfileUpdateRequest userProfileUpdateRequest,
-            final Long userId
-    ) {
-        final UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
-                        HttpStatus.NOT_FOUND));
+    @Transactional
+    public User updateProfileInfo(Long userId, UserProfileInfoUpdateRequest request) {
 
-        String url = userEntity.getProfileImgUrl();
+        User user = getUserById(userId);
+        // 닉네임 중복 체크
+        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
+            throw new BeApplicationException(ErrorCodes.PROFILE_DUPLICATED_NICK_NAME,
+                HttpStatus.CONFLICT);
+        });
 
-        if (file != null && !file.isEmpty()) {
-            url = s3FileUploader.uploadFiles(file);
-        }
+        return userRepository.save(user.withProfileInfo(request));
+    }
 
-        userEntity.update(userProfileUpdateRequest.nickname(), url, userProfileUpdateRequest.introduce());
+    public User updateProfileImg(Long userId, MultipartFile file) {
+        User user = getUserById(userId);
+        final String uploadImgUrl = s3FileUploader.uploadFiles(file);
+        return userRepository.save(user.withProfileImg(uploadImgUrl));
+    }
 
-        return new UserProfileUpdateResponse(userEntity.getNickname(),
-                userEntity.getProfileImgUrl(),
-                userEntity.getIntroduce());
+    private User getUserById(Long userId) {
+        return userRepository.getByIdAndStatus(userId, UserStatus.ACTIVE);
     }
 }

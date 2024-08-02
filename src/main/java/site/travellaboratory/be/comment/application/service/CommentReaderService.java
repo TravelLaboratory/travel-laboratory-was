@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.comment.infrastructure.persistence.repository.CommentJpaRepository;
 import site.travellaboratory.be.comment.infrastructure.persistence.entity.CommentEntity;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;

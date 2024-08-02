@@ -15,7 +15,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.repository.Ar
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.exception.ErrorCodes;
+import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;

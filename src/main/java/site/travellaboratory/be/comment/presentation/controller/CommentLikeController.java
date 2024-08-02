@@ -10,6 +10,7 @@ import site.travellaboratory.be.comment.application.service.CommentLikeService;
 import site.travellaboratory.be.comment.domain.CommentLike;
 import site.travellaboratory.be.comment.presentation.response.like.CommentToggleLikeResponse;
 import site.travellaboratory.be.common.annotation.UserId;
+import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -19,11 +20,11 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @PutMapping("/comments/{commentId}/likes")
-    public ResponseEntity<CommentToggleLikeResponse> toggleLike(
+    public ResponseEntity<ApiResponse<CommentToggleLikeResponse>> toggleLike(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
         CommentLike result = commentLikeService.toggleLike(userId, commentId);
-        return ResponseEntity.ok(CommentToggleLikeResponse.from(result));
+        return ResponseEntity.ok(ApiResponse.OK(CommentToggleLikeResponse.from(result)));
     }
 }
