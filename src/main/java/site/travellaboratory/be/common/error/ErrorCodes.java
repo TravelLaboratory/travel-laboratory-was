@@ -34,6 +34,7 @@ public enum ErrorCodes {
 
     // 유저 관련
     USER_NOT_FOUND("존재하지 않는 유저", 3000L),
+    PROFILE_DUPLICATED_NICK_NAME("[프로필] 중복된 닉네임입니다.", 3001L),
 
     // 후기 (review)
     REVIEW_VERIFY_OWNER("[후기] - 본인의 후기가 아닙니다.", 4000L),
