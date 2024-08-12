@@ -1,7 +1,6 @@
 package site.travellaboratory.be.user.presentation._auth.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,20 +20,20 @@ public class UserVerificationController {
     private final UserVerificationService userVerificationService;
 
     @PostMapping("/auth/nickname")
-    public ResponseEntity<ApiResponse<UserNicknameResponse>> checkNicknameDuplicate(
+    public ApiResponse<UserNicknameResponse> checkNicknameDuplicate(
         @RequestBody UserNicknameRequest userNicknameRequest
     ) {
         Boolean result = userVerificationService.isNicknameAvailable(
             userNicknameRequest);
-        return ResponseEntity.ok(ApiResponse.OK(UserNicknameResponse.from(result)));
+        return ApiResponse.OK(UserNicknameResponse.from(result));
     }
 
     @PostMapping("/auth/username")
-    public ResponseEntity<ApiResponse<UsernameResponse>> checkUsernameDuplicate(
+    public ApiResponse<UsernameResponse> checkUsernameDuplicate(
         @RequestBody UsernameRequest usernameRequest
     ) {
         Boolean result = userVerificationService.isUsernameAvailable(usernameRequest);
-        return ResponseEntity.ok(ApiResponse.OK(UsernameResponse.from(result)));
+        return ApiResponse.OK(UsernameResponse.from(result));
     }
 }
 

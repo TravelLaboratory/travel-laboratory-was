@@ -2,7 +2,6 @@ package site.travellaboratory.be.user.presentation._auth.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +24,7 @@ public class UserAuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(
+    public ApiResponse<LoginResponse> login(
         @RequestBody LoginRequest loginRequest,
         HttpServletResponse response
     ) {
@@ -35,12 +34,12 @@ public class UserAuthenticationController {
         response.setHeader("authorization-token-expired-at", result.accessToken().getExpiredAt().toString());
         response.setHeader("refresh-token", result.refreshToken().getToken());
 
-        return ResponseEntity.ok(ApiResponse.OK(LoginResponse.from(result.userId(), result.nickname(),
-                result.profileImgUrl())));
+        return ApiResponse.OK(LoginResponse.from(result.userId(), result.nickname(),
+                result.profileImgUrl()));
     }
 
     @GetMapping("/auth/reissue-token")
-    public ResponseEntity<ApiResponse<ReissueTokenResponse>> reIssueAccessToken(
+    public ApiResponse<ReissueTokenResponse> reIssueAccessToken(
         @RequestHeader("authorization-token") String accessToken,
         @RequestHeader("refresh-token") String refreshToken,
         HttpServletResponse response
@@ -52,7 +51,7 @@ public class UserAuthenticationController {
         response.setHeader("authorization-token", reIssueAccessToken.getToken());
         response.setHeader("authorization-token-expired-at", reIssueAccessToken.getExpiredAt().toString());
 
-        return ResponseEntity.ok(ApiResponse.OK(ReissueTokenResponse.from(reIssueAccessToken)));
+        return ApiResponse.OK(ReissueTokenResponse.from(reIssueAccessToken));
     }
 }
 
