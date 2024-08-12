@@ -1,7 +1,6 @@
 package site.travellaboratory.be.user.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,18 +23,18 @@ public class UserProfileWriterController {
     private final UserProfileWriterService userProfileWriterService;
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<UserProfileInfoUpdateResponse>> updateProfileInfo(
+    public ApiResponse<UserProfileInfoUpdateResponse> updateProfileInfo(
         @RequestBody UserProfileInfoUpdateRequest userProfileInfoUpdateRequest,
         @UserId Long userId) {
         final User result = userProfileWriterService.updateProfileInfo(userId, userProfileInfoUpdateRequest);
-        return ResponseEntity.ok(ApiResponse.OK(UserProfileInfoUpdateResponse.from(result)));
+        return ApiResponse.OK(UserProfileInfoUpdateResponse.from(result));
     }
 
     @PutMapping("/profile/img")
-    public ResponseEntity<ApiResponse<UserProfileImgUpdateResponse>> updateProfileImg(
+    public ApiResponse<UserProfileImgUpdateResponse> updateProfileImg(
             @RequestPart(value = "file") final MultipartFile file,
             @UserId Long userId) {
         final User result = userProfileWriterService.updateProfileImg(userId, file);
-        return ResponseEntity.ok(ApiResponse.OK(UserProfileImgUpdateResponse.from(result)));
+        return ApiResponse.OK(UserProfileImgUpdateResponse.from(result));
     }
 }

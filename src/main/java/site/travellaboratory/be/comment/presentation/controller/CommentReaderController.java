@@ -1,7 +1,6 @@
 package site.travellaboratory.be.comment.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class CommentReaderController {
     private final CommentReaderService commentReaderService;
 
     @GetMapping("/reviews/{reviewId}/comments")
-    public ResponseEntity<ApiResponse<CommentReadPaginationResponse>> readAllCommentPagination(
+    public ApiResponse<CommentReadPaginationResponse> readAllCommentPagination(
         @UserId Long userId,
         @PathVariable(name = "reviewId") Long reviewId,
         @RequestParam(defaultValue = "0", name = "page") int page,
@@ -28,6 +27,6 @@ public class CommentReaderController {
     ) {
         CommentReadPaginationResponse response = commentReaderService.readCommentsPagination(
             userId, reviewId, page, size);
-        return ResponseEntity.ok(ApiResponse.OK(response));
+        return ApiResponse.OK(response);
     }
 }
