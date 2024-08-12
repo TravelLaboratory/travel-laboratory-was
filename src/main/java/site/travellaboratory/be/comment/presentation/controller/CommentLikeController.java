@@ -1,7 +1,6 @@
 package site.travellaboratory.be.comment.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +19,11 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @PutMapping("/comments/{commentId}/likes")
-    public ResponseEntity<ApiResponse<CommentToggleLikeResponse>> toggleLike(
+    public ApiResponse<CommentToggleLikeResponse> toggleLike(
         @UserId Long userId,
         @PathVariable(name = "commentId") Long commentId
     ) {
         CommentLike result = commentLikeService.toggleLike(userId, commentId);
-        return ResponseEntity.ok(ApiResponse.OK(CommentToggleLikeResponse.from(result)));
+        return ApiResponse.OK(CommentToggleLikeResponse.from(result));
     }
 }
