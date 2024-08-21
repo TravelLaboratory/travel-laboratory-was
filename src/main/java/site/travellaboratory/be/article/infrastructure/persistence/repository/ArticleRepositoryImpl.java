@@ -1,6 +1,5 @@
 package site.travellaboratory.be.article.infrastructure.persistence.repository;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,8 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     private final ArticleJpaRepository articleJpaRepository;
 
     @Override
-    public Optional<Article> findByIdAndStatusIn(Long articleId, List<ArticleStatus> Status) {
-        return articleJpaRepository.findByIdAndStatusIn(articleId, Status)
+    public Optional<Article> findByIdAndStatus(Long articleId, ArticleStatus Status) {
+        return articleJpaRepository.findByIdAndStatus(articleId, Status)
             .map(ArticleEntity::toModel);
     }
 

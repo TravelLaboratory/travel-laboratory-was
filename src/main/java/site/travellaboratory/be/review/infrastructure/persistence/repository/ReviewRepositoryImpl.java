@@ -1,6 +1,5 @@
 package site.travellaboratory.be.review.infrastructure.persistence.repository;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,14 +17,14 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     private final ReviewJpaRepository reviewJpaRepository;
 
     @Override
-    public Optional<Review> findByArticleAndStatusInOrderByArticleDesc(Article article, List<ReviewStatus> status) {
-        return reviewJpaRepository.findByArticleEntityAndStatusIn(ArticleEntity.from(article), status)
+    public Optional<Review> findByArticleAndStatusOrderByArticleDesc(Article article, ReviewStatus status) {
+        return reviewJpaRepository.findByArticleEntityAndStatus(ArticleEntity.from(article), status)
             .map(ReviewEntity::toModel);
     }
 
     @Override
-    public Optional<Review> findByIdAndStatusIn(Long reviewId, List<ReviewStatus> status) {
-        return reviewJpaRepository.findByIdAndStatusIn(reviewId, status)
+    public Optional<Review> findByIdAndStatus(Long reviewId, ReviewStatus status) {
+        return reviewJpaRepository.findByIdAndStatus(reviewId, status)
             .map(ReviewEntity::toModel);
     }
 

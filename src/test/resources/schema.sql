@@ -29,7 +29,7 @@ CREATE TABLE article
     travel_companion VARCHAR(10),
     created_at    TIMESTAMP    NOT NULL,
     updated_at    TIMESTAMP    NOT NULL,
-    status        VARCHAR(10)  NOT NULL COMMENT 'ACTIVE, INACTIVE, PRIVATE',
+    status        VARCHAR(10)  NOT NULL COMMENT 'ACTIVE, INACTIVE',
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE review
     description            TEXT         NOT NULL,
     created_at             TIMESTAMP    NOT NULL,
     updated_at             TIMESTAMP    NOT NULL,
-    status                 VARCHAR(10)  NOT NULL COMMENT 'ACTIVE, INACTIVE, PRIVATE',
+    status                 VARCHAR(10)  NOT NULL COMMENT 'ACTIVE, INACTIVE',
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (article_id) REFERENCES article (id)
 );

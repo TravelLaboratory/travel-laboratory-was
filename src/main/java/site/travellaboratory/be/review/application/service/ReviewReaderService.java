@@ -37,17 +37,9 @@ public class ReviewReaderService {
 
     public ReviewReadDetailResponse readReviewDetail(Long userId, Long reviewId) {
         // 유효하지 않은 후기를 조회할 경우
-        ReviewEntity reviewEntity = reviewJpaRepository.findByIdAndStatusIn(reviewId,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        ReviewEntity reviewEntity = reviewJpaRepository.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_INVALID,
                 HttpStatus.NOT_FOUND));
-
-        // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (reviewEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewEntity.getUserEntity().getId()
-            .equals(userId))) {
-            throw new BeApplicationException(ErrorCodes.REVIEW_READ_DETAIL_NOT_AUTHORIZATION,
-                HttpStatus.FORBIDDEN);
-        }
 
         // 후기 조회
         // (1) 수정, 삭제 권한
@@ -82,13 +74,13 @@ public class ReviewReaderService {
         Page<Long> reviewIdsPage;
         // (1) 페이징 적용을 위한 Review Id 목록 가져와서
         if (tokenUserId.equals(userId)) {
-            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
+            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusOrderByCreatedAt(
                 userEntity,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE), pageable);
+                ReviewStatus.ACTIVE, pageable);
         } else { // (2) 다를 경우에는 PRIVATE 제외
-            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusInOrderByCreatedAt(
+            reviewIdsPage = reviewJpaRepository.findReviewIdsByUserAndStatusOrderByCreatedAt(
                 userEntity,
-                List.of(ReviewStatus.ACTIVE), pageable);
+                ReviewStatus.ACTIVE, pageable);
         }
 
         // (2) id 목록으로 연관 엔티티 포함한 리뷰 목록 가져오기

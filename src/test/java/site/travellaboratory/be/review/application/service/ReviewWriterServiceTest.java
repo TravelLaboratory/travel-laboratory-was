@@ -73,7 +73,6 @@ class ReviewWriterServiceTest {
                 .title("title")
                 .representativeImgUrl(null)
                 .description("description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             // when
@@ -156,7 +155,6 @@ class ReviewWriterServiceTest {
                 .title("title")
                 .representativeImgUrl("http://test.png")
                 .description("description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             // when
@@ -169,7 +167,7 @@ class ReviewWriterServiceTest {
             assertEquals(request.title(), result.getTitle());
             assertEquals(request.representativeImgUrl(), result.getRepresentativeImgUrl());
             assertEquals(request.description(), result.getDescription());
-            assertEquals(request.status(), result.getStatus());
+            assertEquals(ReviewStatus.ACTIVE, result.getStatus());
         }
     }
 
@@ -215,7 +213,6 @@ class ReviewWriterServiceTest {
                 .title("title")
                 .representativeImgUrl("http://test.png")
                 .description("description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             // when
@@ -241,7 +238,6 @@ class ReviewWriterServiceTest {
                 .title("title")
                 .representativeImgUrl("http://test.png")
                 .description("description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             // when
@@ -253,7 +249,7 @@ class ReviewWriterServiceTest {
         }
 
 
-        @DisplayName("삭제된__reviewId일_경우_예외_반환")
+        @DisplayName("삭제된_reviewId일_경우_예외_반환")
         @Test
         void test3() {
             // given
@@ -266,7 +262,6 @@ class ReviewWriterServiceTest {
                 .title("title")
                 .representativeImgUrl("http://test.png")
                 .description("description")
-                .status(ReviewStatus.PRIVATE)
                 .build();
 
             // when
@@ -286,7 +281,6 @@ class ReviewWriterServiceTest {
                 .title("update_title")
                 .representativeImgUrl("update_representative_img_url")
                 .description("update_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             // when
@@ -299,7 +293,7 @@ class ReviewWriterServiceTest {
             assertEquals(request.title(), result.getTitle());
             assertEquals(request.representativeImgUrl(), result.getRepresentativeImgUrl());
             assertEquals(request.description(), result.getDescription());
-            assertEquals(request.status(), result.getStatus());
+            assertEquals(ReviewStatus.ACTIVE, result.getStatus());
         }
     }
 

@@ -1,12 +1,11 @@
 package site.travellaboratory.be.review.application.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.review.application.port.ReviewLikeRepository;
 import site.travellaboratory.be.review.application.port.ReviewRepository;
 import site.travellaboratory.be.review.domain.Review;
@@ -49,8 +48,7 @@ public class ReviewLikeService {
     }
 
     private Review getReviewById(Long reviewId) {
-        return reviewRepository.findByIdAndStatusIn(reviewId,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        return reviewRepository.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_LIKE_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }

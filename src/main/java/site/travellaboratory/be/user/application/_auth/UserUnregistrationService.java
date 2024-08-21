@@ -32,16 +32,14 @@ public class UserUnregistrationService {
         UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findByUserEntityAndStatusIn(
-                userEntity,
-                List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findByUserEntityAndStatus(
+                userEntity, ArticleStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         articleJpaEntities.forEach(article -> article.updateStatus(ArticleStatus.INACTIVE));
         articleJpaRepository.saveAll(articleJpaEntities);
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatusIn(userEntity,
-                List.of(BookmarkStatus.ACTIVE, BookmarkStatus.PRIVATE))
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatus(userEntity, BookmarkStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         bookmarks.forEach(bookmark -> bookmark.updateStatus(BookmarkStatus.INACTIVE));

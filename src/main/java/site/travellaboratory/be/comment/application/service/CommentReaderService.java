@@ -42,18 +42,10 @@ public class CommentReaderService {
     ) {
         // 유효하지 않은 후기를 조회할 경우
         // todo: (1) review.getUser() 이 때 쿼리 날라감 (FETCH JOIN) - 55 review user fetch join
-        ReviewEntity reviewEntity = reviewJpaRepository.findByIdAndStatusIn(reviewId,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        ReviewEntity reviewEntity = reviewJpaRepository.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.COMMENT_READ_ALL_PAGINATION_INVALID,
                     HttpStatus.NOT_FOUND));
-
-        // 나만보기 상태의 후기를 다른 유저가 조회할 경우
-        if (reviewEntity.getStatus() == ReviewStatus.PRIVATE && (!reviewEntity.getUserEntity().getId()
-            .equals(userId))) {
-            throw new BeApplicationException(ErrorCodes.COMMENT_READ_ALL_PAGINATION_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
 
         // 후기 리스트 조회 (N+1 쿼리 해결)
         // todo: 62 ~ 82 단순 테이블안에서 변환 N+1 발생 X

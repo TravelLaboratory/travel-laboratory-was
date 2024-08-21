@@ -38,7 +38,7 @@ public class Review {
             .title(saveRequest.title())
             .representativeImgUrl(saveRequest.representativeImgUrl())
             .description(saveRequest.description())
-            .status(saveRequest.status())
+            .status(ReviewStatus.ACTIVE)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
@@ -55,7 +55,7 @@ public class Review {
             .title(updatedContent.title())
             .representativeImgUrl(updatedContent.representativeImgUrl())
             .description(updatedContent.description())
-            .status(updatedContent.status())
+            .status(this.getStatus())
             .createdAt(this.createdAt)
             .updatedAt(LocalDateTime.now())
             .build();

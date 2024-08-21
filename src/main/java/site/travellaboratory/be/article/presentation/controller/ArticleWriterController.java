@@ -1,7 +1,6 @@
 package site.travellaboratory.be.article.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +15,6 @@ import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleRegisterResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateResponse;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
@@ -56,16 +54,5 @@ public class ArticleWriterController {
         Article result = articleWriterService.updateArticle(userId, articleId,
             articleUpdateRequest);
         return ApiResponse.OK(ArticleUpdateResponse.from(result));
-    }
-
-    // articleWriterService_에 가는 게 맞는 로직 - 상권 (여행 계획 - 공개, 비공개 설정)
-    @PatchMapping("/articles/{articleId}/privacy")
-    public ApiResponse<ArticleUpdatePrivacyResponse> updateArticlePrivacy(
-        @UserId Long userId,
-        @PathVariable(name = "articleId") Long articleId
-    ) {
-        ArticleUpdatePrivacyResponse response = articleWriterService.updateArticlePrivacy(
-            userId, articleId);
-        return ApiResponse.OK(response);
     }
 }

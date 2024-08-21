@@ -19,7 +19,6 @@ public record ArticleOneResponse(
         String name,
         Long bookmarkCount,
         Boolean isBookmarked,
-        Boolean isPrivate,
         Boolean isEditable
 ) {
 
@@ -27,7 +26,6 @@ public record ArticleOneResponse(
             final ArticleEntity articleEntity,
             final Long bookmarkCount,
             final Boolean isBookmarked,
-            final Boolean isPrivate,
             final Boolean isEditable
     ) {
         List<String> travelStyleNames = articleEntity.getTravelStyles().stream()
@@ -46,7 +44,6 @@ public record ArticleOneResponse(
                 articleEntity.getUserEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
-                isPrivate,
                 isEditable
         );
     }

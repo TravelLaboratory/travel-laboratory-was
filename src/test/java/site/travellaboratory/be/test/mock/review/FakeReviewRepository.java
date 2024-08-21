@@ -15,16 +15,16 @@ public class FakeReviewRepository implements ReviewRepository {
     private final List<Review> data = new ArrayList<>();
 
     @Override
-    public Optional<Review> findByArticleAndStatusInOrderByArticleDesc(Article article, List<ReviewStatus> status) {
+    public Optional<Review> findByArticleAndStatusOrderByArticleDesc(Article article, ReviewStatus status) {
         return data.stream()
-            .filter(review -> review.getArticle().getId().equals(article.getId()) && status.contains(review.getStatus()))
+            .filter(review -> review.getArticle().getId().equals(article.getId()) && status.equals(review.getStatus()))
             .findFirst();
     }
 
     @Override
-    public Optional<Review> findByIdAndStatusIn(Long reviewId, List<ReviewStatus> status) {
+    public Optional<Review> findByIdAndStatus(Long reviewId, ReviewStatus status) {
         return data.stream()
-            .filter(review -> review.getId().equals(reviewId) && status.contains(review.getStatus()))
+            .filter(review -> review.getId().equals(reviewId) && status.equals(review.getStatus()))
             .findFirst();
     }
 

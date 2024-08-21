@@ -14,9 +14,9 @@ public class FakeArticleRepository implements ArticleRepository {
     private final List<Article> data = new ArrayList<>();
 
     @Override
-    public Optional<Article> findByIdAndStatusIn(Long articleId, List<ArticleStatus> status) {
+    public Optional<Article> findByIdAndStatus(Long articleId, ArticleStatus status) {
         return data.stream()
-            .filter(article -> article.getId().equals(articleId) && status.contains(article.getStatus()))
+            .filter(article -> article.getId().equals(articleId) && status.equals(article.getStatus()))
             .findFirst();
     }
 

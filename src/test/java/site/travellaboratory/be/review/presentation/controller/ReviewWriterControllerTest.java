@@ -119,7 +119,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
@@ -151,7 +150,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
@@ -183,7 +181,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             given(reviewWriterService.save(eq(user.getId()), any(ReviewSaveRequest.class))).willThrow(
@@ -215,7 +212,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             Review review = Review.builder()
@@ -262,7 +258,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             given(reviewWriterService.update(eq(user.getId()), eq(invalidReviewId), any(ReviewUpdateRequest.class))).willThrow(
@@ -292,7 +287,6 @@ class ReviewWriterControllerTest {
                 .title("review_title")
                 .representativeImgUrl("https://review_img.png")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             given(reviewWriterService.update(eq(user.getId()), eq(reviewIdNotOwnedByUser), any(ReviewUpdateRequest.class))).willThrow(
@@ -327,7 +321,6 @@ class ReviewWriterControllerTest {
                 .title("updated_review_title")
                 .representativeImgUrl("https://updated_review_img.png")
                 .description("updated_review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             Review updateReview = Review.builder()
