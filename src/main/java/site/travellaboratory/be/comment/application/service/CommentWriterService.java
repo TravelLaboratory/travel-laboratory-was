@@ -65,8 +65,7 @@ public class CommentWriterService {
     }
 
     private Comment getCommentById(Long commentId) {
-        return commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
+        return commentRepository.findByIdAndStatus(commentId, CommentStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_INVALID_COMMENT_ID,
                 HttpStatus.NOT_FOUND));
     }

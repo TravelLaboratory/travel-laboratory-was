@@ -15,9 +15,9 @@ public class FakeCommentRepository implements CommentRepository {
     private final List<Comment> data = new ArrayList<>();
 
     @Override
-    public Optional<Comment> findByIdAndStatusIn(Long commentId, List<CommentStatus> statuses) {
+    public Optional<Comment> findByIdAndStatus(Long commentId, CommentStatus status) {
         return data.stream()
-            .filter(comment -> Objects.equals(comment.getId(), commentId) && statuses.contains(comment.getStatus()))
+            .filter(comment -> Objects.equals(comment.getId(), commentId) && status.equals(comment.getStatus()))
             .findFirst();
     }
 

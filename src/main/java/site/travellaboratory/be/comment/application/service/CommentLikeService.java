@@ -1,6 +1,5 @@
 package site.travellaboratory.be.comment.application.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,8 @@ import site.travellaboratory.be.comment.application.port.CommentRepository;
 import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.CommentLike;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
-import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -49,9 +48,9 @@ public class CommentLikeService {
     }
 
     private Comment getCommentById(Long commentId) {
-        return commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID_COMMENT_ID,
-                HttpStatus.NOT_FOUND));
+        return commentRepository.findByIdAndStatus(commentId, CommentStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.COMMENT_LIKE_INVALID_COMMENT_ID,
+                    HttpStatus.NOT_FOUND));
     }
 }

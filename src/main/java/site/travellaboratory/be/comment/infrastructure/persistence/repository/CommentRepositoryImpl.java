@@ -1,6 +1,5 @@
 package site.travellaboratory.be.comment.infrastructure.persistence.repository;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,8 @@ public class CommentRepositoryImpl implements CommentRepository {
     private final CommentJpaRepository commentJpaRepository;
 
     @Override
-    public Optional<Comment> findByIdAndStatusIn(Long commentId, List<CommentStatus> status) {
-        return commentJpaRepository.findByIdAndStatusIn(commentId, status).map(CommentEntity::toModel);
+    public Optional<Comment> findByIdAndStatus(Long commentId, CommentStatus status) {
+        return commentJpaRepository.findByIdAndStatus(commentId, status).map(CommentEntity::toModel);
     }
 
     @Override
