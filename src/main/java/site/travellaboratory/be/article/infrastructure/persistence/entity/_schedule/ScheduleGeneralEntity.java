@@ -14,7 +14,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity.Articl
 @Entity
 @Table(name = "schedule_general")
 @DiscriminatorValue("GENERAL")
-@PrimaryKeyJoinColumn(name = "id")
+@PrimaryKeyJoinColumn(name = "schedule_id")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScheduleGeneralEntity extends ArticleScheduleEntity {
