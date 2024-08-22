@@ -57,7 +57,6 @@ public class ArticleScheduleReaderService
 
         boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
 
-        System.out.println("조회 시작");
         // 일정 리스트 조회
         List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
             articleEntity, ArticleScheduleStatus.ACTIVE);
