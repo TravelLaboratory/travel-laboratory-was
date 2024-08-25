@@ -1,21 +1,20 @@
 package site.travellaboratory.be.article.application.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkSaveResponse;
+import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
+import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +30,7 @@ public class ArticleLikeService {
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                         HttpStatus.NOT_FOUND));
 
-        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         Bookmark bookmark = bookmarkRepository.findByArticleEntityAndUserEntity(articleEntity,

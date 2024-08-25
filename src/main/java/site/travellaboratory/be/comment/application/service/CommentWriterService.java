@@ -1,6 +1,5 @@
 package site.travellaboratory.be.comment.application.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,8 @@ import site.travellaboratory.be.comment.domain.Comment;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
-import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.review.application.port.ReviewRepository;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
@@ -55,7 +54,7 @@ public class CommentWriterService {
     }
 
     private Review getReviewById(Long reviewId) {
-        return reviewRepository.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        return reviewRepository.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }
@@ -65,8 +64,7 @@ public class CommentWriterService {
     }
 
     private Comment getCommentById(Long commentId) {
-        return commentRepository.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE))
+        return commentRepository.findByIdAndStatus(commentId, CommentStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.COMMENT_INVALID_COMMENT_ID,
                 HttpStatus.NOT_FOUND));
     }

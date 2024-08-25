@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -30,7 +28,6 @@ import site.travellaboratory.be.article.domain.request.LocationRequest;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
-import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdatePrivacyResponse;
 import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.user.domain.User;
@@ -108,7 +105,7 @@ class ArticleWriterServiceTest {
         final Article article = Article.create(user, articleRegisterRequest);
         final ArticleEntity articleEntity = ArticleEntity.from(article);
 
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
+        when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.of(articleEntity));
         when(s3FileUploader.uploadFiles(coverImage))
                 .thenReturn(imageUrl);
@@ -127,7 +124,7 @@ class ArticleWriterServiceTest {
         //given
         final MultipartFile coverImage = mock(MultipartFile.class);
 
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
+        when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.empty());
 
         ///when & then
@@ -155,7 +152,7 @@ class ArticleWriterServiceTest {
         //given
         when(userJpaRepository.findByIdAndStatus(any(Long.class), eq(UserStatus.ACTIVE)))
                 .thenReturn(Optional.of(UserEntity.from(user())));
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
+        when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.empty());
 
         //when & then
@@ -174,7 +171,7 @@ class ArticleWriterServiceTest {
 
         when(userJpaRepository.findByIdAndStatus(any(Long.class), eq(UserStatus.ACTIVE)))
                 .thenReturn(Optional.of(UserEntity.from(user())));
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
+        when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.of(articleEntity));
         when(articleJpaRepository.save(any(ArticleEntity.class)))
                 .thenReturn(ArticleEntity.from(newArticle));
@@ -194,67 +191,6 @@ class ArticleWriterServiceTest {
                 articleUpdateRequest().travelStyles());
     }
 
-    @DisplayName("유효하지 않은 게시물의 접근 권한을 변경하려고 할 경우 예외가 발생한다.")
-    @Test
-    void updateArticlePrivacy_ifArticleIsNotFound() {
-        //given
-        when(articleJpaRepository.findByIdAndStatusIn(any(Long.class), any(List.class)))
-                .thenReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> articleWriterService.updateArticlePrivacy(1L, 1L)).isInstanceOf(
-                BeApplicationException.class);
-
-    }
-
-    @DisplayName("변경 권한이 없는 유저가 변경하려고 할 경우 예외가 발생한다.")
-    @Test
-    void updateArticlePrivacy_not_authority_user() {
-        //given
-        final Long articleId = 1L;
-        final Long nonAuthorUserId = 2L;
-        final Long tryingUserId = 1L;
-
-        final ArticleEntity articleEntity = mock(ArticleEntity.class);
-        final UserEntity userEntity = mock(UserEntity.class);
-
-        when(articleJpaRepository.findByIdAndStatusIn(eq(articleId), any(List.class)))
-                .thenReturn(Optional.of(articleEntity));
-        when(articleEntity.getUserEntity()).thenReturn(userEntity);
-        when(userEntity.getId()).thenReturn(nonAuthorUserId);
-
-        //when & then
-        assertThatThrownBy(() -> articleWriterService.updateArticlePrivacy(tryingUserId, articleId))
-                .isInstanceOf(BeApplicationException.class);
-    }
-
-    @DisplayName("유저가 자신의 여행 계획의 공개 상태를 성공적으로 업데이트할 수 있다.")
-    @Test
-    void updateArticlePrivacy_success() {
-        //given
-        final Long userId = 1L;
-        final Long articleId = 1L;
-
-        final ArticleEntity articleEntity = mock(ArticleEntity.class);
-        final UserEntity userEntity = mock(UserEntity.class);
-
-        when(articleJpaRepository.findByIdAndStatusIn(eq(userId), any(List.class)))
-                .thenReturn(Optional.of(articleEntity));
-        when(articleEntity.getUserEntity()).thenReturn(userEntity);
-        when(articleEntity.getUserEntity().getId()).thenReturn(userId);
-
-        doAnswer(invocation -> {
-            when(articleEntity.getStatus()).thenReturn(ArticleStatus.PRIVATE);
-            return null;
-        }).when(articleEntity).togglePrivacyStatus();
-
-        //when
-        ArticleUpdatePrivacyResponse response = articleWriterService.updateArticlePrivacy(userId, articleId);
-
-        //then
-        verify(articleEntity).togglePrivacyStatus();
-        assertThat(response.isPrivate()).isTrue();
-    }
 
     private User user() {
         return User.builder()

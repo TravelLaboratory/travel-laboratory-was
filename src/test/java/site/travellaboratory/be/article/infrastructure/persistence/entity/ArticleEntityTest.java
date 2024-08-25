@@ -116,20 +116,6 @@ class ArticleEntityTest {
         assertThat(articleEntity.getStatus()).isEqualTo(ArticleStatus.INACTIVE);
     }
 
-    @DisplayName("togglePrivacyStatus 메소드는 ACTIVE면 PRIVATE로, PRIVATE면 ACTIVE로 변경해야 한다.")
-    @Test
-    void togglePrivacyStatus_test() {
-        //given
-        final ArticleEntity articleEntity = ArticleEntity.from(article);
-
-        //when
-        articleEntity.togglePrivacyStatus();
-
-        //then
-        assertThat(articleEntity.getStatus()).isEqualTo(ArticleStatus.PRIVATE);
-        articleEntity.togglePrivacyStatus();
-        assertThat(articleEntity.getStatus()).isEqualTo(ArticleStatus.ACTIVE);
-    }
 
     @DisplayName("updateStatus 메소드는 ArticleStatus 상태를 변경해야 한다.")
     @Test

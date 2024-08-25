@@ -14,12 +14,9 @@ import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 
 public interface ReviewJpaRepository extends JpaRepository<ReviewEntity, Long> {
 
-    Optional<ReviewEntity> findByArticleEntityAndStatusIn(ArticleEntity articleEntity, List<ReviewStatus> status);
-
-    Optional<ReviewEntity> findByIdAndStatusIn(Long reviewId, List<ReviewStatus> status);
-
-    // 일정 상세에서 reviewId 찾아오기
     Optional<ReviewEntity> findByArticleEntityAndStatus(ArticleEntity articleEntity, ReviewStatus status);
+
+    Optional<ReviewEntity> findByIdAndStatus(Long reviewId, ReviewStatus status);
 
     // 프로필 - 후기 전체 조회
     // FETCH JOIN 으로 N+1 해결
@@ -28,9 +25,9 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewEntity, Long> {
 //    Page<Review> findByUserAndStatusInOrderByCreatedAtFetchJoin(@Param("user") User user, @Param("status") List<ReviewStatus> status, Pageable pageable);
 
     // todo: after(1)
-    @Query("SELECT t.id FROM ReviewEntity t WHERE t.userEntity = :user AND t.status IN :status ORDER BY t.createdAt DESC")
-    Page<Long> findReviewIdsByUserAndStatusInOrderByCreatedAt(@Param("user") UserEntity userEntity,
-        @Param("status") List<ReviewStatus> status, Pageable pageable);
+    @Query("SELECT t.id FROM ReviewEntity t WHERE t.userEntity =:user AND t.status =:status ORDER BY t.createdAt DESC")
+    Page<Long> findReviewIdsByUserAndStatusOrderByCreatedAt(@Param("user") UserEntity userEntity,
+        @Param("status") ReviewStatus status, Pageable pageable);
 
     // todo: after(2)
     @Query("SELECT t FROM ReviewEntity t JOIN FETCH t.articleEntity a JOIN FETCH a.locationEntities l WHERE t.id IN :ids ORDER BY t.createdAt DESC ")

@@ -1,6 +1,5 @@
 package site.travellaboratory.be.review.application.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.article.application.port.ArticleRepository;
 import site.travellaboratory.be.article.domain.Article;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
-import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
 import site.travellaboratory.be.review.application.port.ReviewRepository;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
@@ -61,7 +60,7 @@ public class ReviewWriterService {
     }
 
     private Article getArticleById(Long articleId) {
-        return articleRepository.findByIdAndStatusIn(articleId, List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        return articleRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_INVALID_ARTICLE_ID, HttpStatus.NOT_FOUND));
     }
 
@@ -70,15 +69,14 @@ public class ReviewWriterService {
     }
 
     private Review getReviewById(Long reviewId) {
-        return reviewRepository.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        return reviewRepository.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_INVALID_REVIEW_ID,
                 HttpStatus.NOT_FOUND));
     }
 
     // 이미 해당 여행 계획에 대한 후기가 있을 경우
     private void verifyExistReviewBy(Article article) {
-        reviewRepository.findByArticleAndStatusInOrderByArticleDesc(article,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        reviewRepository.findByArticleAndStatusOrderByArticleDesc(article, ReviewStatus.ACTIVE)
             .ifPresent(
                 it -> {
                     throw new BeApplicationException(ErrorCodes.REVIEW_POST_EXIST,

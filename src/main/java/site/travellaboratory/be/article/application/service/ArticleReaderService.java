@@ -48,12 +48,10 @@ public class ArticleReaderService {
         // 사용자가 작성한 아티클 또는 다른 사용자의 공개된 아티클 목록 조회
         Page<ArticleEntity> articlesPage;
         if (isEditable) {
-            articlesPage = articleJpaRepository.findByUserEntityAndStatusIn(userEntity,
-                            List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE), pageable)
+            articlesPage = articleJpaRepository.findByUserEntityAndStatus(userEntity, ArticleStatus.ACTIVE, pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         } else {
-            articlesPage = articleJpaRepository.findByUserEntityAndStatusIn(userEntity,
-                            List.of(ArticleStatus.ACTIVE), pageable)
+            articlesPage = articleJpaRepository.findByUserEntityAndStatus(userEntity, ArticleStatus.ACTIVE, pageable)
                     .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
         }
 
@@ -76,8 +74,7 @@ public class ArticleReaderService {
     @Transactional
     public ArticleOneResponse findByArticle(final Long loginId, final Long articleId) {
         // 유효하지 않은 아티클 조회 할 경우
-        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
-                        List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(articleId, BookmarkStatus.ACTIVE);
@@ -85,11 +82,10 @@ public class ArticleReaderService {
         boolean isBookmarked = bookmarkRepository.existsByUserEntityIdAndArticleEntityIdAndStatus(loginId, articleId,
                 BookmarkStatus.ACTIVE);
 
-        boolean isPrivate = (articleEntity.getStatus() == ArticleStatus.PRIVATE);
 
         boolean isEditable = articleEntity.getUserEntity().getId().equals(loginId);
 
-        return ArticleOneResponse.of(articleEntity, bookmarkCount, isBookmarked, isPrivate, isEditable);
+        return ArticleOneResponse.of(articleEntity, bookmarkCount, isBookmarked, isEditable);
     }
 
     // 아티클 검색
@@ -189,9 +185,8 @@ public class ArticleReaderService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatusIn(
-                userEntity,
-                List.of(BookmarkStatus.ACTIVE), pageable)
+        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
+                userEntity, BookmarkStatus.ACTIVE, pageable)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
