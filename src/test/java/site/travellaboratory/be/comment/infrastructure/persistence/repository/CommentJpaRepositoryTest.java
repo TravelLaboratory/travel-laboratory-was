@@ -43,8 +43,7 @@ class CommentJpaRepositoryTest {
             CommentEntity commentEntity = em.find(CommentEntity.class, commentId);
 
             //when
-            Optional<CommentEntity> result = sut.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE));
+            Optional<CommentEntity> result = sut.findByIdAndStatus(commentId, CommentStatus.ACTIVE);
 
             //then
             assertThat(commentEntity).isNull();
@@ -60,8 +59,7 @@ class CommentJpaRepositoryTest {
 
 
             //when
-            Optional<CommentEntity> result = sut.findByIdAndStatusIn(commentId,
-                List.of(CommentStatus.ACTIVE));
+            Optional<CommentEntity> result = sut.findByIdAndStatus(commentId, CommentStatus.ACTIVE);
 
             //then
             assertThat(commentEntity.getStatus()).isEqualTo(CommentStatus.INACTIVE);
@@ -76,8 +74,7 @@ class CommentJpaRepositoryTest {
             CommentEntity commentEntity = em.find(CommentEntity.class, commentId);
 
             //when
-            Optional<CommentEntity> result = sut.findByIdAndStatusIn(commentEntity.getId(),
-                List.of(CommentStatus.ACTIVE));
+            Optional<CommentEntity> result = sut.findByIdAndStatus(commentEntity.getId(), CommentStatus.ACTIVE);
 
             //then
             assertThat(result).isPresent();

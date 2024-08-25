@@ -41,8 +41,7 @@ public class ArticleScheduleWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 유효하지 않은 여행 계획에 대한 상세 일정을 수정할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
-                List.of(ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_UPDATE_ARTICLE_INVALID,
                 HttpStatus.NOT_FOUND));
 
@@ -92,9 +91,7 @@ public class ArticleScheduleWriterService {
                 HttpStatus.NOT_FOUND)).toModel();
 
         // 유효하지 않은 초기 여행 계획(article_id) 을 삭제하려고 할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId,
-                List.of(
-                    ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_DELETE_INVALID,
                     HttpStatus.NOT_FOUND));

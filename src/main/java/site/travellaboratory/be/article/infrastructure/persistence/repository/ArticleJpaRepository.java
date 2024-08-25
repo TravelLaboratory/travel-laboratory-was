@@ -15,16 +15,16 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntit
 @Repository
 public interface ArticleJpaRepository extends JpaRepository<ArticleEntity, Long> {
 
-    Optional<ArticleEntity> findByIdAndStatusIn(final Long articleId, List<ArticleStatus> Status);
+    Optional<ArticleEntity> findByIdAndStatus(final Long articleId, ArticleStatus Status);
 
     List<ArticleEntity> findAllByStatus(ArticleStatus status);
 
     @Query("SELECT a from ArticleEntity a WHERE a.status = :status order by a.createdAt desc")
     Page<ArticleEntity> findAllByStatusOrderByCreatedAtDesc(ArticleStatus status, Pageable pageable);
 
-    Optional<List<ArticleEntity>> findByUserEntityAndStatusIn(UserEntity userEntity, List<ArticleStatus> status);
+    Optional<List<ArticleEntity>> findByUserEntityAndStatus(UserEntity userEntity, ArticleStatus status);
 
-    Optional<Page<ArticleEntity>> findByUserEntityAndStatusIn(UserEntity userEntity, List<ArticleStatus> status, Pageable pageable);
+    Optional<Page<ArticleEntity>> findByUserEntityAndStatus(UserEntity userEntity, ArticleStatus status, Pageable pageable);
 
     @Query("SELECT a FROM ArticleEntity a JOIN a.locationEntities l WHERE l.city LIKE %:keyword% AND a.status = :status")
     List<ArticleEntity> findByLocationCityContainingAndStatusActive(

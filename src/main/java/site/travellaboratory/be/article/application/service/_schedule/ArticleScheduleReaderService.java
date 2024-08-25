@@ -44,18 +44,11 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadDetailResponse readSchedulesDetail(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
-                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
             .orElseThrow(
                 () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
                     HttpStatus.NOT_FOUND));
 
-        // 나만보기 상태의 여행 계획을 다른 유저가 조회할 경우
-        if (articleEntity.getStatus() == ArticleStatus.PRIVATE && !articleEntity.getUserEntity().getId()
-            .equals(userId)) {
-            throw new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER,
-                HttpStatus.FORBIDDEN);
-        }
 
         // reviewId 찾아오기 없다면 null
         Long reviewId = reviewJpaRepository.findByArticleEntityAndStatus(articleEntity, ReviewStatus.ACTIVE)
@@ -64,7 +57,6 @@ public class ArticleScheduleReaderService
 
         boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
 
-        System.out.println("조회 시작");
         // 일정 리스트 조회
         List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
             articleEntity, ArticleScheduleStatus.ACTIVE);
@@ -79,8 +71,7 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatusIn(articleId, List.of(
-                ArticleStatus.ACTIVE, ArticleStatus.PRIVATE))
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
@@ -91,9 +82,8 @@ public class ArticleScheduleReaderService
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleEntityAndStatusIn(
-                articleEntity,
-                List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE))
+        reviewJpaRepository.findByArticleEntityAndStatus(
+                articleEntity, ReviewStatus.ACTIVE)
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
                     HttpStatus.CONFLICT);

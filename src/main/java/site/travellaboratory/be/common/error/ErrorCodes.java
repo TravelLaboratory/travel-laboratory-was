@@ -46,7 +46,6 @@ public enum ErrorCodes {
     REVIEW_LIKE_INVALID_REVIEW_ID("[후기 좋아요] - 유효하지 않은 후기 ID", 4100L),
     // 후기 상세 조회
     REVIEW_READ_DETAIL_INVALID("[후기 상세 조회] - 유효하지 않은 후기 ID", 4040L),
-    REVIEW_READ_DETAIL_NOT_AUTHORIZATION("[후기 상세 조회] - 해당 후기에 접근 권한 없음", 4041L),
     // 후기 작성 전 조회
     REVIEW_BEFORE_POST_INVALID("[후기 작성 전 조회] - 유효하지 않은 여행 계획 ID", 4050L),
     REVIEW_BEFORE_POST_NOT_USER("[후기 작성 전 조회] - 여행 계획 작성자만 해당 여행 계획의 후기를 작성할 수 있습니다.", 4051L),
@@ -64,7 +63,6 @@ public enum ErrorCodes {
     COMMENT_LIKE_INVALID_COMMENT_ID("[댓글 좋아요] - 유효하지 않은 댓글 ID", 5100L),
     // 댓글 전체 조회 (페이지네이션)
     COMMENT_READ_ALL_PAGINATION_INVALID("[댓글 전체 조회] - 유효하지 않은 후기 ID", 5040L),
-    COMMENT_READ_ALL_PAGINATION_NOT_USER("[댓글 전체 조회] - 해당 후기에 접근 권한 없음", 5041L),
 
     // 일정 상세 (article_schedule)
     // 일정 상세 - 작성
@@ -76,9 +74,7 @@ public enum ErrorCodes {
 
     // 일정 상세 - 삭제
     ARTICLE_SCHEDULE_DELETE_INVALID("[일정 상세 - 삭제] - 유효하지 않은 초기 여행 계획 - ID", 10020L),
-    // 일정 상세 - 비공개 여부
-    ARTICLE_SCHEDULE_PRIVACY_INVALID("[일정 상세 - 비공개 여부] - 유효하지 않은 초기 여행 계획 - ID", 10030L),
-    ARTICLE_SCHEDULE_PRIVACY_NOT_USER("[일정 상세 - 비공개 여부] - 본인의 초기 여행 계획이 아닙니다.", 10031L),
+
     // 일정 상세 - 전체 조회
     ARTICLE_SCHEDULE_READ_DETAIL_INVALID("[일정 상세 - 리스트 조회] - 유효하지 않은 초기 여행 계획 - ID", 10040L),
     ARTICLE_SCHEDULE_READ_DETAIL_NOT_USER("[일정 상세 - 리스트 조회] - 해당 여행 계획에 접근 권한 없음", 10041L),

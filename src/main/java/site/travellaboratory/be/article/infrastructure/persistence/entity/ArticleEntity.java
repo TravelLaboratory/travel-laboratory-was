@@ -115,14 +115,6 @@ public class ArticleEntity extends BaseEntity {
         this.status = ArticleStatus.INACTIVE;
     }
 
-    // 지우지 마세요!! 일정 상세 - 공개, 비공개 설정
-    public void togglePrivacyStatus() {
-        if (this.status == ArticleStatus.ACTIVE) {
-            this.status = ArticleStatus.PRIVATE;
-        } else if (this.status == ArticleStatus.PRIVATE) {
-            this.status = ArticleStatus.ACTIVE;
-        }
-    }
 
     public void updateStatus(ArticleStatus status) {
         this.status = status;

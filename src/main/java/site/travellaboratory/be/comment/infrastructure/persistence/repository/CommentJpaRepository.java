@@ -11,7 +11,7 @@ import site.travellaboratory.be.comment.infrastructure.persistence.entity.Commen
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 
 public interface CommentJpaRepository extends JpaRepository<CommentEntity, Long> {
-    Optional<CommentEntity> findByIdAndStatusIn(Long commentId, List<CommentStatus> status);
+    Optional<CommentEntity> findByIdAndStatus(Long commentId, CommentStatus status);
 
     // 댓글 리스트 조회 + pagination
     Page<CommentEntity> findByReviewEntityIdAndStatusOrderByCreatedAtDesc(Long reviewId, CommentStatus status, Pageable pageable);

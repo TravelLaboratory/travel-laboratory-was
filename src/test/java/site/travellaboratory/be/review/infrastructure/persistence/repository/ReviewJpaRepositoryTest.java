@@ -2,7 +2,6 @@ package site.travellaboratory.be.review.infrastructure.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,8 +39,8 @@ class ReviewJpaRepositoryTest {
             ArticleEntity articleEntity = em.find(ArticleEntity.class, articleId);
 
             //when
-            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatusIn(
-                articleEntity, List.of(ReviewStatus.INACTIVE));
+            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatus(
+                articleEntity, ReviewStatus.INACTIVE);
 
             //then
             assertThat(result).isEmpty();
@@ -56,8 +55,8 @@ class ReviewJpaRepositoryTest {
             ArticleEntity articleEntity = em.find(ArticleEntity.class, articleId);
 
             //when
-            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatusIn(
-                articleEntity, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE));
+            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatus(
+                articleEntity, ReviewStatus.ACTIVE);
 
             //then
             assertThat(result).isPresent();
@@ -65,29 +64,10 @@ class ReviewJpaRepositoryTest {
             assertThat(reviewEntity.getId()).isEqualTo(reviewId);
             assertThat(reviewEntity.getStatus()).isEqualTo(ReviewStatus.ACTIVE);
         }
-
-        @DisplayName("[Success] 비공개 후기 단일 조회 - 여행계획[ArticleEntity]과_원하는_후기_상태[ReviewStatus]로_후기_조회")
-        @Test
-        void test3() {
-            //given
-            Long articleId = 4L;
-            Long reviewId = 4L;
-            ArticleEntity articleEntity = em.find(ArticleEntity.class, articleId);
-
-            //when
-            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatusIn(
-                articleEntity, List.of(ReviewStatus.ACTIVE, ReviewStatus.PRIVATE));
-
-            //then
-            assertThat(result).isPresent();
-            ReviewEntity reviewEntity = result.get();
-            assertThat(reviewEntity.getId()).isEqualTo(reviewId);
-            assertThat(reviewEntity.getStatus()).isEqualTo(ReviewStatus.PRIVATE);
-        }
     }
 
     @Nested
-    class findByIdAndStatusIn {
+    class findByIdAndStatus {
         @DisplayName("[Fail] 존재하지 않는 후기 조회 - 리뷰 ID와_원하는_후기_상태[ReviewStatus]로_후기_조회")
         @Test
         void test1() {
@@ -95,7 +75,7 @@ class ReviewJpaRepositoryTest {
             Long reviewId = 999L; // 존재하지 않는 ID
 
             //when
-            Optional<ReviewEntity> result = sut.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE));
+            Optional<ReviewEntity> result = sut.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE);
 
             //then
             assertThat(result).isEmpty();
@@ -108,7 +88,7 @@ class ReviewJpaRepositoryTest {
             Long reviewId = 2L;
 
             //when
-            Optional<ReviewEntity> result = sut.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE));
+            Optional<ReviewEntity> result = sut.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE);
 
             //then
             assertThat(result).isPresent();
@@ -121,10 +101,10 @@ class ReviewJpaRepositoryTest {
         @Test
         void test3() {
             //given
-            Long reviewId = 4L; // 존재하지 않는 상태
+            Long reviewId = 3L; // 존재하지 않는 상태
 
             //when
-            Optional<ReviewEntity> result = sut.findByIdAndStatusIn(reviewId, List.of(ReviewStatus.ACTIVE));
+            Optional<ReviewEntity> result = sut.findByIdAndStatus(reviewId, ReviewStatus.ACTIVE);
 
             //then
             assertThat(result).isEmpty();

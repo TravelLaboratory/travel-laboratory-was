@@ -71,7 +71,6 @@ class ReviewTest {
                 .title("review_title")
                 .representativeImgUrl("review_Img_Url")
                 .description("review_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             //when
@@ -84,7 +83,7 @@ class ReviewTest {
             assertEquals(saveRequest.title(), review.getTitle());
             assertEquals(saveRequest.representativeImgUrl(), review.getRepresentativeImgUrl());
             assertEquals(saveRequest.description(), review.getDescription());
-            assertEquals(saveRequest.status(), review.getStatus());
+            assertEquals(ReviewStatus.ACTIVE, review.getStatus());
         }
     }
 
@@ -120,7 +119,6 @@ class ReviewTest {
                 .title("update_title")
                 .representativeImgUrl("update_img_url")
                 .description("update_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             //when & then
@@ -137,7 +135,6 @@ class ReviewTest {
                 .title("update_title")
                 .representativeImgUrl("update_img_url")
                 .description("update_description")
-                .status(ReviewStatus.ACTIVE)
                 .build();
 
             //when
@@ -150,7 +147,7 @@ class ReviewTest {
             assertEquals(updateRequest.title(), updateReview.getTitle());
             assertEquals(updateRequest.representativeImgUrl(), updateReview.getRepresentativeImgUrl());
             assertEquals(updateRequest.description(), updateReview.getDescription());
-            assertEquals(updateRequest.status(), updateReview.getStatus());
+            assertEquals(ReviewStatus.ACTIVE, updateReview.getStatus());
         }
 
     }
