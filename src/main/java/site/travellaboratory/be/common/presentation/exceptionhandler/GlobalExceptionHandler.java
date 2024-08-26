@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import site.travellaboratory.be.common.error.ErrorCodes;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
-@Profile("dev")
+@Profile("prod")
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
