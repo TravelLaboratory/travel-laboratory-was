@@ -152,30 +152,6 @@ public class ArticleReaderService {
     }
 
     @Transactional
-    public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
-        userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-
-        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
-
-        return articleJpaEntities.stream()
-                .map(article -> {
-                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserEntityIdAndArticleEntityIdAndStatus(userId,
-                            article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isEditable = userId.equals(article.getUserEntity().getId());
-
-                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
-                })
-                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
-                .limit(4) // 상위 4개 아티클만 가져옴
-                .collect(Collectors.toList());
-    }
-
-
-    @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
         final UserEntity loginUserEntity = userJpaRepository.findByIdAndStatus(loginId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,

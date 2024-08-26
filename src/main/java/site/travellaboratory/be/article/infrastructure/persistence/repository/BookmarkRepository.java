@@ -20,8 +20,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     Optional<List<Bookmark>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status);
 
-//    List<Bookmark> findByUserAndStatus(final User user, final BookmarkStatus status);
-
     Optional<Page<Bookmark>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status, Pageable pageable);
 
     @Query("SELECT COUNT(b) FROM Bookmark b WHERE b.articleEntity.id = :articleId AND b.status = :status")

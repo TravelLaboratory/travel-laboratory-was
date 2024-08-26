@@ -70,15 +70,9 @@ public class ArticleReaderController {
         return ApiResponse.OK(response);
     }
 
-    @GetMapping("/banner/articles")
+    @GetMapping("/banner/articles/hot")
     public ApiResponse<List<ArticleTotalResponse>> getBannerNotUserArticles() {
         List<ArticleTotalResponse> articles = articleReaderService.getBannerNotUserArticles();
-        return ApiResponse.OK(articles);
-    }
-
-    @GetMapping("/auth/banner/articles")
-    public ApiResponse<List<ArticleTotalResponse>> getBannerUserArticles(@UserId final Long userId) {
-        List<ArticleTotalResponse> articles = articleReaderService.getBannerUserArticles(userId);
         return ApiResponse.OK(articles);
     }
 

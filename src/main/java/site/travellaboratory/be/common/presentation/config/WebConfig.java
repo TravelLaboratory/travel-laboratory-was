@@ -26,8 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
         "/api/v1/auth/pw-inquiry/verification",
         "/api/v1/auth/pw-inquiry/renewal",
         "/api/v1/oauth/login",
-        "/api/v1/banner/articles",
-        "/api/v1/banner/reviews"
+        "/api/v1/banner/articles/hot",
+        "/api/v1/banner/articles/latest"
     );
 
     private final List<String> DEFAULT_EXCLUDE = List.of(
