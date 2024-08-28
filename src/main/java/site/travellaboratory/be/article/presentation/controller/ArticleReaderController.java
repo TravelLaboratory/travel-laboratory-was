@@ -13,6 +13,7 @@ import site.travellaboratory.be.article.application.service.ArticleReaderService
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
+import site.travellaboratory.be.article.presentation.response.reader.BannerArticlesResponse;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
@@ -70,12 +71,6 @@ public class ArticleReaderController {
         return ApiResponse.OK(response);
     }
 
-    @GetMapping("/banner/articles/hot")
-    public ApiResponse<List<ArticleTotalResponse>> getBannerNotUserArticles() {
-        List<ArticleTotalResponse> articles = articleReaderService.getBannerNotUserArticles();
-        return ApiResponse.OK(articles);
-    }
-
     @GetMapping("/bookmarks/{userId}")
     public ApiResponse<Page<BookmarkResponse>> findMyAllBookmark(
             @UserId final Long loginId,
@@ -87,5 +82,11 @@ public class ArticleReaderController {
                 PageRequest.of(page, size));
 
         return ApiResponse.OK(allBookmarkByUser);
+    }
+
+    @GetMapping("/banner/articles/hot")
+    public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesHot() {
+        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesHot();
+        return ApiResponse.OK(articles);
     }
 }

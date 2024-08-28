@@ -1,5 +1,6 @@
 package site.travellaboratory.be.article.application.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,20 +13,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
 import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
+import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
-import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
+import site.travellaboratory.be.article.presentation.response.reader.BannerArticlesResponse;
+import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
+import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -134,21 +136,23 @@ public class ArticleReaderService {
     }
 
     @Transactional
-    public List<ArticleTotalResponse> getBannerNotUserArticles() {
-        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
+    public List<BannerArticlesResponse> readBannerArticlesHot() {
+        // 한 달 전 시간 계산
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusWeeks(1);
 
-        return articleJpaEntities.stream()
-                .map(article -> {
-                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = false;
-                    boolean isEditable = false;
+        // 좋아요 수 기준으로 상위 12개의 articleId 가져오기
+        Pageable pageable = PageRequest.of(0, 12);
+        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(oneMonthAgo, pageable);
 
-                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
-                })
-                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
-                .limit(4) // 상위 4개 아티클만 가져옴
-                .collect(Collectors.toList());
+        // 해당 articleId 리스트로 게시글 조회
+        List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(topArticleIds);
+        articleJpaRepository.findActiveArticlesWithLocationsByIds(topArticleIds);
+        articleJpaRepository.findActiveArticlesWithTravelStylesByIds(topArticleIds);
+
+
+        return articles.stream()
+            .map(BannerArticlesResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
