@@ -14,11 +14,11 @@ public record BannerArticlesResponse(
     LocalDate startAt,
     LocalDate endAt,
     String expense,
-    String profileImgUrl,
     String coverImgUrl,
     String travelCompanion,
     List<String> travelStyles,
-    String name
+    String writer,
+    String profileImgUrl
 ) {
     public static BannerArticlesResponse of(
             final ArticleEntity articleEntity) {
@@ -33,11 +33,11 @@ public record BannerArticlesResponse(
                 articleEntity.getStartAt(),
                 articleEntity.getEndAt(),
                 articleEntity.getExpense(),
-                articleEntity.getUserEntity().getProfileImgUrl(),
                 articleEntity.getCoverImgUrl(),
                 articleEntity.getTravelCompanion().getName(),
                 travelStyleNames,
-                articleEntity.getUserEntity().getNickname()
+                articleEntity.getUserEntity().getNickname(),
+                articleEntity.getUserEntity().getProfileImgUrl()
         );
     }
 }
