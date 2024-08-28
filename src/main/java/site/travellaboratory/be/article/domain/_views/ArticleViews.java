@@ -24,4 +24,14 @@ public class ArticleViews {
             .updatedAt(LocalDateTime.now())
             .build();
     }
+
+    public ArticleViews withUpdatedAt() {
+        return ArticleViews.builder()
+            .id(this.id)
+            .userId(userId)
+            .articleId(articleId)
+            .createdAt(this.getCreatedAt())
+            .updatedAt(LocalDateTime.now())
+            .build();
+    }
 }

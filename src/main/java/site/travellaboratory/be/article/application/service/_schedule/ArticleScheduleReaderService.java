@@ -154,14 +154,15 @@ public class ArticleScheduleReaderService {
         LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
 
         // 오늘 해당 사용자가 이미 조회했는지 확인
-        Optional<ArticleViewsEntity> articleView = articleViewsJpaRepository.findByUserIdAndArticleIdAndUpdatedAtBetween(
+        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndUpdatedAtBetween(
             userId, articleId, startOfDay, endOfDay);
 
-        if (articleView.isEmpty()) {
-            // 조회수 증가
-            articleViewsJpaRepository.save(
-                ArticleViewsEntity.from(ArticleViews.create(userId, articleId)));
-        }
+        final ArticleViews articleViews = optionalArticleViewsEntity
+            .map(ArticleViewsEntity::toModel)
+            .map(ArticleViews::withUpdatedAt)
+            .orElseGet(() -> ArticleViews.create(userId, articleId));
+
+        articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
     }
 
     private ArticleEntity getArticleEntityById(Long articleId) {
