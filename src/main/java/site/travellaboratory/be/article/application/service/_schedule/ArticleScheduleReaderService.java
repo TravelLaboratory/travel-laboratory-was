@@ -1,9 +1,13 @@
 package site.travellaboratory.be.article.application.service._schedule;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +16,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.article.domain._views.ArticleViews;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleViewsEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ArticleScheduleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleEtcEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleGeneralEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleTransportEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleViewsJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.repository._schedule.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadDetailResponse;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadPlacesResponse;
@@ -37,6 +44,7 @@ public class ArticleScheduleReaderService {
     private final ArticleJpaRepository articleJpaRepository;
     private final ArticleScheduleJpaRepository articleScheduleJpaRepository;
     private final ReviewJpaRepository reviewJpaRepository;
+    private final ArticleViewsJpaRepository articleViewsJpaRepository;
 
     /*
      * GET - /api/v1/articles/{articleId}/schedules
@@ -49,6 +57,9 @@ public class ArticleScheduleReaderService {
 
         // ReviewId 조회
         Long reviewId = getReviewIdByArticleId(articleEntity.getId());
+
+        // 조회수 관련
+        recordViewCount(userId, articleId);
 
         // 일정 리스트 조회
         List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
@@ -136,6 +147,21 @@ public class ArticleScheduleReaderService {
             return Stream.of(((ScheduleEtcEntity) schedule).getPlaceName());
         }
         return Stream.empty();
+    }
+
+    private void recordViewCount(Long userId, Long articleId) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+
+        // 오늘 해당 사용자가 이미 조회했는지 확인
+        Optional<ArticleViewsEntity> articleView = articleViewsJpaRepository.findByUserIdAndArticleIdAndUpdatedAtBetween(
+            userId, articleId, startOfDay, endOfDay);
+
+        if (articleView.isEmpty()) {
+            // 조회수 증가
+            articleViewsJpaRepository.save(
+                ArticleViewsEntity.from(ArticleViews.create(userId, articleId)));
+        }
     }
 
     private ArticleEntity getArticleEntityById(Long articleId) {
