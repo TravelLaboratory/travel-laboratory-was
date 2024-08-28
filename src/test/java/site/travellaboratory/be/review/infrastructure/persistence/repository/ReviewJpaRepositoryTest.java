@@ -39,8 +39,8 @@ class ReviewJpaRepositoryTest {
             ArticleEntity articleEntity = em.find(ArticleEntity.class, articleId);
 
             //when
-            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatus(
-                articleEntity, ReviewStatus.INACTIVE);
+            Optional<ReviewEntity> result = sut.findByArticleEntityIdAndStatus(
+                articleEntity.getId(), ReviewStatus.INACTIVE);
 
             //then
             assertThat(result).isEmpty();
@@ -55,8 +55,8 @@ class ReviewJpaRepositoryTest {
             ArticleEntity articleEntity = em.find(ArticleEntity.class, articleId);
 
             //when
-            Optional<ReviewEntity> result = sut.findByArticleEntityAndStatus(
-                articleEntity, ReviewStatus.ACTIVE);
+            Optional<ReviewEntity> result = sut.findByArticleEntityIdAndStatus(
+                articleEntity.getId(), ReviewStatus.ACTIVE);
 
             //then
             assertThat(result).isPresent();

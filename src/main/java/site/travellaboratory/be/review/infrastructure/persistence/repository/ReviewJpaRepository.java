@@ -14,7 +14,7 @@ import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 
 public interface ReviewJpaRepository extends JpaRepository<ReviewEntity, Long> {
 
-    Optional<ReviewEntity> findByArticleEntityAndStatus(ArticleEntity articleEntity, ReviewStatus status);
+    Optional<ReviewEntity> findByArticleEntityIdAndStatus (Long articleId, ReviewStatus status);
 
     Optional<ReviewEntity> findByIdAndStatus(Long reviewId, ReviewStatus status);
 

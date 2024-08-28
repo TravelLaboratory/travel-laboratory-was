@@ -4,7 +4,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.article.domain.Article;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.review.application.port.ReviewRepository;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
@@ -18,7 +17,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public Optional<Review> findByArticleAndStatusOrderByArticleDesc(Article article, ReviewStatus status) {
-        return reviewJpaRepository.findByArticleEntityAndStatus(ArticleEntity.from(article), status)
+        return reviewJpaRepository.findByArticleEntityIdAndStatus(article.getId(), status)
             .map(ReviewEntity::toModel);
     }
 
