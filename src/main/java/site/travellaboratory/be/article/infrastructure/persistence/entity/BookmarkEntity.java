@@ -21,7 +21,7 @@ import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntit
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "bookmark")
-public class Bookmark extends BaseEntity {
+public class BookmarkEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,15 +39,15 @@ public class Bookmark extends BaseEntity {
     @Column(nullable = false)
     private BookmarkStatus status;
 
-    public Bookmark(final UserEntity userEntity, final ArticleEntity articleEntity) {
+    public BookmarkEntity(final UserEntity userEntity, final ArticleEntity articleEntity) {
         this.userEntity = userEntity;
         this.articleEntity = articleEntity;
         this.status = BookmarkStatus.ACTIVE;
     }
 
-    public static Bookmark of(final UserEntity userEntity,
+    public static BookmarkEntity of(final UserEntity userEntity,
         final ArticleEntity articleEntity) {
-        return new Bookmark(userEntity, articleEntity);
+        return new BookmarkEntity(userEntity, articleEntity);
     }
 
     public void toggleStatus() {

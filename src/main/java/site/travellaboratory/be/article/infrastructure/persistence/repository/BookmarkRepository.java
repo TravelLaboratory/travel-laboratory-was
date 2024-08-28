@@ -11,23 +11,23 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 @Repository
-public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
+public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> {
 
-    Optional<Bookmark> findByArticleEntityAndUserEntity(final ArticleEntity articleEntity, final UserEntity userEntity);
+    Optional<BookmarkEntity> findByArticleEntityAndUserEntity(final ArticleEntity articleEntity, final UserEntity userEntity);
 
-    Optional<List<Bookmark>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status);
+    Optional<List<BookmarkEntity>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status);
 
-    Optional<Page<Bookmark>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status, Pageable pageable);
+    Optional<Page<BookmarkEntity>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status, Pageable pageable);
 
-    @Query("SELECT COUNT(b) FROM Bookmark b WHERE b.articleEntity.id = :articleId AND b.status = :status")
+    @Query("SELECT COUNT(b) FROM BookmarkEntity b WHERE b.articleEntity.id = :articleId AND b.status = :status")
     Long countByArticleIdAndStatus(@Param("articleId") Long articleId, @Param("status") BookmarkStatus status);
 
     boolean existsByUserEntityIdAndArticleEntityIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
 
-    @Query("SELECT bm.articleEntity.id FROM Bookmark bm WHERE bm.updatedAt >= :oneMonthAgo and bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id) DESC ")
+    @Query("SELECT bm.articleEntity.id FROM BookmarkEntity bm WHERE bm.updatedAt >= :oneMonthAgo and bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id) DESC ")
     List<Long> findTopArticleIdsByLikeCount(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
 }

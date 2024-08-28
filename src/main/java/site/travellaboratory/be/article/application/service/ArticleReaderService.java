@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
@@ -165,7 +165,7 @@ public class ArticleReaderService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
+        final Page<BookmarkEntity> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
                 userEntity, BookmarkStatus.ACTIVE, pageable)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
