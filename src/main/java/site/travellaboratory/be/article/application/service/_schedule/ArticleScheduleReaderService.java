@@ -154,7 +154,7 @@ public class ArticleScheduleReaderService {
         LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
 
         // 오늘 해당 사용자가 이미 조회했는지 확인
-        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndUpdatedAtBetween(
+        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndCreatedAtBetween(
             userId, articleId, startOfDay, endOfDay);
 
         final ArticleViews articleViews = optionalArticleViewsEntity
