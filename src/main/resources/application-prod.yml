@@ -3,6 +3,10 @@ spring:
     url: ${url}
     username: ${username}
     password: ${password}
+  data:
+    redis:
+      host: ${redis-host}
+      port: ${redis-port}
 
 jwt:
   secret-key: ${jwt-secret-key}
