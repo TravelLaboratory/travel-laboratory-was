@@ -157,12 +157,11 @@ public class ArticleScheduleReaderService {
         Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndCreatedAtBetween(
             userId, articleId, startOfDay, endOfDay);
 
-        final ArticleViews articleViews = optionalArticleViewsEntity
-            .map(ArticleViewsEntity::toModel)
-            .map(ArticleViews::withUpdatedAt)
-            .orElseGet(() -> ArticleViews.create(userId, articleId));
-
-        articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
+        if (optionalArticleViewsEntity.isEmpty()) {
+            // 조회 기록이 없는 경우 새로 생성
+            ArticleViews articleViews = ArticleViews.create(userId, articleId);
+            articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
+        }
     }
 
     private ArticleEntity getArticleEntityById(Long articleId) {

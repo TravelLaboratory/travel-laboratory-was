@@ -84,9 +84,21 @@ public class ArticleReaderController {
         return ApiResponse.OK(allBookmarkByUser);
     }
 
+    /*
+    * 이번 주 좋아요 수 기준 여행 계획
+    * */
+    @GetMapping("/banner/articles/likes")
+    public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesLikes() {
+        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesByWeeklyLikes();
+        return ApiResponse.OK(articles);
+    }
+
+    /*
+    * 실시간 조회 수 기준 여행 계획
+    * */
     @GetMapping("/banner/articles/hot")
     public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesHot() {
-        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesHot();
+        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesByHourlyViews();
         return ApiResponse.OK(articles);
     }
 }

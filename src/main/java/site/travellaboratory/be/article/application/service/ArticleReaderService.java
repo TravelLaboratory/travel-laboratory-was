@@ -18,6 +18,7 @@ import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleViewsJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
@@ -36,6 +37,7 @@ public class ArticleReaderService {
     private final ArticleJpaRepository articleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ArticleViewsJpaRepository articleViewsJpaRepository;
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
@@ -135,19 +137,41 @@ public class ArticleReaderService {
         return new PageImpl<>(articleResponses, pageable, newArticles.getTotalElements());
     }
 
-    @Transactional
-    public List<BannerArticlesResponse> readBannerArticlesHot() {
-        // 한 달 전 시간 계산
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusWeeks(1);
+    @Transactional(readOnly = true)
+    public List<BannerArticlesResponse> readBannerArticlesByWeeklyLikes() {
+        // 일 주일 전 계산
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
 
         // 좋아요 수 기준으로 상위 12개의 articleId 가져오기
         Pageable pageable = PageRequest.of(0, 12);
-        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(oneMonthAgo, pageable);
+        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(oneWeekAgo, pageable);
 
         // 해당 articleId 리스트로 게시글 조회
         List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(topArticleIds);
         articleJpaRepository.findActiveArticlesWithLocationsByIds(topArticleIds);
         articleJpaRepository.findActiveArticlesWithTravelStylesByIds(topArticleIds);
+
+
+        return articles.stream()
+            .map(BannerArticlesResponse::of)
+            .collect(Collectors.toList());
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<BannerArticlesResponse> readBannerArticlesByHourlyViews() {
+        // 3일 전부터 시간 계산
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+
+        // 조회수 기준으로 상위 12개의 articleId 가져오기
+        Pageable pageable = PageRequest.of(0, 12);
+        List<Long> topArticleIdsByViewsCount = articleViewsJpaRepository.findTopArticleIdsByViewsCount(
+            threeDaysAgo, pageable);
+
+        // 해당 articleId 리스트로 게시글 조회
+        List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(topArticleIdsByViewsCount);
+        articleJpaRepository.findActiveArticlesWithLocationsByIds(topArticleIdsByViewsCount);
+        articleJpaRepository.findActiveArticlesWithTravelStylesByIds(topArticleIdsByViewsCount);
 
 
         return articles.stream()
