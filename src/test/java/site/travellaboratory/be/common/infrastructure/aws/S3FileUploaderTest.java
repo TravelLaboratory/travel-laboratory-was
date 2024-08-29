@@ -1,8 +1,11 @@
 package site.travellaboratory.be.common.infrastructure.aws;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -133,8 +136,9 @@ class S3FileUploaderTest {
             String result = sut.uploadFiles(multipartFile);
 
             //then
-            assertEquals(fileUrl, result);
-            verify(amazonS3Client).putObject(eq(bucket), eq(fileName), eq(inputStream), any(ObjectMetadata.class));
+            assertNotEquals(fileUrl, result);
+            assertTrue(result.matches("https://test_bucket.s3.ap-northeast-2.amazonaws.com/\\d{14}_[\\w-]+\\.jpg"));
+            verify(amazonS3Client).putObject(eq(bucket), anyString(), eq(inputStream), any(ObjectMetadata.class));
         }
     }
 }
