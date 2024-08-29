@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -138,6 +139,7 @@ public class ArticleReaderService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "weeklyLikes", key = "'getBannerWeeklyLikes'")
     public List<BannerArticlesResponse> readBannerArticlesByWeeklyLikes() {
         // 일 주일 전 계산
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
@@ -159,6 +161,7 @@ public class ArticleReaderService {
 
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "hourlyViews", key = "'getBannerHourlyViews'")
     public List<BannerArticlesResponse> readBannerArticlesByHourlyViews() {
         // 3일 전부터 시간 계산
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
