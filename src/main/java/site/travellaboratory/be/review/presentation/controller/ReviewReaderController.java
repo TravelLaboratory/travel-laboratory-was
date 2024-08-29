@@ -10,7 +10,6 @@ import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.review.application.service.ReviewReaderService;
 import site.travellaboratory.be.review.presentation.response.reader.ProfileReviewPaginationResponse;
-import site.travellaboratory.be.review.presentation.response.reader.ReviewBannerListResponse;
 import site.travellaboratory.be.review.presentation.response.reader.ReviewReadDetailResponse;
 
 @RestController
@@ -42,17 +41,6 @@ public class ReviewReaderController {
     ) {
         ProfileReviewPaginationResponse response = reviewReaderService.readProfileReviews(
             tokenUserId, userId, page, size);
-        return ApiResponse.OK(response);
-    }
-
-    /*
-     * GET
-     * /api/v1/banner/reviews
-     * 홈(배너) 최신 여행 후기 - 조회 리스트 8개 [feat. 비회원, 회원 공통 항상]
-     * */
-    @GetMapping("/banner/reviews")
-    public ApiResponse<ReviewBannerListResponse> readBannerReviews() {
-        ReviewBannerListResponse response = reviewReaderService.readBannerReviews();
         return ApiResponse.OK(response);
     }
 }

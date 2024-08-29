@@ -36,4 +36,14 @@ public interface ArticleJpaRepository extends JpaRepository<ArticleEntity, Long>
             @Param("keyword") String keyword,
             Pageable pageable,
             @Param("status") ArticleStatus status);
+
+    @Query("SELECT a FROM ArticleEntity a JOIN FETCH a.userEntity u WHERE a.id IN :articleIds AND a.status = 'ACTIVE'")
+    List<ArticleEntity> findActiveArticlesWithUserByIds(@Param("articleIds") List<Long> articleIds);
+
+    @Query("SELECT DISTINCT a FROM ArticleEntity a JOIN FETCH a.locationEntities le WHERE a.id IN :articleIds AND a.status = 'ACTIVE'")
+    List<ArticleEntity> findActiveArticlesWithLocationsByIds(@Param("articleIds") List<Long> articleIds);
+
+    @Query("SELECT DISTINCT a FROM ArticleEntity a JOIN FETCH a.travelStyles ts WHERE a.id IN :articleIds AND a.status = 'ACTIVE'")
+    List<ArticleEntity> findActiveArticlesWithTravelStylesByIds(@Param("articleIds") List<Long> articleIds);
+
 }

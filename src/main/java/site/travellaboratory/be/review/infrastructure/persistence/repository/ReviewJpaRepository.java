@@ -14,7 +14,7 @@ import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 
 public interface ReviewJpaRepository extends JpaRepository<ReviewEntity, Long> {
 
-    Optional<ReviewEntity> findByArticleEntityAndStatus(ArticleEntity articleEntity, ReviewStatus status);
+    Optional<ReviewEntity> findByArticleEntityIdAndStatus (Long articleId, ReviewStatus status);
 
     Optional<ReviewEntity> findByIdAndStatus(Long reviewId, ReviewStatus status);
 
@@ -32,12 +32,4 @@ public interface ReviewJpaRepository extends JpaRepository<ReviewEntity, Long> {
     // todo: after(2)
     @Query("SELECT t FROM ReviewEntity t JOIN FETCH t.articleEntity a JOIN FETCH a.locationEntities l WHERE t.id IN :ids ORDER BY t.createdAt DESC ")
     List<ReviewEntity> findReviewsWithArticlesAndLocationsByIds(@Param("ids") List<Long> ids);
-
-
-    // 홈(배너) 최신 여행 후기 - 조회 리스트 8개 [feat. 비회원, 회원 공통 항상]
-    @Query("SELECT t.id FROM ReviewEntity t WHERE t.status = 'ACTIVE' ORDER BY t.createdAt DESC")
-    Page<Long> findReviewIdsByStatusOrderByCreatedAt(Pageable pageable);
-
-    @Query("SELECT t FROM ReviewEntity t JOIN FETCH t.articleEntity a JOIN FETCH a.locationEntities l JOIN FETCH t.userEntity u WHERE t.id IN :ids ORDER BY t.createdAt DESC")
-    List<ReviewEntity> findReviewsWithArticlesAndLocationsByIdsAndUserStatus(@Param("ids") List<Long> ids);
 }

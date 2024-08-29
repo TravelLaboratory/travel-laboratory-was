@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkSaveResponse;
@@ -33,17 +33,17 @@ public class ArticleLikeService {
         final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        Bookmark bookmark = bookmarkRepository.findByArticleEntityAndUserEntity(articleEntity,
+        BookmarkEntity bookmarkEntity = bookmarkRepository.findByArticleEntityAndUserEntity(articleEntity,
             userEntity).orElse(null);
 
-        if (bookmark != null) {
-            bookmark.toggleStatus();
+        if (bookmarkEntity != null) {
+            bookmarkEntity.toggleStatus();
         } else {
-            bookmark = Bookmark.of(userEntity, articleEntity);
+            bookmarkEntity = BookmarkEntity.of(userEntity, articleEntity);
         }
 
-        final Bookmark newBookmark = bookmarkRepository.save(bookmark);
-        return BookmarkSaveResponse.from(newBookmark);
+        final BookmarkEntity newBookmarkEntity = bookmarkRepository.save(bookmarkEntity);
+        return BookmarkSaveResponse.from(newBookmarkEntity);
     }
 }
 

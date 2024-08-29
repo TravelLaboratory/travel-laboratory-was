@@ -1,65 +1,71 @@
 package site.travellaboratory.be.article.application.service._schedule;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
-import site.travellaboratory.be.article.domain.enums.ArticleStatus;
-import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ArticleScheduleEntity;
-import site.travellaboratory.be.article.infrastructure.persistence.repository._schedule.ArticleScheduleJpaRepository;
 import site.travellaboratory.be.article.domain._schedule.enums.ArticleScheduleStatus;
+import site.travellaboratory.be.article.domain._views.ArticleViews;
+import site.travellaboratory.be.article.domain.enums.ArticleStatus;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleViewsEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ArticleScheduleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleEtcEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleGeneralEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity._schedule.ScheduleTransportEntity;
-import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
-import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
-import site.travellaboratory.be.review.domain.enums.ReviewStatus;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleViewsJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository._schedule.ArticleScheduleJpaRepository;
+import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadDetailResponse;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadPlacesResponse;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.PlaceName;
 import site.travellaboratory.be.article.presentation.response._schedule.reader.SchedulePlace;
-import site.travellaboratory.be.article.presentation.response._schedule.reader.ArticleScheduleReadDetailResponse;
+import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.review.domain.enums.ReviewStatus;
+import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
+import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleScheduleReaderService
-{
+public class ArticleScheduleReaderService {
+
     private final ArticleJpaRepository articleJpaRepository;
     private final ArticleScheduleJpaRepository articleScheduleJpaRepository;
     private final ReviewJpaRepository reviewJpaRepository;
+    private final ArticleViewsJpaRepository articleViewsJpaRepository;
 
     /*
-    * GET - /api/v1/articles/{articleId}/schedules
-    * 일정 상세 - 일정 리스트 조회
-    * */
-    @Transactional(readOnly = true)
+     * GET - /api/v1/articles/{articleId}/schedules
+     * 일정 상세 - 일정 리스트 조회
+     * */
+    @Transactional
     public ArticleScheduleReadDetailResponse readSchedulesDetail(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
-            .orElseThrow(
-                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
-                    HttpStatus.NOT_FOUND));
+        ArticleEntity articleEntity = getArticleEntityById(articleId);
 
+        // ReviewId 조회
+        Long reviewId = getReviewIdByArticleId(articleEntity.getId());
 
-        // reviewId 찾아오기 없다면 null
-        Long reviewId = reviewJpaRepository.findByArticleEntityAndStatus(articleEntity, ReviewStatus.ACTIVE)
-            .map(ReviewEntity::getId)
-            .orElse(null);
-
-        boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
+        // 조회수 관련
+        recordViewCount(userId, articleId);
 
         // 일정 리스트 조회
         List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
             articleEntity, ArticleScheduleStatus.ACTIVE);
+
+        boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
     }
@@ -71,7 +77,8 @@ public class ArticleScheduleReaderService
     @Transactional(readOnly = true)
     public ArticleScheduleReadPlacesResponse readSchedulesPlaces(Long userId, Long articleId) {
         // 유효하지 않은 여행 계획을 조회할 경우
-        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
+        ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId,
+                ArticleStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_INVALID,
                 HttpStatus.NOT_FOUND));
 
@@ -82,8 +89,8 @@ public class ArticleScheduleReaderService
         }
 
         // 이미 해당 여행 계획에 대한 후기가 있을 경우
-        reviewJpaRepository.findByArticleEntityAndStatus(
-                articleEntity, ReviewStatus.ACTIVE)
+        reviewJpaRepository.findByArticleEntityIdAndStatus(
+                articleEntity.getId(), ReviewStatus.ACTIVE)
             .ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.REVIEW_BEFORE_POST_EXIST,
                     HttpStatus.CONFLICT);
@@ -141,4 +148,34 @@ public class ArticleScheduleReaderService
         }
         return Stream.empty();
     }
+
+    private void recordViewCount(Long userId, Long articleId) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+
+        // 오늘 해당 사용자가 이미 조회했는지 확인
+        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndCreatedAtBetween(
+            userId, articleId, startOfDay, endOfDay);
+
+        if (optionalArticleViewsEntity.isEmpty()) {
+            // 조회 기록이 없는 경우 새로 생성
+            ArticleViews articleViews = ArticleViews.create(userId, articleId);
+            articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
+        }
+    }
+
+    private ArticleEntity getArticleEntityById(Long articleId) {
+        return articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
+            .orElseThrow(
+                () -> new BeApplicationException(ErrorCodes.ARTICLE_SCHEDULE_READ_DETAIL_INVALID,
+                    HttpStatus.NOT_FOUND));
+    }
+
+    @Nullable
+    private Long getReviewIdByArticleId(Long articleId) {
+        return reviewJpaRepository.findByArticleEntityIdAndStatus(articleId, ReviewStatus.ACTIVE)
+            .map(ReviewEntity::getId)
+            .orElse(null);
+    }
+
 }

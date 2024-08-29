@@ -11,7 +11,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.repository.Ar
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
@@ -39,11 +39,11 @@ public class UserUnregistrationService {
         articleJpaEntities.forEach(article -> article.updateStatus(ArticleStatus.INACTIVE));
         articleJpaRepository.saveAll(articleJpaEntities);
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatus(userEntity, BookmarkStatus.ACTIVE)
+        List<BookmarkEntity> bookmarkEntities = bookmarkRepository.findByUserEntityAndStatus(userEntity, BookmarkStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        bookmarks.forEach(bookmark -> bookmark.updateStatus(BookmarkStatus.INACTIVE));
-        bookmarkRepository.saveAll(bookmarks);
+        bookmarkEntities.forEach(bookmark -> bookmark.updateStatus(BookmarkStatus.INACTIVE));
+        bookmarkRepository.saveAll(bookmarkEntities);
 
         // 사용자 삭제 처리
         userEntity.delete();

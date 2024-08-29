@@ -1,9 +1,11 @@
 package site.travellaboratory.be.article.application.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -12,20 +14,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.domain.enums.ArticleStatus;
-import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
 import site.travellaboratory.be.article.domain.enums.BookmarkStatus;
-import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
-import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
-import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleViewsJpaRepository;
+import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
+import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
-import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
+import site.travellaboratory.be.article.presentation.response.reader.BannerArticlesResponse;
+import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.user.domain.enums.UserStatus;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
+import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,7 @@ public class ArticleReaderService {
     private final ArticleJpaRepository articleJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ArticleViewsJpaRepository articleViewsJpaRepository;
 
     // 내 초기 여행 계획 전체 조회
     @Transactional
@@ -133,47 +138,49 @@ public class ArticleReaderService {
         return new PageImpl<>(articleResponses, pageable, newArticles.getTotalElements());
     }
 
-    @Transactional
-    public List<ArticleTotalResponse> getBannerNotUserArticles() {
-        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "weeklyLikes", key = "'getBannerWeeklyLikes'")
+    public List<BannerArticlesResponse> readBannerArticlesByWeeklyLikes() {
+        // 일 주일 전 계산
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
 
-        return articleJpaEntities.stream()
-                .map(article -> {
-                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = false;
-                    boolean isEditable = false;
+        // 좋아요 수 기준으로 상위 12개의 articleId 가져오기
+        Pageable pageable = PageRequest.of(0, 12);
+        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(oneWeekAgo, pageable);
 
-                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
-                })
-                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
-                .limit(4) // 상위 4개 아티클만 가져옴
-                .collect(Collectors.toList());
+        // 해당 articleId 리스트로 게시글 조회
+        List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(topArticleIds);
+        articleJpaRepository.findActiveArticlesWithLocationsByIds(topArticleIds);
+        articleJpaRepository.findActiveArticlesWithTravelStylesByIds(topArticleIds);
+
+
+        return articles.stream()
+            .map(BannerArticlesResponse::of)
+            .collect(Collectors.toList());
     }
 
-    @Transactional
-    public List<ArticleTotalResponse> getBannerUserArticles(final Long userId) {
-        userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
-                .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<ArticleEntity> articleJpaEntities = articleJpaRepository.findAllByStatus(ArticleStatus.ACTIVE);
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "hourlyViews", key = "'getBannerHourlyViews'")
+    public List<BannerArticlesResponse> readBannerArticlesByHourlyViews() {
+        // 3일 전부터 시간 계산
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
 
-        return articleJpaEntities.stream()
-                .map(article -> {
-                    Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isBookmarked = bookmarkRepository.existsByUserEntityIdAndArticleEntityIdAndStatus(userId,
-                            article.getId(),
-                            BookmarkStatus.ACTIVE);
-                    boolean isEditable = userId.equals(article.getUserEntity().getId());
+        // 조회수 기준으로 상위 12개의 articleId 가져오기
+        Pageable pageable = PageRequest.of(0, 12);
+        List<Long> topArticleIdsByViewsCount = articleViewsJpaRepository.findTopArticleIdsByViewsCount(
+            threeDaysAgo, pageable);
 
-                    return ArticleTotalResponse.of(article, bookmarkCount, isBookmarked, isEditable);
-                })
-                .sorted((a1, a2) -> a2.bookmarkCount().compareTo(a1.bookmarkCount())) // 북마크 수 기준으로 내림차순 정렬
-                .limit(4) // 상위 4개 아티클만 가져옴
-                .collect(Collectors.toList());
+        // 해당 articleId 리스트로 게시글 조회
+        List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(topArticleIdsByViewsCount);
+        articleJpaRepository.findActiveArticlesWithLocationsByIds(topArticleIdsByViewsCount);
+        articleJpaRepository.findActiveArticlesWithTravelStylesByIds(topArticleIdsByViewsCount);
+
+
+        return articles.stream()
+            .map(BannerArticlesResponse::of)
+            .collect(Collectors.toList());
     }
-
 
     @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId, Pageable pageable) {
@@ -185,7 +192,7 @@ public class ArticleReaderService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final Page<Bookmark> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
+        final Page<BookmarkEntity> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
                 userEntity, BookmarkStatus.ACTIVE, pageable)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
 
