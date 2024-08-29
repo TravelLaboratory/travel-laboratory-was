@@ -85,7 +85,7 @@ public class ArticleReaderController {
     }
 
     /*
-    * 이번 주 좋아요 수 기준 여행 계획
+    * 이번 주 좋아요를 많이 누른 여행 계획 (feat. 7일 이내, 좋아요 수 기준)
     * */
     @GetMapping("/banner/articles/likes")
     public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesLikes() {
@@ -94,7 +94,7 @@ public class ArticleReaderController {
     }
 
     /*
-    * 실시간 조회 수 기준 여행 계획
+    * 최근 핫한 여행 계획 (feat. 3일 이내, 조회 수 기준)
     * */
     @GetMapping("/banner/articles/hot")
     public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesHot() {
