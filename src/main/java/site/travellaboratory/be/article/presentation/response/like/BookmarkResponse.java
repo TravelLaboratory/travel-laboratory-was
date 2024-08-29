@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleLocationEntity;
 import site.travellaboratory.be.article.domain.enums.TravelStyle;
-import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookmark;
+import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 
 public record BookmarkResponse(
         Long articleId,
@@ -22,23 +22,23 @@ public record BookmarkResponse(
         Boolean isBookmarked
 ) {
 
-    public static BookmarkResponse of(final Bookmark bookmark, final Long bookmarkCount, final Boolean isBookmarked) {
-        List<String> travelStyleNames = bookmark.getArticleEntity().getTravelStyles().stream()
+    public static BookmarkResponse of(final BookmarkEntity bookmarkEntity, final Long bookmarkCount, final Boolean isBookmarked) {
+        List<String> travelStyleNames = bookmarkEntity.getArticleEntity().getTravelStyles().stream()
                 .map(TravelStyle::getName)
                 .toList();
 
         return new BookmarkResponse(
-                bookmark.getArticleEntity().getId(),
-                bookmark.getArticleEntity().getTitle(),
-                bookmark.getArticleEntity().getLocationEntities(),
-                bookmark.getArticleEntity().getStartAt(),
-                bookmark.getArticleEntity().getEndAt(),
-                bookmark.getArticleEntity().getExpense(),
-                bookmark.getArticleEntity().getUserEntity().getProfileImgUrl(),
-                bookmark.getArticleEntity().getCoverImgUrl(),
-                bookmark.getArticleEntity().getTravelCompanion().getName(),
+                bookmarkEntity.getArticleEntity().getId(),
+                bookmarkEntity.getArticleEntity().getTitle(),
+                bookmarkEntity.getArticleEntity().getLocationEntities(),
+                bookmarkEntity.getArticleEntity().getStartAt(),
+                bookmarkEntity.getArticleEntity().getEndAt(),
+                bookmarkEntity.getArticleEntity().getExpense(),
+                bookmarkEntity.getArticleEntity().getUserEntity().getProfileImgUrl(),
+                bookmarkEntity.getArticleEntity().getCoverImgUrl(),
+                bookmarkEntity.getArticleEntity().getTravelCompanion().getName(),
                 travelStyleNames,
-                bookmark.getArticleEntity().getNickname(),
+                bookmarkEntity.getArticleEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked
         );

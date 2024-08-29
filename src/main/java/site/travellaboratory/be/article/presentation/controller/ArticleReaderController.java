@@ -13,6 +13,7 @@ import site.travellaboratory.be.article.application.service.ArticleReaderService
 import site.travellaboratory.be.article.presentation.response.like.BookmarkResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
+import site.travellaboratory.be.article.presentation.response.reader.BannerArticlesResponse;
 import site.travellaboratory.be.common.annotation.UserId;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
@@ -70,18 +71,6 @@ public class ArticleReaderController {
         return ApiResponse.OK(response);
     }
 
-    @GetMapping("/banner/articles")
-    public ApiResponse<List<ArticleTotalResponse>> getBannerNotUserArticles() {
-        List<ArticleTotalResponse> articles = articleReaderService.getBannerNotUserArticles();
-        return ApiResponse.OK(articles);
-    }
-
-    @GetMapping("/auth/banner/articles")
-    public ApiResponse<List<ArticleTotalResponse>> getBannerUserArticles(@UserId final Long userId) {
-        List<ArticleTotalResponse> articles = articleReaderService.getBannerUserArticles(userId);
-        return ApiResponse.OK(articles);
-    }
-
     @GetMapping("/bookmarks/{userId}")
     public ApiResponse<Page<BookmarkResponse>> findMyAllBookmark(
             @UserId final Long loginId,
@@ -93,5 +82,23 @@ public class ArticleReaderController {
                 PageRequest.of(page, size));
 
         return ApiResponse.OK(allBookmarkByUser);
+    }
+
+    /*
+    * 이번 주 좋아요를 많이 누른 여행 계획 (feat. 7일 이내, 좋아요 수 기준)
+    * */
+    @GetMapping("/banner/articles/likes")
+    public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesLikes() {
+        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesByWeeklyLikes();
+        return ApiResponse.OK(articles);
+    }
+
+    /*
+    * 최근 핫한 여행 계획 (feat. 3일 이내, 조회 수 기준)
+    * */
+    @GetMapping("/banner/articles/hot")
+    public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesHot() {
+        List<BannerArticlesResponse> articles = articleReaderService.readBannerArticlesByHourlyViews();
+        return ApiResponse.OK(articles);
     }
 }

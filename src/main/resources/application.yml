@@ -18,6 +18,11 @@ spring:
   jpa:
     properties:
       dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: ${redis-host}
+      port: ${redis-port}
+
 jwt:
   secret-key: ${jwt-secret-key}
   access-token:
@@ -52,6 +57,7 @@ spring:
 logging:
   level:
     root: INFO
+    org.springframework.cache: trace
 
 servers:
   url: "http://localhost"
@@ -66,3 +72,4 @@ spring:
 logging:
   level:
     root: INFO
+    org.springframework.cache: info
