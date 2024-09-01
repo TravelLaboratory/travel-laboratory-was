@@ -2,8 +2,8 @@ package site.travellaboratory.be.article.domain.enums;
 
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 public enum TravelCompanion {
     FAMILY("가족들과"),

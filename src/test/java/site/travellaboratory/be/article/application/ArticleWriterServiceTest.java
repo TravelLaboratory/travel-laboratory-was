@@ -29,7 +29,7 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity.Articl
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
 import site.travellaboratory.be.common.application.ImageUploadService;
-import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;

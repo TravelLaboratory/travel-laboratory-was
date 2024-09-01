@@ -1,7 +1,7 @@
 package site.travellaboratory.be.common.presentation.response;
 
 import java.util.Map;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 public record ApiResponse<T> (
     T data,

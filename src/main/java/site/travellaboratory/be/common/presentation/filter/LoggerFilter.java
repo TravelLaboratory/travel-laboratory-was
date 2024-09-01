@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.filter;
+package site.travellaboratory.be.common.presentation.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

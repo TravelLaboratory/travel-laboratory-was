@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.error;
+package site.travellaboratory.be.common.presentation.error;
 
 public enum ErrorCodes {
 

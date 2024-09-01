@@ -1,4 +1,4 @@
-package site.travellaboratory.be.common.presentation.config;
+package site.travellaboratory.be.common.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
