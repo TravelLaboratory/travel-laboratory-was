@@ -22,7 +22,7 @@ public class ImageProcessor {
     public ByteArrayOutputStream resizeAndCompressBackgroundImage(MultipartFile file) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Thumbnails.of(file.getInputStream())
-            .size(1920, 1080)
+            .size(1920, 560)
             .crop(Positions.CENTER)
             .outputQuality(0.8)
             .toOutputStream(outputStream);
