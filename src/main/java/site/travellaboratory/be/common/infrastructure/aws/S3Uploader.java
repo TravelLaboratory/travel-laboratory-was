@@ -6,10 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional
 public class S3Uploader {
 
     private final AmazonS3Client amazonS3Client;
@@ -35,9 +33,10 @@ public class S3Uploader {
     }
 
     private String determineContentType(String fileName) {
-        if (fileName.endsWith(".png")) {
+        String lowerCaseFileName = fileName.toLowerCase();
+        if (lowerCaseFileName.endsWith(".png")) {
             return "image/png";
-        } else if (fileName.endsWith(".gif")) {
+        } else if (lowerCaseFileName.endsWith(".gif")) {
             return "image/gif";
         } else {
             return "image/jpeg";

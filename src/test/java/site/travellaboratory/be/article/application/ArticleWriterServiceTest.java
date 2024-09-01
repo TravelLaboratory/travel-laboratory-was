@@ -107,7 +107,7 @@ class ArticleWriterServiceTest {
 
         when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.of(articleEntity));
-        when(imageUploadService.uploadBackgroundImage(coverImage))
+        when(imageUploadService.uploadCoverImage(coverImage))
                 .thenReturn(imageUrl);
 
         //when

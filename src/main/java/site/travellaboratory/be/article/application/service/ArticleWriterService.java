@@ -41,7 +41,7 @@ public class ArticleWriterService {
         final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        String uploadImgUrl = imageUploadService.uploadBackgroundImage(coverImage);
+        String uploadImgUrl = imageUploadService.uploadCoverImage(coverImage);
 
         articleEntity.updateCoverImage(uploadImgUrl);
         return new ArticleUpdateCoverImageResponse(uploadImgUrl);

@@ -10,21 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class ImageProcessor {
 
-    public ByteArrayOutputStream resizeAndCompressProfileImage(MultipartFile file) throws IOException {
+    public ByteArrayOutputStream resizeAndCompressImage(MultipartFile file,
+        int width, int height, double quality) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Thumbnails.of(file.getInputStream())
-            .size(250, 250)
-            .outputQuality(0.8)
-            .toOutputStream(outputStream);
-        return outputStream;
-    }
-
-    public ByteArrayOutputStream resizeAndCompressBackgroundImage(MultipartFile file) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Thumbnails.of(file.getInputStream())
-            .size(1920, 560)
+            .size(width, height)
             .crop(Positions.CENTER)
-            .outputQuality(0.8)
+            .outputQuality(quality)
             .toOutputStream(outputStream);
         return outputStream;
     }

@@ -111,8 +111,9 @@ public enum ErrorCodes {
     FILE_IS_EMPTY("파일이 비어 있습니다.", 100001L),
     FILE_NAME_EMPTY("파일 이름이 비어 있습니다.", 100002L),
     FILE_SIZE_ZERO("파일 크기가 0입니다.", 100003L),
-    INVALID_FILE_FORMAT("파일 형식이 잘못되었습니다. 올바른 파일 형식으로 업로드해 주세요.", 100004L),
-    IMAGE_RESIZING_AND_COMPRESS_FAILED("이미지 파일을 리사이징 혹은 압축 실패하였습니다.", 100005L);
+    NOT_EXIST_FILE_FORMAT("파일 형식이 존재하지 않습니다. 올바른 파일을 업로드해 주세요.", 100004L),
+    INVALID_FILE_FORMAT("지원하지 않는 파일 형식입니다. 다른 파일 형식으로 업로드해 주세요.", 100005L),
+    IMAGE_RESIZING_AND_COMPRESS_FAILED("이미지 파일을 리사이징 혹은 압축 실패하였습니다.", 100006L);
     ;
 
     public final String message;
