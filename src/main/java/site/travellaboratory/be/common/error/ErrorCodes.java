@@ -99,16 +99,19 @@ public enum ErrorCodes {
     BAD_REQUEST_JSON_PARSE_ERROR("[BAD_REQUEST] JSON_PARSE_ERROR - 올바른 JSON 형식이 아님", 9405L),
     BAD_REQUEST_REQUEST_ATTRIBUTES_MISSING("[BAD_REQUEST] RequestAttributes is null, Cannot resolve userId.", 9406L),
     BAD_REQUEST_USER_ID_MISSING("[BAD_REQUEST] userId attribute is not set in the RequestAttributes.", 9407L),
+    BAD_REQUEST_NOT_REQUEST_MULTIPART("[BAD_REQUEST] Multipart request is required but was not provided. - 파일을 보내지 않았습니다.", 9408L),
     // S3
     FILE_UPLOAD_FAILED("S3에 파일 업로드 실패", 9997L),
     // NPE
     NULL_POINT_EXCEPTION("NPE", 9998L),
     // Runtime Exception
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", 9999L),
+
     // FILE_UPLOAD_COMMON 100,000
     FILE_IS_EMPTY("파일이 비어 있습니다.", 100001L),
     FILE_NAME_EMPTY("파일 이름이 비어 있습니다.", 100002L),
     FILE_SIZE_ZERO("파일 크기가 0입니다.", 100003L),
+    INVALID_FILE_FORMAT("파일 형식이 잘못되었습니다. 올바른 파일 형식으로 업로드해 주세요.", 100004L);
     ;
 
     public final String message;
