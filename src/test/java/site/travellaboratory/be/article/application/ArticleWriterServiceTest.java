@@ -28,8 +28,8 @@ import site.travellaboratory.be.article.domain.request.LocationRequest;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
+import site.travellaboratory.be.common.application.ImageUploadService;
 import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
@@ -45,7 +45,7 @@ class ArticleWriterServiceTest {
     private ArticleJpaRepository articleJpaRepository;
 
     @Mock
-    private S3FileUploader s3FileUploader;
+    private ImageUploadService imageUploadService;
 
     @InjectMocks
     private ArticleWriterService articleWriterService;
@@ -107,7 +107,7 @@ class ArticleWriterServiceTest {
 
         when(articleJpaRepository.findByIdAndStatus(any(Long.class), any(ArticleStatus.class)))
                 .thenReturn(Optional.of(articleEntity));
-        when(s3FileUploader.uploadFiles(coverImage))
+        when(imageUploadService.uploadBackgroundImage(coverImage))
                 .thenReturn(imageUrl);
 
         //when
