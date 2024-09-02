@@ -81,6 +81,7 @@ public enum ErrorCodes {
 
     // 아티클 관련
     ARTICLE_NOT_FOUND("존재 하지 않는 초기 여행 계획", 6000L),
+    ARTICLE_VERIFY_OWNER("본인의 여행계획이 아닙니다.", 6001L),
 
     // Style 관련
     STYLE_NOT_FOUND("존재 하지 않는 스타일", 7000L),
@@ -92,7 +93,6 @@ public enum ErrorCodes {
     BOOKMARK_NOT_FOUND("존재 하지 않는 북마크", 9000L),
 
     // 여행계획
-    ARTICLE_VERIFY_OWNER("본인의 여행계획이 아닙니다.", 3000L),
 
 
     BAD_REQUEST("BAD_REQUEST", 9404L),
