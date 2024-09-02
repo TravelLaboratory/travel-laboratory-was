@@ -16,7 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.UnsupportedEncodingException;
 import java.util.function.Consumer;
 import org.springframework.test.web.servlet.MvcResult;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 

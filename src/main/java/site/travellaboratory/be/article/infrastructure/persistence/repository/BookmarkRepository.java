@@ -28,6 +28,6 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
 
     boolean existsByUserEntityIdAndArticleEntityIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
 
-    @Query("SELECT bm.articleEntity.id FROM BookmarkEntity bm WHERE bm.createdAt >= :oneMonthAgo and bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id)DESC")
-    List<Long> findTopArticleIdsByLikeCount(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
+    @Query("SELECT bm.articleEntity.id FROM BookmarkEntity bm WHERE bm.createdAt >= :standardLocalDateTime and bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id)DESC")
+    List<Long> findTopArticleIdsByLikeCount(@Param("standardLocalDateTime") LocalDateTime localDateTime, Pageable pageable);
 }

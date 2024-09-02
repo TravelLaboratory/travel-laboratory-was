@@ -19,8 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 class JwtTokenValidatorTest {
 

@@ -25,8 +25,8 @@ import site.travellaboratory.be.article.presentation.response.like.BookmarkRespo
 import site.travellaboratory.be.article.presentation.response.reader.ArticleOneResponse;
 import site.travellaboratory.be.article.presentation.response.reader.ArticleTotalResponse;
 import site.travellaboratory.be.article.presentation.response.reader.BannerArticlesResponse;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;

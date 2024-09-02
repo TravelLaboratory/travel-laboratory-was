@@ -12,8 +12,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import site.travellaboratory.be.common.annotation.UserId;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 @Component
 @RequiredArgsConstructor

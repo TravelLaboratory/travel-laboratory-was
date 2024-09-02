@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
 @Slf4j

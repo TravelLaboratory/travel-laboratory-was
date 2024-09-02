@@ -20,8 +20,8 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 @Slf4j
 @Component

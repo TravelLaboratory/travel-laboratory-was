@@ -12,8 +12,8 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity.Articl
 public interface ArticleViewsJpaRepository extends JpaRepository<ArticleViewsEntity, Long> {
     Optional<ArticleViewsEntity> findByUserIdAndArticleIdAndCreatedAtBetween(Long userId, Long articleId, LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT v.articleId FROM ArticleViewsEntity v WHERE v.createdAt >= :oneMonthAgo GROUP BY v.articleId ORDER BY COUNT(v.id) DESC ")
+    @Query("SELECT v.articleId FROM ArticleViewsEntity v WHERE v.createdAt >= :standardLocalDateTime GROUP BY v.articleId ORDER BY COUNT(v.id) DESC ")
 
-    List<Long> findTopArticleIdsByViewsCount(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
+    List<Long> findTopArticleIdsByViewsCount(@Param("standardLocalDateTime") LocalDateTime localDateTime, Pageable pageable);
 
 }
