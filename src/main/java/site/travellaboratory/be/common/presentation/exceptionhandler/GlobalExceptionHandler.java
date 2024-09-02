@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import org.springframework.web.multipart.MultipartException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 import site.travellaboratory.be.common.presentation.response.ApiResponse;
 
-@Profile("prod")
+//@Profile("prod")
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,6 +50,21 @@ public class GlobalExceptionHandler {
             .contentType(contentType)
             .body(body);
     }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMultipartException(MultipartException ex) {
+        log.info("Multipart request error: {}", ex.getMessage());
+
+        // 에러 응답 객체 생성
+        final ApiResponse<Object> body = ApiResponse.ERROR(ErrorCodes.BAD_REQUEST_NOT_REQUEST_MULTIPART);
+        final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
+
+        // BAD_REQUEST(400) 상태로 응답
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .contentType(contentType)
+            .body(body);
+    }
+
 
     @ExceptionHandler(value = { RuntimeException.class })
     public ResponseEntity<ApiResponse<Object>> RuntimeExceptionHandler(

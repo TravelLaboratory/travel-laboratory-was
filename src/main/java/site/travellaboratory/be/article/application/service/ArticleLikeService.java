@@ -10,8 +10,8 @@ import site.travellaboratory.be.article.infrastructure.persistence.entity.Bookma
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.BookmarkRepository;
 import site.travellaboratory.be.article.presentation.response.like.BookmarkSaveResponse;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;

@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
+import site.travellaboratory.be.common.application.ImageUploadService;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.user.application.port.UserRepository;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
@@ -19,7 +19,7 @@ import site.travellaboratory.be.user.domain.request.UserProfileInfoUpdateRequest
 public class UserProfileWriterService {
 
     private final UserRepository userRepository;
-    private final S3FileUploader s3FileUploader;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public User updateProfileInfo(Long userId, UserProfileInfoUpdateRequest request) {
@@ -36,7 +36,7 @@ public class UserProfileWriterService {
 
     public User updateProfileImg(Long userId, MultipartFile file) {
         User user = getUserById(userId);
-        final String uploadImgUrl = s3FileUploader.uploadFiles(file);
+        final String uploadImgUrl = imageUploadService.uploadProfileImage(file);
         return userRepository.save(user.withProfileImg(uploadImgUrl));
     }
 

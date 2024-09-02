@@ -14,8 +14,8 @@ import site.travellaboratory.be.article.domain.enums.TravelStyle;
 import site.travellaboratory.be.article.domain.request.ArticleRegisterRequest;
 import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.domain.request.LocationRequest;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 import site.travellaboratory.be.user.domain.User;
 
 @Getter

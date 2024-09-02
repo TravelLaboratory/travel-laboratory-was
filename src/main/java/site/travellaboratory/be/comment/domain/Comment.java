@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import site.travellaboratory.be.comment.domain.enums.CommentStatus;
 import site.travellaboratory.be.comment.domain.request.CommentSaveRequest;
 import site.travellaboratory.be.comment.domain.request.CommentUpdateRequest;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 import site.travellaboratory.be.review.domain.Review;
 import site.travellaboratory.be.user.domain.User;
 

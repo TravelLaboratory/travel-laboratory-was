@@ -3,8 +3,8 @@ package site.travellaboratory.be.user.infrastructure.jwt.manager.helper;
 import io.jsonwebtoken.Claims;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
 
 @Component
 public class JwtTokenParser {

@@ -12,9 +12,9 @@ import site.travellaboratory.be.article.domain.request.ArticleUpdateRequest;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.repository.ArticleJpaRepository;
 import site.travellaboratory.be.article.presentation.response.writer.ArticleUpdateCoverImageResponse;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.common.exception.BeApplicationException;
-import site.travellaboratory.be.common.infrastructure.aws.S3FileUploader;
+import site.travellaboratory.be.common.application.ImageUploadService;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.enums.UserStatus;
 import site.travellaboratory.be.user.infrastructure.persistence.repository.UserJpaRepository;
@@ -25,7 +25,7 @@ public class ArticleWriterService {
 
     private final ArticleJpaRepository articleJpaRepository;
     private final UserJpaRepository userJpaRepository;
-    private final S3FileUploader s3FileUploader;
+    private final ImageUploadService imageUploadService;
 
     //내 초기 여행 계획 저장
     @Transactional
@@ -36,17 +36,15 @@ public class ArticleWriterService {
         return savedArticle.getId();
     }
 
-
-
     @Transactional
     public ArticleUpdateCoverImageResponse updateCoverImage(final MultipartFile coverImage, final Long articleId) {
         final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        final String url = s3FileUploader.uploadFiles(coverImage);
+        String uploadImgUrl = imageUploadService.uploadCoverImage(coverImage);
 
-        articleEntity.updateCoverImage(url);
-        return new ArticleUpdateCoverImageResponse(url);
+        articleEntity.updateCoverImage(uploadImgUrl);
+        return new ArticleUpdateCoverImageResponse(uploadImgUrl);
     }
 
     // 내 초기 여행 계획 수정

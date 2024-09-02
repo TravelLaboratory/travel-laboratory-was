@@ -18,8 +18,8 @@ import site.travellaboratory.be.comment.infrastructure.persistence.repository.Co
 import site.travellaboratory.be.comment.presentation.response.reader.CommentLikeCount;
 import site.travellaboratory.be.comment.presentation.response.reader.CommentReadPaginationResponse;
 import site.travellaboratory.be.comment.presentation.response.reader.CommentReadResponse;
-import site.travellaboratory.be.common.error.ErrorCodes;
-import site.travellaboratory.be.common.exception.BeApplicationException;
+import site.travellaboratory.be.common.presentation.error.ErrorCodes;
+import site.travellaboratory.be.common.presentation.exception.BeApplicationException;
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
 import site.travellaboratory.be.user.domain.User;
