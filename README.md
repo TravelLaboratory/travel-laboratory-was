@@ -1,17 +1,12 @@
 ![20240905_170038](https://github.com/user-attachments/assets/0b35cbf0-4099-4662-8508-fad514e19d0f)
+## ✈ Trablock
+Trablock은 사용자가 여행 계획을 작성하고 리뷰를 추가하며 이를 다른 사용자들과 공유할 수 있는 여행 계획 및 일정 공유 플랫폼입니다. 이 플랫폼을 통해 여행자들은 자신의 여행 경험을 기록하고, 다른 사용자들과 소통하며 여행 정보를 나눌 수 있습니다.
 
-## Trablock
+Trablock이라는 이름은 Travel과 Block의 합성어로, 사용자가 개별 일정들을 마치 블록처럼 조립하여 하나의 완성된 여행 계획을 만드는 것을 의미합니다.
 
-사용자가 여행 계획을 작성하고 리뷰를 추가하며 이를 공유할 수 있는 여행 계획 및 일정 공유 플랫폼입니다.
-여행자들이 자신의 여행 경험을 기록하고 다른 사용자들과 소통할 수 있도록 도와줍니다.
 
-### [Trablock]
 
-**Travel**과 **Block**의 합성어로,  사용자가 개별 일정들을 마치 블록을 조립하듯 구성하여, 이를 하나의 완성된 여행 계획으로 만든다는 의미를 담고 있습니다.
-
-## 📃 Introduction
-
-### 🛠 Backend Tech Stack
+## 🛠 Backend Tech Stack
 
 - **프레임워크:** Spring Boot(3.3.0), Spring Data JPA, Spring Data Redis
 - **언어 및 환경:** Java 17, Lombok
@@ -26,8 +21,6 @@
 
 
 ## 🧶 What I learn
-
-
 ### [설계 및 개발을 진행하면서]
 
 #### 1. **스프링 기본 CRUD 및 예외 처리**
