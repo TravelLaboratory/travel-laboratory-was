@@ -4,13 +4,14 @@ Trablock은 사용자가 여행 계획을 작성하고 리뷰를 추가하며 �
 
 Trablock이라는 이름은 Travel과 Block의 합성어로, 사용자가 개별 일정들을 마치 블록처럼 조립하여 하나의 완성된 여행 계획을 만드는 것을 의미합니다.
 
-
+## ⭐ Architecture
+![트래블록아키텍처](https://github.com/user-attachments/assets/1d84cecf-af1f-4650-b81e-205a2407610e)
 
 ## 🛠 Backend Tech Stack
 
 - **프레임워크:** Spring Boot(3.3.0), Spring Data JPA, Spring Data Redis
 - **언어 및 환경:** Java 17, Lombok
-- **데이터베이스:** AWS RDS (MySQL), AWS Elasticache (Redis), AWS S3
+- **데이터베이스:** AWS RDS (MySQL), AWS ElastiCache (Redis), AWS S3
 - **보안:** JWT, Kakao OAuth 2.0
 - **이미지 처리:** Thumbnailator
 - **API 문서화:** Swagger
