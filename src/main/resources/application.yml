@@ -61,6 +61,16 @@ logging:
 
 servers:
   url: "http://localhost"
+
+management:
+  endpoint:
+    health:
+      show-components: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 ---
 spring:
   config:
