@@ -1,5 +1,8 @@
 server:
-  port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
+  port: ${server-port}
 
 spring:
   application:
@@ -29,6 +32,19 @@ jwt:
     plus-hour: ${jwt-access-token-plus-hour}
   refresh-token:
     plus-hour: ${jwt-refresh-token-plus-hour}
+
+## actuator
+management:
+  endpoint:
+    health:
+      show-components: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: ${management-server-port}
+
 
 ## s3 이미지 저장
 cloud:
@@ -61,6 +77,7 @@ logging:
 
 servers:
   url: "http://localhost"
+
 ---
 spring:
   config:
