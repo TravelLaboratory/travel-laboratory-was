@@ -25,6 +25,6 @@ echo "> $(date) - Docker 이미지 빌드 시작" >> $LOG_FILE
 sudo docker build -t travel-laboratory-docker .
 
 echo "> $(date) - Docker 컨테이너 실행 시작" >> $LOG_FILE
-sudo docker run -d -p 8080:8080 travel-laboratory-docker
+sudo docker run -d -p 8080:8080 -p 9292:9292 travel-laboratory-docker
 
 echo "> $(date) - 배포 완료" >> $LOG_FILE
