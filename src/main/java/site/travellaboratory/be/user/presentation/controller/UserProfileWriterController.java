@@ -1,6 +1,7 @@
 package site.travellaboratory.be.user.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import site.travellaboratory.be.common.presentation.response.ApiResponse;
 import site.travellaboratory.be.user.application.service.UserProfileWriterService;
 import site.travellaboratory.be.user.domain.User;
 import site.travellaboratory.be.user.domain.request.UserProfileInfoUpdateRequest;
+import site.travellaboratory.be.user.presentation.response.writer.UserProfileImgDeleteResponse;
 import site.travellaboratory.be.user.presentation.response.writer.UserProfileImgUpdateResponse;
 import site.travellaboratory.be.user.presentation.response.writer.UserProfileInfoUpdateResponse;
 
@@ -22,7 +24,7 @@ public class UserProfileWriterController {
 
     private final UserProfileWriterService userProfileWriterService;
 
-    @PutMapping("/profile")
+    @PatchMapping("/profile")
     public ApiResponse<UserProfileInfoUpdateResponse> updateProfileInfo(
         @RequestBody UserProfileInfoUpdateRequest userProfileInfoUpdateRequest,
         @UserId Long userId) {
@@ -36,5 +38,12 @@ public class UserProfileWriterController {
             @UserId Long userId) {
         final User result = userProfileWriterService.updateProfileImg(userId, file);
         return ApiResponse.OK(UserProfileImgUpdateResponse.from(result));
+    }
+
+    @PatchMapping("/profile/img")
+    public ApiResponse<UserProfileImgDeleteResponse> deleteProfileImg(
+        @UserId Long userId) {
+        final User result = userProfileWriterService.deleteProfileImg(userId);
+        return ApiResponse.OK(UserProfileImgDeleteResponse.from(result));
     }
 }

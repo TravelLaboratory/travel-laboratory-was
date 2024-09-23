@@ -34,10 +34,17 @@ public class UserProfileWriterService {
         return userRepository.save(user.withProfileInfo(request));
     }
 
+    @Transactional
     public User updateProfileImg(Long userId, MultipartFile file) {
         User user = getUserById(userId);
         final String uploadImgUrl = imageUploadService.uploadProfileImage(file);
         return userRepository.save(user.withProfileImg(uploadImgUrl));
+    }
+
+    @Transactional
+    public User deleteProfileImg(Long userId) {
+        User user = getUserById(userId);
+        return userRepository.save(user.withProfileImg(null));
     }
 
     private User getUserById(Long userId) {
