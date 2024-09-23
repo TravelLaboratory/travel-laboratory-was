@@ -63,21 +63,23 @@ public class ArticleScheduleWriterService {
         for (ArticleSchedule existingSchedule : existingSchedules) {
             // 기존 일정에는 있는데 요청에 없다면? 삭제 처리
             if (!requestMap.containsKey(existingSchedule.getId())) {
-                existingSchedule.delete(user);
+                articleScheduleJpaRepository.save(ArticleScheduleEntity.from(existingSchedule.delete(user)));
             }
         }
 
-        // (3) 작성, 수정 처리
-        for (ArticleScheduleRequest request : requests) {
-            ArticleSchedule articleSchedule;
-            if (request.scheduleId() == null) {
-                // id x -> 새로운 일정 생성
-                articleSchedule = ArticleSchedule.create(user, article, request);
-            } else {
-                // id o -> 기존 일정 수정
-                articleSchedule = getExistingScheduleById(existingSchedules, request.scheduleId()).update(user, request);
+        if (!requests.isEmpty()) {
+            // (3) 작성, 수정 처리
+            for (ArticleScheduleRequest request : requests) {
+                ArticleSchedule articleSchedule;
+                if (request.scheduleId() == null) {
+                    // id x -> 새로운 일정 생성
+                    articleSchedule = ArticleSchedule.create(user, article, request);
+                } else {
+                    // id o -> 기존 일정 수정
+                    articleSchedule = getExistingScheduleById(existingSchedules, request.scheduleId()).update(user, request);
+                }
+                articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
             }
-            articleScheduleJpaRepository.save(ArticleScheduleEntity.from(articleSchedule));
         }
 
         return ArticleScheduleUpdateResponse.from(articleEntity.getId());
