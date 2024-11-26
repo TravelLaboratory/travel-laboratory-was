@@ -1,3 +1,6 @@
+[![CI (feat. Java CI with Gradle)](https://github.com/TravelLaboratory/travel-laboratory-was/actions/workflows/ci.yml/badge.svg)](https://github.com/TravelLaboratory/travel-laboratory-was/actions/workflows/ci.yml)
+[![Deploy to Production](https://github.com/TravelLaboratory/travel-laboratory-was/actions/workflows/main-deploy.yml/badge.svg)](https://github.com/TravelLaboratory/travel-laboratory-was/actions/workflows/main-deploy.yml)
+
 ![20240905_170038](https://github.com/user-attachments/assets/0b35cbf0-4099-4662-8508-fad514e19d0f)
 ## 📑 Introduction
 Trablock은 사용자가 여행 계획을 작성하고 리뷰를 추가하며 이를 다른 사용자들과 공유할 수 있는 여행 계획 및 일정 공유 플랫폼입니다. 이 플랫폼을 통해 여행자들은 자신의 여행 경험을 기록하고, 다른 사용자들과 소통하며 여행 정보를 나눌 수 있습니다.
