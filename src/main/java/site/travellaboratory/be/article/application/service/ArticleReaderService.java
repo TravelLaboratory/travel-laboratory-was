@@ -76,21 +76,22 @@ public class ArticleReaderService {
     }
 
     // 초기 여행 계획 한개 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public ArticleOneResponse findByArticle(final Long loginId, final Long articleId) {
         // 유효하지 않은 아티클 조회 할 경우
         final ArticleEntity articleEntity = articleJpaRepository.findByIdAndStatus(articleId, ArticleStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        UserEntity userEntity = articleEntity.getUserEntity();
 
         final Long bookmarkCount = bookmarkRepository.countByArticleIdAndStatus(articleId, BookmarkStatus.ACTIVE);
 
         boolean isBookmarked = bookmarkRepository.existsByUserEntityIdAndArticleEntityIdAndStatus(loginId, articleId,
                 BookmarkStatus.ACTIVE);
 
+        boolean isEditable = userEntity.getId().equals(loginId);
 
-        boolean isEditable = articleEntity.getUserEntity().getId().equals(loginId);
-
-        return ArticleOneResponse.of(articleEntity, bookmarkCount, isBookmarked, isEditable);
+        return ArticleOneResponse.of(userEntity, articleEntity, bookmarkCount, isBookmarked, isEditable);
     }
 
     // 아티클 검색

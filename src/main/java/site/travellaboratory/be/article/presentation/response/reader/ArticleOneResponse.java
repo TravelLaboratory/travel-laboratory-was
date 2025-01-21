@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleLocationEntity;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleEntity;
 import site.travellaboratory.be.article.domain.enums.TravelStyle;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 public record ArticleOneResponse(
+        Long userId, // writerId
+        String nickname,
+        String profileImgUrl,
         String title,
         List<ArticleLocationEntity> locations,
         LocalDate startAt,
@@ -23,6 +27,7 @@ public record ArticleOneResponse(
 ) {
 
     public static ArticleOneResponse of(
+            final UserEntity userEntity,
             final ArticleEntity articleEntity,
             final Long bookmarkCount,
             final Boolean isBookmarked,
@@ -33,6 +38,9 @@ public record ArticleOneResponse(
                 .collect(Collectors.toList());
 
         return new ArticleOneResponse(
+                userEntity.getId(),
+                userEntity.getNickname(),
+                userEntity.getProfileImgUrl(),
                 articleEntity.getTitle(),
                 articleEntity.getLocationEntities(),
                 articleEntity.getStartAt(),
