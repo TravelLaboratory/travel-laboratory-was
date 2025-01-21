@@ -24,7 +24,7 @@ public class ArticleReaderController {
 
     private final ArticleReaderService articleReaderService;
 
-    @GetMapping("/articles/{userId}")
+    @GetMapping("/users/{userId}/articles")
     public ApiResponse<Page<ArticleTotalResponse>> findArticlesByUser(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
@@ -48,7 +48,8 @@ public class ArticleReaderController {
         return ApiResponse.OK(articleTotalResponses);
     }
 
-    @GetMapping("/article/{articleId}")
+    //
+    @GetMapping("/articles/{articleId}")
     public ApiResponse<ArticleOneResponse> findArticle(
             @UserId final Long loginId,
             @PathVariable(name = "articleId") final Long articleId
@@ -58,7 +59,7 @@ public class ArticleReaderController {
     }
 
 
-    @GetMapping("/search/article")
+    @GetMapping("/articles/search")
     public ApiResponse<Page<ArticleTotalResponse>> searchArticle(
             @RequestParam("keyword") final String keyword,
             @RequestParam(defaultValue = "0", value = "page") int page,
@@ -85,7 +86,7 @@ public class ArticleReaderController {
     }
 
     /*
-    * 이번 주 좋아요를 많이 누른 여행 계획 (feat. 7일 이내, 좋아요 수 기준)
+    * 인기 - 이번 주 좋아요를 많이 누른 여행 계획 (feat. 30일 이내, 좋아요 수 기준)
     * */
     @GetMapping("/banner/articles/likes")
     public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesLikes() {
@@ -94,7 +95,7 @@ public class ArticleReaderController {
     }
 
     /*
-    * 최근 핫한 여행 계획 (feat. 3일 이내, 조회 수 기준)
+    * 트렌딩 - 최근 핫한 여행 계획 (feat. 30일 이내, 조회 수 기준)
     * */
     @GetMapping("/banner/articles/hot")
     public ApiResponse<List<BannerArticlesResponse>> readBannerArticlesHot() {

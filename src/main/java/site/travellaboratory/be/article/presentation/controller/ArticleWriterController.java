@@ -35,7 +35,7 @@ public class ArticleWriterController {
         return ApiResponse.OK(ArticleRegisterResponse.from(result));
     }
 
-    @PutMapping("/article/{articleId}/coverImg")
+    @PutMapping("/articles/{articleId}/coverImg")
     public ApiResponse<ArticleUpdateCoverImageResponse> updateCoverImage(
         @RequestPart("file") final MultipartFile coverImage,
         @PathVariable(name = "articleId") final Long articleId
@@ -45,7 +45,7 @@ public class ArticleWriterController {
         return ApiResponse.OK(articleUpdateCoverImageResponse);
     }
 
-    @PutMapping("/article/{articleId}")
+    @PutMapping("/articles/{articleId}")
     public ApiResponse<ArticleUpdateResponse> updateArticle(
         @RequestBody final ArticleUpdateRequest articleUpdateRequest,
         @UserId final Long userId,

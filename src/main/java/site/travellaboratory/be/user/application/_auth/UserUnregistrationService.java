@@ -33,14 +33,13 @@ public class UserUnregistrationService {
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<ArticleEntity> articleJpaEntities = articleJpaRepository.findByUserEntityAndStatus(
-                userEntity, ArticleStatus.ACTIVE)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.ARTICLE_NOT_FOUND, HttpStatus.NOT_FOUND));
+            userEntity, ArticleStatus.ACTIVE);
 
         articleJpaEntities.forEach(article -> article.updateStatus(ArticleStatus.INACTIVE));
         articleJpaRepository.saveAll(articleJpaEntities);
 
-        List<BookmarkEntity> bookmarkEntities = bookmarkRepository.findByUserEntityAndStatus(userEntity, BookmarkStatus.ACTIVE)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND, HttpStatus.NOT_FOUND));
+        List<BookmarkEntity> bookmarkEntities = bookmarkRepository.findByUserEntityAndStatus(
+            userEntity, BookmarkStatus.ACTIVE);
 
         bookmarkEntities.forEach(bookmark -> bookmark.updateStatus(BookmarkStatus.INACTIVE));
         bookmarkRepository.saveAll(bookmarkEntities);
