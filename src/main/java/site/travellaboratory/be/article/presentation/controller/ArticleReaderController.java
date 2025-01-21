@@ -49,7 +49,7 @@ public class ArticleReaderController {
     }
 
     //
-    @GetMapping("/article/{articleId}")
+    @GetMapping("/articles/{articleId}")
     public ApiResponse<ArticleOneResponse> findArticle(
             @UserId final Long loginId,
             @PathVariable(name = "articleId") final Long articleId
@@ -59,7 +59,7 @@ public class ArticleReaderController {
     }
 
 
-    @GetMapping("/search/article")
+    @GetMapping("/articles/search")
     public ApiResponse<Page<ArticleTotalResponse>> searchArticle(
             @RequestParam("keyword") final String keyword,
             @RequestParam(defaultValue = "0", value = "page") int page,
