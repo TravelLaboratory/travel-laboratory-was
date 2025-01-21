@@ -19,10 +19,10 @@ public class UserProfileReaderController {
 
     @GetMapping("users/{userId}/profile")
     public ApiResponse<UserProfileResponse> findMyProfile(
-            @UserId final Long userId,
+            @UserId final Long loginId,
             @PathVariable(name = "userId") final Long searchUserId
     ) {
-        final UserProfileResponse userProfileResponse = userProfileReaderService.findByUserProfile(userId, searchUserId);
+        final UserProfileResponse userProfileResponse = userProfileReaderService.findByUserProfile(loginId, searchUserId);
         return ApiResponse.OK(userProfileResponse);
     }
 }
