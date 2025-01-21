@@ -36,6 +36,7 @@ import site.travellaboratory.be.common.presentation.exception.BeApplicationExcep
 import site.travellaboratory.be.review.domain.enums.ReviewStatus;
 import site.travellaboratory.be.review.infrastructure.persistence.entity.ReviewEntity;
 import site.travellaboratory.be.review.infrastructure.persistence.repository.ReviewJpaRepository;
+import site.travellaboratory.be.user.infrastructure.persistence.entity.UserEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -55,17 +56,30 @@ public class ArticleScheduleReaderService {
         // 유효하지 않은 여행 계획을 조회할 경우
         ArticleEntity articleEntity = getArticleEntityById(articleId);
 
+        UserEntity userEntity = articleEntity.getUserEntity();
+
         // ReviewId 조회
         Long reviewId = getReviewIdByArticleId(articleEntity.getId());
 
         // 조회수 관련
-        recordViewCount(userId, articleId);
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+
+        // 오늘 해당 사용자가 이미 조회했는지 확인
+        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndCreatedAtBetween(
+            userId, articleId, startOfDay, endOfDay);
+
+        if (optionalArticleViewsEntity.isEmpty()) {
+            // 조회 기록이 없는 경우 새로 생성
+            ArticleViews articleViews = ArticleViews.create(userId, articleId);
+            articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
+        }
 
         // 일정 리스트 조회
         List<ArticleScheduleEntity> schedules = articleScheduleJpaRepository.findByArticleEntityAndStatusOrderBySortOrderAsc(
             articleEntity, ArticleScheduleStatus.ACTIVE);
 
-        boolean isEditable = articleEntity.getUserEntity().getId().equals(userId);
+        boolean isEditable = userEntity.getId().equals(userId);
 
         return ArticleScheduleReadDetailResponse.from(reviewId, isEditable, schedules);
     }
@@ -147,21 +161,6 @@ public class ArticleScheduleReaderService {
             return Stream.of(((ScheduleEtcEntity) schedule).getPlaceName());
         }
         return Stream.empty();
-    }
-
-    private void recordViewCount(Long userId, Long articleId) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
-
-        // 오늘 해당 사용자가 이미 조회했는지 확인
-        Optional<ArticleViewsEntity> optionalArticleViewsEntity = articleViewsJpaRepository.findByUserIdAndArticleIdAndCreatedAtBetween(
-            userId, articleId, startOfDay, endOfDay);
-
-        if (optionalArticleViewsEntity.isEmpty()) {
-            // 조회 기록이 없는 경우 새로 생성
-            ArticleViews articleViews = ArticleViews.create(userId, articleId);
-            articleViewsJpaRepository.save(ArticleViewsEntity.from(articleViews));
-        }
     }
 
     private ArticleEntity getArticleEntityById(Long articleId) {
