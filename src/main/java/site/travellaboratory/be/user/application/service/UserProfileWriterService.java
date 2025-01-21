@@ -25,11 +25,14 @@ public class UserProfileWriterService {
     public User updateProfileInfo(Long userId, UserProfileInfoUpdateRequest request) {
 
         User user = getUserById(userId);
-        // 닉네임 중복 체크
-        userRepository.findByNickname(request.nickname()).ifPresent(it -> {
-            throw new BeApplicationException(ErrorCodes.PROFILE_DUPLICATED_NICK_NAME,
-                HttpStatus.CONFLICT);
-        });
+
+        // 닉네임이 다를 때만 중복 체크
+        if (!user.getUsername().equals(request.nickname())) {
+            userRepository.findByNickname(request.nickname()).ifPresent(it -> {
+                throw new BeApplicationException(ErrorCodes.PROFILE_DUPLICATED_NICK_NAME,
+                    HttpStatus.CONFLICT);
+            });
+        }
 
         return userRepository.save(user.withProfileInfo(request));
     }
