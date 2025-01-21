@@ -22,9 +22,9 @@ public interface ArticleJpaRepository extends JpaRepository<ArticleEntity, Long>
     @Query("SELECT a from ArticleEntity a WHERE a.status = :status order by a.createdAt desc")
     Page<ArticleEntity> findAllByStatusOrderByCreatedAtDesc(ArticleStatus status, Pageable pageable);
 
-    Optional<List<ArticleEntity>> findByUserEntityAndStatus(UserEntity userEntity, ArticleStatus status);
+    List<ArticleEntity> findByUserEntityAndStatus(UserEntity userEntity, ArticleStatus status);
 
-    Optional<Page<ArticleEntity>> findByUserEntityAndStatus(UserEntity userEntity, ArticleStatus status, Pageable pageable);
+    Page<ArticleEntity> findByUserEntityAndStatusOrderByCreatedAtDesc(UserEntity userEntity, ArticleStatus status, Pageable pageable);
 
     @Query("SELECT a FROM ArticleEntity a JOIN a.locationEntities l WHERE l.city LIKE %:keyword% AND a.status = :status")
     List<ArticleEntity> findByLocationCityContainingAndStatusActive(
