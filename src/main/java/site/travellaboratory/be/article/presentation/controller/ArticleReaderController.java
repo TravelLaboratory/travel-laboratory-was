@@ -24,7 +24,7 @@ public class ArticleReaderController {
 
     private final ArticleReaderService articleReaderService;
 
-    @GetMapping("/articles/{userId}")
+    @GetMapping("/users/{userId}/articles")
     public ApiResponse<Page<ArticleTotalResponse>> findArticlesByUser(
             @UserId final Long loginId,
             @PathVariable(name = "userId") final Long userId,
