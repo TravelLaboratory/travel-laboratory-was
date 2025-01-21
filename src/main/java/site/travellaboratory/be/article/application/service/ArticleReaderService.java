@@ -192,19 +192,20 @@ public class ArticleReaderService {
     @Transactional
     public Page<BookmarkResponse> findAllBookmarkByUser(final Long loginId, final Long userId,
         Pageable pageable) {
+        // 로그인한 유저
         final UserEntity loginUserEntity = userJpaRepository.findByIdAndStatus(loginId,
                 UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
+        // 프로필 페이지 유저
         final UserEntity userEntity = userJpaRepository.findByIdAndStatus(userId, UserStatus.ACTIVE)
             .orElseThrow(() -> new BeApplicationException(ErrorCodes.USER_NOT_FOUND,
                 HttpStatus.NOT_FOUND));
 
-        final Page<BookmarkEntity> bookmarks = bookmarkRepository.findByUserEntityAndStatus(
-                userEntity, BookmarkStatus.ACTIVE, pageable)
-            .orElseThrow(() -> new BeApplicationException(ErrorCodes.BOOKMARK_NOT_FOUND,
-                HttpStatus.NOT_FOUND));
+        // 해당 프로필 페이지 유저의 북마크
+        final Page<BookmarkEntity> bookmarks = bookmarkRepository.findByUserEntityAndStatusOrderByCreatedAtDesc(
+            userEntity, BookmarkStatus.ACTIVE, pageable);
 
         List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
             .map(bookmark -> {

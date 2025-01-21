@@ -19,9 +19,9 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
 
     Optional<BookmarkEntity> findByArticleEntityAndUserEntity(final ArticleEntity articleEntity, final UserEntity userEntity);
 
-    Optional<List<BookmarkEntity>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status);
+    List<BookmarkEntity> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status);
 
-    Optional<Page<BookmarkEntity>> findByUserEntityAndStatus(final UserEntity userEntity, final BookmarkStatus Status, Pageable pageable);
+    Page<BookmarkEntity> findByUserEntityAndStatusOrderByCreatedAtDesc(final UserEntity userEntity, final BookmarkStatus Status, Pageable pageable);
 
     @Query("SELECT COUNT(b) FROM BookmarkEntity b WHERE b.articleEntity.id = :articleId AND b.status = :status")
     Long countByArticleIdAndStatus(@Param("articleId") Long articleId, @Param("status") BookmarkStatus status);
