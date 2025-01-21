@@ -36,6 +36,7 @@ public class RedisCacheConfig {
             .cacheDefaults(redisCacheConfig)
             .withCacheConfiguration("weeklyLikes", redisCacheConfig.entryTtl(Duration.ofHours(6))) // weeklyLikes TTL 6시간
             .withCacheConfiguration("dailyViews", redisCacheConfig.entryTtl(Duration.ofHours(1))) // dailyViews TTL 1시간
+            .withCacheConfiguration("hourlyViews", redisCacheConfig.entryTtl(Duration.ofMinutes(30))) // hourlyViews TTL 1시간
             .build();
     }
 }
