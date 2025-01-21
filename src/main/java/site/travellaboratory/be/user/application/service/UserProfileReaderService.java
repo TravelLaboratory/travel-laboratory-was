@@ -18,8 +18,8 @@ public class UserProfileReaderService {
 
     private final UserJpaRepository userJpaRepository;
 
-    public UserProfileResponse findByUserProfile(final Long userId, final Long id) {
-        final UserEntity userEntity = userJpaRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
+    public UserProfileResponse findByUserProfile(final Long userId, final Long searchUserId) {
+        final UserEntity userEntity = userJpaRepository.findByIdAndStatus(searchUserId, UserStatus.ACTIVE)
                 .orElseThrow(() -> new BeApplicationException(ErrorCodes.AUTH_USER_NOT_FOUND,
                         HttpStatus.BAD_REQUEST)
                 );

@@ -17,12 +17,12 @@ public class UserProfileReaderController {
 
     private final UserProfileReaderService userProfileReaderService;
 
-    @GetMapping("/profile/{id}")
+    @GetMapping("users/{userId}/profile")
     public ApiResponse<UserProfileResponse> findMyProfile(
             @UserId final Long userId,
-            @PathVariable(name = "id") final Long id
+            @PathVariable(name = "userId") final Long searchUserId
     ) {
-        final UserProfileResponse userProfileResponse = userProfileReaderService.findByUserProfile(userId, id);
+        final UserProfileResponse userProfileResponse = userProfileReaderService.findByUserProfile(userId, searchUserId);
         return ApiResponse.OK(userProfileResponse);
     }
 }
