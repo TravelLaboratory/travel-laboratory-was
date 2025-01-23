@@ -20,7 +20,6 @@ public record ArticleOneResponse(
         String coverImgUrl,
         String travelCompanion,
         List<String> travelStyles,
-        String name,
         Long bookmarkCount,
         Boolean isBookmarked,
         Boolean isEditable
@@ -49,7 +48,6 @@ public record ArticleOneResponse(
                 articleEntity.getCoverImgUrl(),
                 articleEntity.getTravelCompanion().getName(),
                 travelStyleNames,
-                articleEntity.getUserEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked,
                 isEditable
