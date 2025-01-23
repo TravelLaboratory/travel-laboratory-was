@@ -7,17 +7,18 @@ import site.travellaboratory.be.article.domain.enums.TravelStyle;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.BookmarkEntity;
 
 public record BookmarkResponse(
+        Long userId, // writerId
+        String nickname,
+        String profileImgUrl,
         Long articleId,
         String title,
         List<ArticleLocationEntity> locations,
         LocalDate startAt,
         LocalDate endAt,
         String expense,
-        String profileImgUrl,
         String coverImgUrl,
         String travelCompanion,
         List<String> travelStyles,
-        String name,
         Long bookmarkCount,
         Boolean isBookmarked
 ) {
@@ -28,17 +29,18 @@ public record BookmarkResponse(
                 .toList();
 
         return new BookmarkResponse(
+                bookmarkEntity.getArticleEntity().getUserEntity().getId(),
+                bookmarkEntity.getArticleEntity().getUserEntity().getNickname(),
+                bookmarkEntity.getArticleEntity().getUserEntity().getProfileImgUrl(),
                 bookmarkEntity.getArticleEntity().getId(),
                 bookmarkEntity.getArticleEntity().getTitle(),
                 bookmarkEntity.getArticleEntity().getLocationEntities(),
                 bookmarkEntity.getArticleEntity().getStartAt(),
                 bookmarkEntity.getArticleEntity().getEndAt(),
                 bookmarkEntity.getArticleEntity().getExpense(),
-                bookmarkEntity.getArticleEntity().getUserEntity().getProfileImgUrl(),
                 bookmarkEntity.getArticleEntity().getCoverImgUrl(),
                 bookmarkEntity.getArticleEntity().getTravelCompanion().getName(),
                 travelStyleNames,
-                bookmarkEntity.getArticleEntity().getNickname(),
                 bookmarkCount,
                 isBookmarked
         );
