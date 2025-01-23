@@ -27,7 +27,7 @@ public class UserProfileWriterService {
         User user = getUserById(userId);
 
         // 닉네임이 다를 때만 중복 체크
-        if (!user.getUsername().equals(request.nickname())) {
+        if (!user.getNickname().equals(request.nickname())) {
             userRepository.findByNickname(request.nickname()).ifPresent(it -> {
                 throw new BeApplicationException(ErrorCodes.PROFILE_DUPLICATED_NICK_NAME,
                     HttpStatus.CONFLICT);
