@@ -73,7 +73,6 @@ Trablock이라는 이름은 Travel과 Block의 합성어로, 사용자가 개별
 이를 통해 시스템 장애 발생 시 즉각적인 조치가 가능해져 시스템 안정성이 크게 향상되었습니다. 더불어 시스템 유지보수와 운영 효율성에 큰 기여를 했습니다.
 
 
-
 ## ⛓ Link
 ### API 명세서 및 관련 링크
 ![image](https://github.com/user-attachments/assets/759d9fec-1323-4324-a7f1-646f40c21115)
