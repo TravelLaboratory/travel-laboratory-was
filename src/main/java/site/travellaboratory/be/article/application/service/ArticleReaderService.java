@@ -147,8 +147,8 @@ public class ArticleReaderService {
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "weeklyLikes", key = "'getBannerLikes'")
     public List<BannerArticlesResponse> readBannerArticlesByWeeklyLikes() {
-        // 30일 전 계산
-        LocalDateTime daysAgo = LocalDateTime.now().minusDays(30);
+        // 7일 전으로 수정해야함
+        LocalDateTime daysAgo = LocalDateTime.now().minusDays(7);
 
         // 좋아요 수 기준으로 상위 12개의 articleId 가져오기
         Pageable pageable = PageRequest.of(0, 12);
@@ -170,8 +170,8 @@ public class ArticleReaderService {
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "hourlyViews", key = "'getBannerTrendingViews'")
     public List<BannerArticlesResponse> readBannerArticlesByHourlyViews() {
-        // 30일 전부터 시간 계산
-        LocalDateTime daysAgo = LocalDateTime.now().minusDays(30);
+        // 7일 전으로 수정해야 함
+        LocalDateTime daysAgo = LocalDateTime.now().minusDays(7);
 
         // 조회수 기준으로 상위 12개의 articleId 가져오기
         Pageable pageable = PageRequest.of(0, 12);
