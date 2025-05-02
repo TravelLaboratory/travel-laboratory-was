@@ -1,6 +1,5 @@
 package site.travellaboratory.be.article.application.service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -147,13 +146,9 @@ public class ArticleReaderService {
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "weeklyLikes", key = "'getBannerLikes'")
     public List<BannerArticlesResponse> readBannerArticlesByWeeklyLikes() {
-        // 30일 전 계산
-        LocalDateTime daysAgo = LocalDateTime.now().minusDays(30);
-
         // 좋아요 수 기준으로 상위 12개의 articleId 가져오기
         Pageable pageable = PageRequest.of(0, 12);
-        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(daysAgo,
-            pageable);
+        List<Long> topArticleIds = bookmarkRepository.findTopArticleIdsByLikeCount(pageable);
 
         // 해당 articleId 리스트로 게시글 조회
         List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(
@@ -170,13 +165,9 @@ public class ArticleReaderService {
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "hourlyViews", key = "'getBannerTrendingViews'")
     public List<BannerArticlesResponse> readBannerArticlesByHourlyViews() {
-        // 30일 전부터 시간 계산
-        LocalDateTime daysAgo = LocalDateTime.now().minusDays(30);
-
         // 조회수 기준으로 상위 12개의 articleId 가져오기
         Pageable pageable = PageRequest.of(0, 12);
-        List<Long> topArticleIdsByViewsCount = articleViewsJpaRepository.findTopArticleIdsByViewsCount(
-            daysAgo, pageable);
+        List<Long> topArticleIdsByViewsCount = articleViewsJpaRepository.findTopArticleIdsByViewsCount(pageable);
 
         // 해당 articleId 리스트로 게시글 조회
         List<ArticleEntity> articles = articleJpaRepository.findActiveArticlesWithUserByIds(
