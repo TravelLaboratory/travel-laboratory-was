@@ -1,6 +1,5 @@
 package site.travellaboratory.be.article.infrastructure.persistence.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -28,6 +27,6 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
 
     boolean existsByUserEntityIdAndArticleEntityIdAndStatus(Long loginId, Long articleId, BookmarkStatus active);
 
-    @Query("SELECT bm.articleEntity.id FROM BookmarkEntity bm WHERE bm.createdAt >= :standardLocalDateTime and bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id)DESC")
-    List<Long> findTopArticleIdsByLikeCount(@Param("standardLocalDateTime") LocalDateTime localDateTime, Pageable pageable);
+    @Query("SELECT bm.articleEntity.id FROM BookmarkEntity bm WHERE bm.status = 'ACTIVE' GROUP BY bm.articleEntity.id ORDER BY COUNT(bm.id)DESC")
+    List<Long> findTopArticleIdsByLikeCount(Pageable pageable);
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import site.travellaboratory.be.article.infrastructure.persistence.entity.ArticleViewsEntity;
 
 public interface ArticleViewsJpaRepository extends JpaRepository<ArticleViewsEntity, Long> {
@@ -14,6 +13,6 @@ public interface ArticleViewsJpaRepository extends JpaRepository<ArticleViewsEnt
 
     @Query("SELECT v.articleId FROM ArticleViewsEntity v WHERE v.createdAt >= :standardLocalDateTime GROUP BY v.articleId ORDER BY COUNT(v.id) DESC ")
 
-    List<Long> findTopArticleIdsByViewsCount(@Param("standardLocalDateTime") LocalDateTime localDateTime, Pageable pageable);
+    List<Long> findTopArticleIdsByViewsCount(Pageable pageable);
 
 }
